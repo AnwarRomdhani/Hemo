@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Add Staff</title>
+</head>
+<body>
+    <h1>Add Staff to {{ center.nom }}</h1>
+    <form method="post">
+        {% csrf_token %}
+        <h2>Technical Staff</h2>
+        {{ tech_form.as_p }}
+        <h2>Medical Staff</h2>
+        {{ med_form.as_p }}
+        <h2>Paramedical Staff</h2>
+        {{ para_form.as_p }}
+        <button type="submit">Add Staff</button>
+    </form>
+</body>
+</html>

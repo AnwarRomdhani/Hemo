@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>{{ center.nom }}</title>
+</head>
+<body>
+    <h1>{{ center.nom }}</h1>
+    <p>Subdomain: {{ center.sub_domain }}</p>
+    <p>Phone: {{ center.tel }}</p>
+
+    <h2>Technical Staff</h2>
+    <ul>
+        {% for staff in technical_staff %}
+            <li>{{ staff.nom }} {{ staff.prenom }} - {{ staff.qualification }}</li>
+        {% empty %}
+            <li>No technical staff found.</li>
+        {% endfor %}
+    </ul>
+
+    <h2>Medical Staff</h2>
+    <ul>
+        {% for staff in medical_staff %}
+            <li>{{ staff.nom }} {{ staff.prenom }} - {{ staff.cnom }}</li>
+        {% empty %}
+            <li>No medical staff found.</li>
+        {% endfor %}
+    </ul>
+
+    <h2>Paramedical Staff</h2>
+    <ul>
+        {% for staff in paramedical_staff %}
+            <li>{{ staff.nom }} {{ staff.prenom }} - {{ staff.qualification }}</li>
+        {% empty %}
+            <li>No paramedical staff found.</li>
+        {% endfor %}
+    </ul>
+</body>
+</html>

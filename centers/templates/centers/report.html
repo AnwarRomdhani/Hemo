@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Report</title>
+</head>
+<body>
+    <h1>Rapport d'Activité Médicale</h1>
+    <pre>{{ report_content }}</pre>
+
+    <!-- Button to export as PDF -->
+    <form action="{% url 'export_pdf' %}" method="get">
+        <button type="submit">Export as PDF</button>
+    </form>
+</body>
+</html>

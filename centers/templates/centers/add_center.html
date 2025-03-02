@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Add Center</title>
+</head>
+<body>
+    <h1>Add a New Center</h1>
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Create Center</button>
+    </form>
+</body>
+</html>
