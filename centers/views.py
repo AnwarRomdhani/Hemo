@@ -1,198 +1,137 @@
-from django.shortcuts import render, redirect, get_object_or_404
-from .models import Center, TechnicalStaff, MedicalStaff, ParamedicalStaff
+from django.shortcuts import render, redirect
 from django.http import HttpResponse
 from reportlab.pdfgen import canvas
 from io import BytesIO
+
+from .models import Center, TechnicalStaff, MedicalStaff, ParamedicalStaff
 from .forms import CenterForm, TechnicalStaffForm, MedicalStaffForm, ParamedicalStaffForm
 
-# View to create a new Center
+# Create a new Center
 def add_center(request):
     if request.method == 'POST':
         form = CenterForm(request.POST)
         if form.is_valid():
             center = form.save()
-            # Redirect to the subdomain URL after creating a Center
             return redirect(f"http://{center.sub_domain}.localhost:8000/")
     else:
         form = CenterForm()
     return render(request, 'centers/add_center.html', {'form': form})
 
-def generate_report(request):
-    # Get the current tenant (Center) from the middleware
-    center = request.tenant
 
+# Generate a human-readable HTML report
+def generate_report(request):
+    center = request.tenant
     if not center:
         return HttpResponse("No center found for this subdomain.", status=404)
 
-    # Fetch all staff members associated with this center
     technical_staff = center.technicalstaff_staff.all()
     medical_staff = center.medicalstaff_staff.all()
     paramedical_staff = center.paramedicalstaff_staff.all()
 
-    # Create the report content
-    report_content = f"""
-    République Tunisienne
-    Ministère de la Santé
-    Direction de la Réglementation et du Contrôle des Professions de Santé
-
-    RAPPORT D'ACTIVITE MEDICALE
-    DES CENTRES D'HEMODIALYSE
-    Semestre: 2, Année: 2021
-
-    I -- CARACTERISTIQUES DU CENTRE
-    1 -- Coordonnées
-    Dénomination: {center.nom}
-    Adresse: {center.sub_domain}.localhost:8000
-    Tél: {center.tel}
-
-    II -- RESSOURCES HUMAINES
-    1 -- Personnel Médical
-    """
-
-    # Add technical staff details
-    report_content += "\nTechnical Staff:\n"
-    for staff in technical_staff:
-        report_content += f"- {staff.nom} {staff.prenom} ({staff.qualification})\n"
-
-    # Add medical staff details
-    report_content += "\nMedical Staff:\n"
-    for staff in medical_staff:
-        report_content += f"- {staff.nom} {staff.prenom} ({staff.cnom})\n"
-
-    # Add paramedical staff details
-    report_content += "\nParamedical Staff:\n"
-    for staff in paramedical_staff:
-        report_content += f"- {staff.nom} {staff.prenom} ({staff.qualification})\n"
-
-    # Render the report in HTML with a button to export as PDF
     return render(request, 'centers/report.html', {
         'center': center,
         'technical_staff': technical_staff,
         'medical_staff': medical_staff,
         'paramedical_staff': paramedical_staff,
-        'report_content': report_content,
     })
 
-def export_pdf(request):
-    # Get the current tenant (Center) from the middleware
-    center = request.tenant
 
+# Export report as PDF
+def export_pdf(request):
+    center = request.tenant
     if not center:
         return HttpResponse("No center found for this subdomain.", status=404)
 
-    # Fetch all staff members associated with this center
     technical_staff = center.technicalstaff_staff.all()
     medical_staff = center.medicalstaff_staff.all()
     paramedical_staff = center.paramedicalstaff_staff.all()
 
-    # Create a PDF buffer
     buffer = BytesIO()
-
-    # Create the PDF object
     pdf = canvas.Canvas(buffer)
 
-    # Add content to the PDF
-    pdf.drawString(100, 800, "République Tunisienne")
-    pdf.drawString(100, 780, "Ministère de la Santé")
-    pdf.drawString(100, 760, "Direction de la Réglementation et du Contrôle des Professions de Santé")
-    pdf.drawString(100, 740, "RAPPORT D'ACTIVITE MEDICALE")
-    pdf.drawString(100, 720, "DES CENTRES D'HEMODIALYSE")
-    pdf.drawString(100, 700, f"Semestre: 2, Année: 2021")
+    y = 800
+    def draw_line(text, x=100):
+        nonlocal y
+        pdf.drawString(x, y, text)
+        y -= 20
 
-    pdf.drawString(100, 680, "I -- CARACTERISTIQUES DU CENTRE")
-    pdf.drawString(100, 660, f"Dénomination: {center.nom}")
-    pdf.drawString(100, 640, f"Adresse: {center.sub_domain}.localhost:8000")
-    pdf.drawString(100, 620, f"Tél: {center.tel}")
-
-    pdf.drawString(100, 600, "II -- RESSOURCES HUMAINES")
-    pdf.drawString(100, 580, "1 -- Personnel Médical")
-
-    y = 560
-    pdf.drawString(100, y, "Technical Staff:")
+    draw_line("République Tunisienne")
+    draw_line("Ministère de la Santé")
+    draw_line("Direction de la Réglementation et du Contrôle des Professions de Santé")
+    draw_line("RAPPORT D'ACTIVITE MEDICALE")
+    draw_line("DES CENTRES D'HEMODIALYSE")
+    draw_line("Semestre: 2, Année: 2021")
+    draw_line("")
+    draw_line("I -- CARACTERISTIQUES DU CENTRE")
+    draw_line(f"Dénomination: {center.nom}")
+    draw_line(f"Adresse: {center.sub_domain}.localhost:8000")
+    draw_line(f"Tél: {center.tel}")
+    draw_line("")
+    draw_line("II -- RESSOURCES HUMAINES")
+    draw_line("1 -- Personnel Technique:")
     for staff in technical_staff:
-        y -= 20
-        pdf.drawString(120, y, f"- {staff.nom} {staff.prenom} ({staff.qualification})")
-
-    y -= 20
-    pdf.drawString(100, y, "Medical Staff:")
+        draw_line(f"- {staff.nom} {staff.prenom} ({staff.qualification})", x=120)
+    draw_line("2 -- Personnel Médical:")
     for staff in medical_staff:
-        y -= 20
-        pdf.drawString(120, y, f"- {staff.nom} {staff.prenom} ({staff.cnom})")
-
-    y -= 20
-    pdf.drawString(100, y, "Paramedical Staff:")
+        draw_line(f"- {staff.nom} {staff.prenom} ({staff.cnom})", x=120)
+    draw_line("3 -- Personnel Paramédical:")
     for staff in paramedical_staff:
-        y -= 20
-        pdf.drawString(120, y, f"- {staff.nom} {staff.prenom} ({staff.qualification})")
+        draw_line(f"- {staff.nom} {staff.prenom} ({staff.qualification})", x=120)
 
-    # Finalize the PDF
     pdf.showPage()
     pdf.save()
-
-    # Get the PDF content and return it as a response
     buffer.seek(0)
-    response = HttpResponse(buffer, content_type='application/pdf')
-    response['Content-Disposition'] = 'attachment; filename="report.pdf"'
-    return response
+    return HttpResponse(buffer, content_type='application/pdf', headers={
+        'Content-Disposition': 'attachment; filename="report.pdf"'
+    })
 
-# View to display Center details (only for subdomains)
+
+# View to show current Center and staff details
 def center_detail(request):
-    center = request.tenant  # Get the current tenant from the middleware
-
+    center = request.tenant
     if not center:
-        return render(request, 'centers/404.html', status=404)  # Handle missing tenant
+        return render(request, 'centers/404.html', status=404)
 
-    # Get all staff members associated with this Center
-    technical_staff = center.technicalstaff_staff.all()
-    medical_staff = center.medicalstaff_staff.all()
-    paramedical_staff = center.paramedicalstaff_staff.all()
-
-    context = {
+    return render(request, 'centers/center_detail.html', {
         'center': center,
-        'technical_staff': technical_staff,
-        'medical_staff': medical_staff,
-        'paramedical_staff': paramedical_staff,
-    }
-    return render(request, 'centers/center_detail.html', context)
+        'technical_staff': center.technicalstaff_staff.all(),
+        'medical_staff': center.medicalstaff_staff.all(),
+        'paramedical_staff': center.paramedicalstaff_staff.all(),
+    })
 
-# View to add Staff for a Center (only for subdomains)
+
+# Add staff (technical, medical, paramedical) to current Center
 def add_staff(request):
-    center = request.tenant  # Get the current tenant from the middleware
-
+    center = request.tenant
     if not center:
-        return render(request, 'centers/404.html', status=404)  # Handle missing tenant
+        return render(request, 'centers/404.html', status=404)
 
     if request.method == 'POST':
-        tech_form = TechnicalStaffForm(request.POST)
-        med_form = MedicalStaffForm(request.POST)
-        para_form = ParamedicalStaffForm(request.POST)
+        tech_form = TechnicalStaffForm(request.POST, prefix='tech')
+        med_form = MedicalStaffForm(request.POST, prefix='med')
+        para_form = ParamedicalStaffForm(request.POST, prefix='para')
 
         if tech_form.is_valid():
-            tech = tech_form.save(commit=False)
-            tech.center = center
-            tech.save()
+            staff = tech_form.save(commit=False)
+            staff.center = center
+            staff.save()
 
         if med_form.is_valid():
-            med = med_form.save(commit=False)
-            med.center = center
-            med.save()
+            staff = med_form.save(commit=False)
+            staff.center = center
+            staff.save()
 
         if para_form.is_valid():
-            para = para_form.save(commit=False)
-            para.center = center
-            para.save()
+            staff = para_form.save(commit=False)
+            staff.center = center
+            staff.save()
 
-        return redirect('center_detail')  # Redirect to the tenant's detail page
-
-    else:
-        tech_form = TechnicalStaffForm()
-        med_form = MedicalStaffForm()
-        para_form = ParamedicalStaffForm()
+        return redirect('center_detail')
 
     context = {
         'center': center,
-        'tech_form': tech_form,
-        'med_form': med_form,
-        'para_form': para_form,
+        'tech_form': TechnicalStaffForm(prefix='tech'),
+        'med_form': MedicalStaffForm(prefix='med'),
+        'para_form': ParamedicalStaffForm(prefix='para'),
     }
     return render(request, 'centers/add_staff.html', context)

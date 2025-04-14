@@ -79,7 +79,7 @@ WSGI_APPLICATION = 'Hemo.wsgi.application'
 DATABASES = {
    'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'Hemod',   
+        'NAME': 'Hemo',   
         'USER': 'root',             
         'PASSWORD': '',             
         'HOST': 'localhost',        
