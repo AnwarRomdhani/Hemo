@@ -2,12 +2,51 @@
 <html>
 <head>
     <title>Add Center</title>
+    <style>
+        .public-field {
+            display: none;
+        }
+    </style>
+    <script>
+        function togglePublicFields(checkbox) {
+            const publicFields = document.querySelectorAll('.public-field');
+            publicFields.forEach(field => {
+                field.style.display = checkbox.checked ? 'none' : 'block';
+                // Get the parent paragraph element and toggle its display
+                field.closest('p').style.display = checkbox.checked ? 'none' : 'block';
+            });
+        }
+
+        // Initialize on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            const privateCheckbox = document.querySelector('.center-type-toggle');
+            if (privateCheckbox) {
+                togglePublicFields(privateCheckbox);
+            }
+        });
+    </script>
 </head>
 <body>
     <h1>Add a New Center</h1>
     <form method="post">
         {% csrf_token %}
-        {{ form.as_p }}
+        
+        <!-- Basic Fields (always shown) -->
+        {{ form.sub_domain }}
+        {{ form.tel }}
+        {{ form.label }}
+        {{ form.state }}
+        {{ form.mail }}
+        {{ form.private }}
+        
+        <!-- Public Center Fields (initially hidden) -->
+        {{ form.government_code }}
+        {{ form.delegate_code }}
+        {{ form.name_delegate }}
+        {{ form.type_center }}
+        {{ form.code_type_hemo }}
+        {{ form.name_type_hemo }}
+        
         <button type="submit">Create Center</button>
     </form>
 </body>

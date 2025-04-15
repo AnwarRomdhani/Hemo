@@ -3,18 +3,27 @@ from django.db import models
 class Center(models.Model):
     sub_domain = models.CharField(max_length=100, unique=True)
     tel = models.IntegerField()
-    nom = models.CharField(max_length=100)
-    state = models.CharField(max_length=100)  # State where the center is located
-    private = models.BooleanField(default=False)  # False = public, True = private
-    mail = models.EmailField()  # Center's email address
+    label = models.CharField(max_length=100)  # Changed from 'nom' to 'label'
+    state = models.CharField(max_length=100)
+    private = models.BooleanField(default=False)
+    mail = models.EmailField()
+    
+    # Government-related fields
+    government_code = models.CharField(max_length=50, blank=True, null=True)
+    delegate_code = models.CharField(max_length=50, blank=True, null=True)
+    name_delegate = models.CharField(max_length=100, blank=True, null=True)
+    
+    # Public center specific fields
+    type_center = models.CharField(max_length=100, blank=True, null=True)
+    code_type_hemo = models.CharField(max_length=50, blank=True, null=True)
+    name_type_hemo = models.CharField(max_length=100, blank=True, null=True)
 
     def save(self, *args, **kwargs):
-        # Ensure subdomain is lowercase and no spaces
         self.sub_domain = self.sub_domain.lower().replace(" ", "-")
         super().save(*args, **kwargs)
 
     def __str__(self):
-        return f"{self.nom} ({self.sub_domain}.localhost:8000)"
+        return f"{self.label} ({self.sub_domain}.localhost:8000)"
 
 class Person(models.Model):
     nom = models.CharField(max_length=100)
