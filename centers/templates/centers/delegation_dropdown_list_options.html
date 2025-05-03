@@ -1,0 +1,4 @@
+<option value="">---------</option>
+{% for delegation in delegations %}
+<option value="{{ delegation.pk }}">{{ delegation.name }}</option>
+{% endfor %}

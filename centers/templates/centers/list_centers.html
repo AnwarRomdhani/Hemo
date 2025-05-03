@@ -1,0 +1,86 @@
+<!-- centers/templates/centers/list_centers.html -->
+<!DOCTYPE html>
+<html>
+<head>
+    <title>All Hemodialysis Centers</title>
+    <meta charset="UTF-8">
+    <style>
+        .center-list {
+            margin: 20px;
+            font-family: Arial, sans-serif;
+        }
+        .center-card {
+            border: 1px solid #ddd;
+            padding: 15px;
+            margin-bottom: 10px;
+            border-radius: 5px;
+            background-color: #f9f9f9;
+        }
+        .center-card h3 {
+            margin-top: 0;
+            color: #2c3e50;
+        }
+        .center-link {
+            color: #3498db;
+            text-decoration: none;
+        }
+        .center-link:hover {
+            text-decoration: underline;
+        }
+        .add-center {
+            margin: 20px 0;
+        }
+        .btn {
+            display: inline-block;
+            padding: 10px 15px;
+            background-color: #3498db;
+            color: white;
+            text-decoration: none;
+            border-radius: 4px;
+            font-weight: bold;
+        }
+        .btn:hover {
+            background-color: #2980b9;
+        }
+        .field-label {
+            font-weight: bold;
+            color: #34495e;
+        }
+    </style>
+</head>
+<body>
+    <div class="center-list">
+        <h1>Hemodialysis Centers</h1>
+        
+        <div class="add-center">
+            <a href="{% url 'add_center' %}" class="btn">Add New Center</a>
+        </div>
+
+        {% if centers %}
+            {% for center in centers %}
+                <div class="center-card">
+                    <h3>{{ center.label }}</h3>
+                    <p><span class="field-label">Subdomain:</span> 
+                        <a href="http://{{ center.sub_domain }}.localhost:8000" class="center-link">
+                            {{ center.sub_domain }}.localhost:8000
+                        </a>
+                    </p>
+                    <p><span class="field-label">Center Code:</span> {{ center.center_code }}</p>
+                    <p><span class="field-label">Address:</span> {{ center.adresse|default:"Not provided" }}</p>
+                    <p><span class="field-label">Type:</span> {{ center.type_center }}</p>
+                    <p><span class="field-label">Hemodialysis Code:</span> {{ center.code_type_hemo|default:"None" }}</p>
+                    <p><span class="field-label">Hemodialysis Type:</span> {{ center.name_type_hemo|default:"None" }}</p>
+                    <p><span class="field-label">Governorate:</span> {{ center.governorate.name }}</p>
+                    <p><span class="field-label">Delegation:</span> {% if center.delegation %}{{ center.delegation.name }}{% else %}Not specified{% endif %}</p>
+                    <p><span class="field-label">Contact:</span> 
+                        Tel: {{ center.tel|default:"Not provided" }} | 
+                        Email: {{ center.mail|default:"Not provided" }}
+                    </p>
+                </div>
+            {% endfor %}
+        {% else %}
+            <p>No centers found.</p>
+        {% endif %}
+    </div>
+</body>
+</html>

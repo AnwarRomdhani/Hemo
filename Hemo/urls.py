@@ -16,10 +16,11 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path,include
-from centers.views import add_center
+from centers.views import add_center , list_centers
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('add_center/', add_center, name='add_center'),
     path('centers/', include('centers.urls')),
+    path('', list_centers, name='list_centers'),
 ]

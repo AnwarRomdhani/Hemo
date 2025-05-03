@@ -1,53 +1,326 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Add Center</title>
+    <title>Add New Center</title>
     <style>
-        .public-field {
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 20px;
+            color: #333;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #f9f9f9;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #2c3e50;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        input[type="text"],
+        input[type="email"],
+        select {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        .non-private-field {
             display: none;
         }
-    </style>
-    <script>
-        function togglePublicFields(checkbox) {
-            const publicFields = document.querySelectorAll('.public-field');
-            publicFields.forEach(field => {
-                field.style.display = checkbox.checked ? 'none' : 'block';
-                // Get the parent paragraph element and toggle its display
-                field.closest('p').style.display = checkbox.checked ? 'none' : 'block';
-            });
+        .non-private-section {
+            margin-top: 20px;
+            padding-top: 15px;
+            border-top: 1px solid #eee;
         }
+        button {
+            background: #3498db;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            font-size: 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 15px;
+        }
+        button:hover {
+            background: #2980b9;
+        }
+        .help-text {
+            font-size: 12px;
+            color: #666;
+            margin-top: 4px;
+        }
+        .errorlist {
+            color: red;
+            font-size: 12px;
+            margin-top: 4px;
+            list-style: none;
+            padding: 0;
+        }
+        .error-message {
+            color: red;
+            font-size: 14px;
+            margin-bottom: 10px;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Add New Center</h1>
+        <form method="post">
+            {% csrf_token %}
+            
+            <!-- Display non-field errors -->
+            {% if form.non_field_errors %}
+                <div class="error-message">
+                    {{ form.non_field_errors }}
+                </div>
+            {% endif %}
+            
+            <!-- Basic Information -->
+            <div class="form-group">
+                <label for="{{ form.sub_domain.id_for_label }}">Subdomain</label>
+                {{ form.sub_domain }}
+                {% if form.sub_domain.errors %}
+                    <ul class="errorlist">
+                        {% for error in form.sub_domain.errors %}
+                            <li>{{ error }}</li>
+                        {% endfor %}
+                    </ul>
+                {% endif %}
+                <p class="help-text">Will be used in URL (e.g., 'center1' for center1.localhost:8000)</p>
+            </div>
+            
+            <div class="form-group">
+                <label for="{{ form.label.id_for_label }}">Center Name</label>
+                {{ form.label }}
+                {% if form.label.errors %}
+                    <ul class="errorlist">
+                        {% for error in form.label.errors %}
+                            <li>{{ error }}</li>
+                        {% endfor %}
+                    </ul>
+                {% endif %}
+            </div>
+            
+            <div class="form-group">
+                <label for="{{ form.tel.id_for_label }}">Phone Number</label>
+                {{ form.tel }}
+                {% if form.tel.errors %}
+                    <ul class="errorlist">
+                        {% for error in form.tel.errors %}
+                            <li>{{ error }}</li>
+                        {% endfor %}
+                    </ul>
+                {% endif %}
+            </div>
+            
+            <div class="form-group">
+                <label for="{{ form.mail.id_for_label }}">Email</label>
+                {{ form.mail }}
+                {% if form.mail.errors %}
+                    <ul class="errorlist">
+                        {% for error in form.mail.errors %}
+                            <li>{{ error }}</li>
+                        {% endfor %}
+                    </ul>
+                {% endif %}
+            </div>
+            
+            <div class="form-group">
+                <label for="{{ form.adresse.id_for_label }}">Address</label>
+                {{ form.adresse }}
+                {% if form.adresse.errors %}
+                    <ul class="errorlist">
+                        {% for error in form.adresse.errors %}
+                            <li>{{ error }}</li>
+                        {% endfor %}
+                    </ul>
+                {% endif %}
+                <p class="help-text">Physical address of the center (optional)</p>
+            </div>
+            
+            <div class="form-group">
+                <label for="{{ form.center_code.id_for_label }}">Center Code</label>
+                {{ form.center_code }}
+                {% if form.center_code.errors %}
+                    <ul class="errorlist">
+                        {% for error in form.center_code.errors %}
+                            <li>{{ error }}</li>
+                        {% endfor %}
+                    </ul>
+                {% endif %}
+                <p class="help-text">Optional numeric code for the center (e.g., 1001)</p>
+            </div>
+            
+            <div class="form-group">
+                <label for="{{ form.type_center.id_for_label }}">Center Type</label>
+                {{ form.type_center }}
+                {% if form.type_center.errors %}
+                    <ul class="errorlist">
+                        {% for error in form.type_center.errors %}
+                            <li>{{ error }}</li>
+                        {% endfor %}
+                    </ul>
+                {% endif %}
+                <p class="help-text">Select the type of center</p>
+            </div>
+            
+            <div class="form-group">
+                <label for="{{ form.governorate.id_for_label }}">Governorate</label>
+                {{ form.governorate }}
+                {% if form.governorate.errors %}
+                    <ul class="errorlist">
+                        {% for error in form.governorate.errors %}
+                            <li>{{ error }}</li>
+                        {% endfor %}
+                    </ul>
+                {% endif %}
+            </div>
+            
+            <div class="form-group">
+                <label for="{{ form.delegation.id_for_label }}">Delegation</label>
+                {{ form.delegation }}
+                {% if form.delegation.errors %}
+                    <ul class="errorlist">
+                        {% for error in form.delegation.errors %}
+                            <li>{{ error }}</li>
+                        {% endfor %}
+                    </ul>
+                {% endif %}
+            </div>
+            
+            <!-- Non-Private Center Fields -->
+            <div class="non-private-section">
+                <div class="form-group non-private-field">
+                    <label for="{{ form.code_type_hemo.id_for_label }}">Hemodialysis Code</label>
+                    {{ form.code_type_hemo }}
+                    {% if form.code_type_hemo.errors %}
+                        <ul class="errorlist">
+                            {% for error in form.code_type_hemo.errors %}
+                                <li>{{ error }}</li>
+                            {% endfor %}
+                        </ul>
+                    {% endif %}
+                    <p class="help-text">Required for non-private centers</p>
+                </div>
+                
+                <div class="form-group non-private-field">
+                    <label for="{{ form.name_type_hemo.id_for_label }}">Hemodialysis Type Name</label>
+                    {{ form.name_type_hemo }}
+                    {% if form.name_type_hemo.errors %}
+                        <ul class="errorlist">
+                            {% for error in form.name_type_hemo.errors %}
+                                <li>{{ error }}</li>
+                            {% endfor %}
+                        </ul>
+                    {% endif %}
+                    <p class="help-text">Automatically set based on Hemodialysis Code</p>
+                </div>
+            </div>
+            
+            <button type="submit">Create Center</button>
+        </form>
+    </div>
 
-        // Initialize on page load
+    <script>
         document.addEventListener('DOMContentLoaded', function() {
-            const privateCheckbox = document.querySelector('.center-type-toggle');
-            if (privateCheckbox) {
-                togglePublicFields(privateCheckbox);
+            const governorateSelect = document.getElementById('id_governorate');
+            const delegationSelect = document.getElementById('id_delegation');
+            const typeCenterSelect = document.getElementById('id_type_center');
+            const codeTypeHemoSelect = document.getElementById('id_code_type_hemo');
+            const nameTypeHemoSelect = document.getElementById('id_name_type_hemo');
+            const nonPrivateFields = document.querySelectorAll('.non-private-field');
+            const nonPrivateInputs = document.querySelectorAll('.non-private-field select');
+
+            function toggleNonPrivateFields() {
+                if (!typeCenterSelect) {
+                    console.error('Type center select not found');
+                    return;
+                }
+                const isPrivate = typeCenterSelect.value === 'PRIVATE';
+                nonPrivateFields.forEach(field => {
+                    field.style.display = isPrivate ? 'none' : 'block';
+                });
+                nonPrivateInputs.forEach(input => {
+                    input.disabled = isPrivate;
+                });
+                if (isPrivate) {
+                    codeTypeHemoSelect.value = '';
+                    nameTypeHemoSelect.value = '';
+                }
+            }
+
+            function updateNameTypeHemo() {
+                if (!codeTypeHemoSelect || !nameTypeHemoSelect) {
+                    console.error('Hemo select fields not found');
+                    return;
+                }
+                const code = codeTypeHemoSelect.value;
+                const mapping = {
+                    'MD2200': 'SERVICE HEMODIALYSE',
+                    'UNITE': 'UNITE HEMODIALYSE',
+                    'UNITEP': 'UNITE HEMODIALYSE PEDIATRIQUE'
+                };
+                nameTypeHemoSelect.value = mapping[code] || '';
+            }
+
+            if (typeCenterSelect) {
+                toggleNonPrivateFields();
+                typeCenterSelect.addEventListener('change', toggleNonPrivateFields);
+            }
+
+            if (codeTypeHemoSelect) {
+                updateNameTypeHemo();
+                codeTypeHemoSelect.addEventListener('change', updateNameTypeHemo);
+            }
+
+            if (governorateSelect && delegationSelect) {
+                governorateSelect.addEventListener('change', function() {
+                    const governorateId = this.value;
+                    const url = "{% url 'load_delegations' %}";
+                    delegationSelect.innerHTML = '<option value="">---------</option>';
+                    delegationSelect.disabled = true;
+                    delegationSelect.value = '';
+                    if (governorateId) {
+                        fetch(`${url}?governorate_id=${governorateId}`)
+                            .then(response => {
+                                if (!response.ok) throw new Error('Network response was not ok');
+                                return response.text();
+                            })
+                            .then(data => {
+                                delegationSelect.innerHTML = data;
+                                delegationSelect.disabled = false;
+                            })
+                            .catch(error => {
+                                console.error('Error loading delegations:', error);
+                                delegationSelect.innerHTML = '<option value="">Error loading delegations</option>';
+                            });
+                    }
+                });
+
+                if (governorateSelect.value) {
+                    governorateSelect.dispatchEvent(new Event('change'));
+                }
             }
         });
     </script>
-</head>
-<body>
-    <h1>Add a New Center</h1>
-    <form method="post">
-        {% csrf_token %}
-        
-        <!-- Basic Fields (always shown) -->
-        {{ form.sub_domain }}
-        {{ form.tel }}
-        {{ form.label }}
-        {{ form.state }}
-        {{ form.mail }}
-        {{ form.private }}
-        
-        <!-- Public Center Fields (initially hidden) -->
-        {{ form.government_code }}
-        {{ form.delegate_code }}
-        {{ form.name_delegate }}
-        {{ form.type_center }}
-        {{ form.code_type_hemo }}
-        {{ form.name_type_hemo }}
-        
-        <button type="submit">Create Center</button>
-    </form>
 </body>
 </html>

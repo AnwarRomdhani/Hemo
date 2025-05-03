@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Add Medical Staff - {{ center.label }}</title>
+</head>
+<body>
+    <h1>Add Medical Staff to {{ center.label }}</h1>
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Add Medical Staff</button>
+    </form>
+    <p><a href="{% url 'center_detail' %}">Back to Center</a></p>
+</body>
+</html>

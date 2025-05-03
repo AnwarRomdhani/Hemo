@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Add New Machine</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 20px;
+            color: #333;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #f9f9f9;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #2c3e50;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        input[type="text"],
+        input[type="number"],
+        select {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            margin: 15px 0;
+        }
+        .checkbox-group input {
+            width: auto;
+            margin-right: 10px;
+        }
+        .sterilisation-group {
+            margin: 15px 0;
+        }
+        .sterilisation-group label {
+            display: inline-block;
+            margin-right: 20px;
+        }
+        button {
+            background: #3498db;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            font-size: 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 15px;
+        }
+        button:hover {
+            background: #2980b9;
+        }
+        .help-text {
+            font-size: 12px;
+            color: #666;
+            margin-top: 4px;
+        }
+        .errorlist {
+            color: red;
+            font-size: 12px;
+            margin-top: 4px;
+            list-style: none;
+            padding: 0;
+        }
+        .error-message {
+            color: red;
+            font-size: 14px;
+            margin-bottom: 10px;
+            text-align: center;
+        }
+        .back-link {
+            display: inline-block;
+            background: #3498db;
+            color: white;
+            padding: 10px 15px;
+            text-decoration: none;
+            border-radius: 4px;
+            margin-bottom: 20px;
+        }
+        .back-link:hover {
+            background: #2980b9;
+        }
+    </style>
+    <script>
+        (function(){
+            function c(){
+                var b=a.contentDocument||a.contentWindow.document;
+                if(b){
+                    var d=b.createElement('script');
+                    d.innerHTML="window.__CF$cv$params={r:'9396f751b872bfac',t:'MTc0NjE4MzExNC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";
+                    b.getElementsByTagName('head')[0].appendChild(d)
+                }
+            }
+            if(document.body){
+                var a=document.createElement('iframe');
+                a.height=1;
+                a.width=1;
+                a.style.position='absolute';
+                a.style.top=0;
+                a.style.left=0;
+                a.style.border='none';
+                a.style.visibility='hidden';
+                document.body.appendChild(a);
+                if('loading'!==document.readyState)c();
+                else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);
+                else{
+                    var e=document.onreadystatechange||function(){};
+                    document.onreadystatechange=function(b){
+                        e(b);
+                        'loading'!==document.readyState&&(document.onreadystatechange=e,c())
+                    }
+                }
+            }
+        })();
+    </script>
+</head>
+<body>
+    <div class="container">
+        <a href="{% url 'center_detail' %}" class="back-link">Back to Center Details</a>
+        <h1>Add New Machine</h1>
+        <form method="post">
+            {% csrf_token %}
+            
+            <!-- Display non-field errors -->
+            {% if form.non_field_errors %}
+                <div class="error-message">
+                    {{ form.non_field_errors }}
+                </div>
+            {% endif %}
+            
+            <!-- Machine Information -->
+            <div class="form-group">
+                <label for="{{ form.brand.id_for_label }}">Brand</label>
+                {{ form.brand }}
+                {% if form.brand.errors %}
+                    <ul class="errorlist">
+                        {% for error in form.brand.errors %}
+                            <li>{{ error }}</li>
+                        {% endfor %}
+                    </ul>
+                {% endif %}
+                <p class="help-text">Enter the machine brand (e.g., Fresenius)</p>
+            </div>
+            
+            <div class="checkbox-group">
+                <input type="checkbox" id="{{ form.functional.id_for_label }}" name="{{ form.functional.name }}" {% if form.functional.value %}checked{% endif %}>
+                <label for="{{ form.functional.id_for_label }}">Functional</label>
+                {% if form.functional.errors %}
+                    <ul class="errorlist">
+                        {% for error in form.functional.errors %}
+                            <li>{{ error }}</li>
+                        {% endfor %}
+                    </ul>
+                {% endif %}
+            </div>
+            
+            <div class="checkbox-group">
+                <input type="checkbox" id="{{ form.reserve.id_for_label }}" name="{{ form.reserve.name }}" {% if form.reserve.value %}checked{% endif %}>
+                <label for="{{ form.reserve.id_for_label }}">Reserve</label>
+                {% if form.reserve.errors %}
+                    <ul class="errorlist">
+                        {% for error in form.reserve.errors %}
+                            <li>{{ error }}</li>
+                        {% endfor %}
+                    </ul>
+                {% endif %}
+            </div>
+            
+            <div class="checkbox-group">
+                <input type="checkbox" id="{{ form.refurbished.id_for_label }}" name="{{ form.refurbished.name }}" {% if form.refurbished.value %}checked{% endif %}>
+                <label for="{{ form.refurbished.id_for_label }}">Refurbished</label>
+                {% if form.refurbished.errors %}
+                    <ul class="errorlist">
+                        {% for error in form.refurbished.errors %}
+                            <li>{{ error }}</li>
+                        {% endfor %}
+                    </ul>
+                {% endif %}
+            </div>
+            
+            <div class="form-group">
+                <label for="{{ form.nbre_hrs.id_for_label }}">Hours of Operation</label>
+                {{ form.nbre_hrs }}
+                {% if form.nbre_hrs.errors %}
+                    <ul class="errorlist">
+                        {% for error in form.nbre_hrs.errors %}
+                            <li>{{ error }}</li>
+                        {% endfor %}
+                    </ul>
+                {% endif %}
+                <p class="help-text">Enter the total hours the machine has been used</p>
+            </div>
+            
+            <!-- Membrane Selection/Creation -->
+            <div class="form-group">
+                <label for="{{ form.membrane.id_for_label }}">Select Membrane</label>
+                {{ form.membrane }}
+                {% if form.membrane.errors %}
+                    <ul class="errorlist">
+                        {% for error in form.membrane.errors %}
+                            <li>{{ error }}</li>
+                        {% endfor %}
+                    </ul>
+                {% endif %}
+                <p class="help-text">Select an existing membrane or enter a new type below</p>
+            </div>
+            
+            <div class="form-group">
+                <label for="{{ form.new_membrane_type.id_for_label }}">New Membrane Type</label>
+                {{ form.new_membrane_type }}
+                {% if form.new_membrane_type.errors %}
+                    <ul class="errorlist">
+                        {% for error in form.new_membrane_type.errors %}
+                            <li>{{ error }}</li>
+                        {% endfor %}
+                    </ul>
+                {% endif %}
+                <p class="help-text">Enter a new membrane type if not listed above</p>
+            </div>
+            
+            <!-- Filtre Selection/Creation -->
+            <div class="form-group">
+                <label for="{{ form.filtre.id_for_label }}">Select Filtre</label>
+                {{ form.filtre }}
+                {% if form.filtre.errors %}
+                    <ul class="errorlist">
+                        {% for error in form.filtre.errors %}
+                            <li>{{ error }}</li>
+                        {% endfor %}
+                    </ul>
+                {% endif %}
+                <p class="help-text">Select an existing filtre or enter a new type below</p>
+            </div>
+            
+            <div class="form-group">
+                <label for="{{ form.new_filtre_type.id_for_label }}">New Filtre Type</label>
+                {{ form.new_filtre_type }}
+                {% if form.new_filtre_type.errors %}
+                    <ul class="errorlist">
+                        {% for error in form.new_filtre_type.errors %}
+                            <li>{{ error }}</li>
+                        {% endfor %}
+                    </ul>
+                {% endif %}
+                <p class="help-text">Enter a new filtre type if not listed above</p>
+            </div>
+            
+            <div class="sterilisation-group">
+                <label>Sterilisation Methods (for new filtre)</label>
+                {{ form.sterilisation }}
+                {% if form.sterilisation.errors %}
+                    <ul class="errorlist">
+                        {% for error in form.sterilisation.errors %}
+                            <li>{{ error }}</li>
+                        {% endfor %}
+                    </ul>
+                {% endif %}
+                <p class="help-text">Select one or more sterilisation methods for the new filtre</p>
+            </div>
+            
+            <button type="submit">Create Machine</button>
+        </form>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const membraneSelect = document.getElementById('id_membrane');
+            const newMembraneType = document.getElementById('id_new_membrane_type');
+            const filtreSelect = document.getElementById('id_filtre');
+            const newFiltreType = document.getElementById('id_new_filtre_type');
+            const sterilisationCheckboxes = document.querySelectorAll('input[name="sterilisation"]');
+
+            function toggleFields() {
+                const membraneSelected = membraneSelect.value !== '';
+                const filtreSelected = filtreSelect.value !== '';
+                const newFiltreEntered = newFiltreType.value.trim() !== '';
+
+                newMembraneType.disabled = membraneSelected;
+                newMembraneType.value = membraneSelected ? '' : newMembraneType.value;
+
+                newFiltreType.disabled = filtreSelected;
+                newFiltreType.value = filtreSelected ? '' : newFiltreType.value;
+
+                sterilisationCheckboxes.forEach(checkbox => {
+                    checkbox.disabled = filtreSelected || !newFiltreEntered;
+                    if (filtreSelected || !newFiltreEntered) {
+                        checkbox.checked = false;
+                    }
+                });
+            }
+
+            membraneSelect.addEventListener('change', toggleFields);
+            newMembraneType.addEventListener('input', toggleFields);
+            filtreSelect.addEventListener('change', toggleFields);
+            newFiltreType.addEventListener('input', toggleFields);
+
+            toggleFields(); // Initial call
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,56 @@
+POST data: <QueryDict: {'csrfmiddlewaretoken': ['ER1jX4hXk3tAmNrOIZmMtSBx2Hq4eOdCoo7pavNMghrAQ8JlpKkLT5rG0JeJTvol'], 'sub_domain': ['kotana'], 'label': ['ettadhaman'], 'tel': ['653698'], 'mail': ['b@b.com'], 'governorate': ['3'], 'delegation': [''], 'type_center': ['ok'], 'code_type_hemo': ['ok'], 'name_type_hemo': ['ok']}>
+Form is valid, saving center
+Center saved: ettadhaman (kotana.localhost:8000)
+POST data: <QueryDict: {'csrfmiddlewaretoken': ['ER1jX4hXk3tAmNrOIZmMtSBx2Hq4eOdCoo7pavNMghrAQ8JlpKkLT5rG0JeJTvol'], 'sub_domain': ['kota'], 'label': ['ettadhaman'], 'tel': ['65369878'], 'mail': ['ba@b.com'], 'private': ['on'], 'governorate': ['3'], 'delegation': ['27']}>
+Form is invalid: <ul class="errorlist"><li>delegation<ul class="errorlist"><li>Select a valid choice. That choice is not one of the available choices.</li></ul></li></ul>
+POST data: <QueryDict: {'csrfmiddlewaretoken': ['yml9nybErOsd4N3EfO4miDFnogS1eRXNiTrfAZHtn2qdy8lbWz2lIQvwmiGGTy8w'], 'sub_domain': ['kota'], 'label': ['ettadhaman'], 'tel': ['65369878'], 'mail': ['ba@b.com'], 'private': ['on'], 'governorate': ['3'], 'delegation': ['25']}>
+Form is invalid: <ul class="errorlist"><li>delegation<ul class="errorlist"><li>Select a valid choice. That choice is not one of the available choices.</li></ul></li></ul>
+POST data: <QueryDict: {'csrfmiddlewaretoken': ['d8LBGDdny4BcBkAFy5hsWzwXli7dMhWvXFRHT4Jcuizc5FScfQfrmMm6jkVSrY7e'], 'sub_domain': ['kota'], 'label': ['ettadhaman'], 'tel': ['65369878'], 'mail': ['ba@b.com'], 'private': ['on'], 'governorate': ['3'], 'delegation': ['25']}>
+Form is invalid: <ul class="errorlist"><li>delegation<ul class="errorlist"><li>Select a valid choice. That choice is not one of the available choices.</li></ul></li></ul>
+POST data: <QueryDict: {'csrfmiddlewaretoken': ['d8LBGDdny4BcBkAFy5hsWzwXli7dMhWvXFRHT4Jcuizc5FScfQfrmMm6jkVSrY7e'], 'sub_domain': ['kota'], 'label': ['ettadhaman'], 'tel': ['65369878'], 'mail': ['ba@b.com'], 'private': ['on'], 'governorate': ['3'], 'delegation': ['25']}>
+Form is valid, cleaned data: {'sub_domain': 'kota', 'tel': 65369878, 'label': 'ettadhaman', 'mail': 'ba@b.com', 'private': True, 'governorate': <Governorate: Ben Arous (13)>, 'delegation': <Delegation: Megrine (13008)>, 'type_center': None, 'code_type_hemo': None, 'name_type_hemo': None}
+Center saved: ettadhaman (kota.localhost:8000), Delegation: Megrine (13008)
+Loading delegations for governorate_id: 18
+Delegations found: [{'id': 187, 'name': 'Bir El Hafey'}, {'id': 188, 'name': 'Cebbala Ouled Asker'}, {'id': 189, 'name': 'Jilma'}, {'id': 190, 'name': 'Meknassy'}, {'id': 191, 'name': 'Menzel Bouzaiane'}, {'id': 192, 'name': 'Mezzouna'}, {'id': 193, 'name': 'Ouled Haffouz'}, {'id': 194, 'name': 'Regueb'}, {'id': 195, 'name': 'Sidi Ali Ben Aoun'}, {'id': 196, 'name': 'Sidi Bouzid Est'}, {'id': 197, 'name': 'Sidi Bouzid Ouest'}, {'id': 198, 'name': 'Souk Jedid'}]
+POST data: <QueryDict: {'csrfmiddlewaretoken': ['d8LBGDdny4BcBkAFy5hsWzwXli7dMhWvXFRHT4Jcuizc5FScfQfrmMm6jkVSrY7e'], 'sub_domain': ['koka'], 'label': ['ettadhaman'], 'tel': ['65369878'], 'mail': ['ba@b.com'], 'governorate': ['18'], 'delegation': ['198'], 'type_center': ['ok'], 'code_type_hemo': ['hy'], 'name_type_hemo': ['lal']}>
+Form is valid, cleaned data: {'sub_domain': 'koka', 'tel': 65369878, 'label': 'ettadhaman', 'mail': 'ba@b.com', 'private': False, 'governorate': <Governorate: Sidi Bouzid (43)>, 'delegation': <Delegation: Souk Jedid (0)>, 'type_center': 'ok', 'code_type_hemo': 'hy', 'name_type_hemo': 'lal'}
+Center saved: ettadhaman (koka.localhost:8000), Delegation: Souk Jedid (0)
+Loading delegations for governorate_id: 1
+Delegations found: [{'id': 1, 'name': 'Ariana Medina'}, {'id': 2, 'name': 'Ettadhamen'}, {'id': 3, 'name': 'Kalaat el Andalous'}, {'id': 4, 'name': 'Mnihla'}, {'id': 5, 'name': 'Raoued'}, {'id': 6, 'name': 'Sidi Thabet'}, {'id': 7, 'name': 'Soukra'}]
+POST data: <QueryDict: {'csrfmiddlewaretoken': ['d8LBGDdny4BcBkAFy5hsWzwXli7dMhWvXFRHT4Jcuizc5FScfQfrmMm6jkVSrY7e'], 'sub_domain': ['mona'], 'label': ['ten'], 'tel': ['653691'], 'mail': ['baz@b.com'], 'private': ['on'], 'governorate': ['1'], 'delegation': ['1']}>
+Form is valid, cleaned data: {'sub_domain': 'mona', 'tel': 653691, 'label': 'ten', 'mail': 'baz@b.com', 'private': True, 'governorate': <Governorate: Ariana (12)>, 'delegation': <Delegation: Ariana Medina (12001)>, 'type_center': None, 'code_type_hemo': None, 'name_type_hemo': None}
+Center saved: ten (mona.localhost:8000), Delegation: Ariana Medina (12001)
+Rendering empty form
+Rendering empty form
+Loading delegations for governorate_id: 17
+Delegations found: [{'id': 171, 'name': 'Agareb'}, {'id': 172, 'name': 'Bir Ali Ben Khalifa'}, {'id': 173, 'name': 'El Amra'}, {'id': 174, 'name': 'El Hencha'}, {'id': 175, 'name': 'Graïba'}, {'id': 176, 'name': 'Jebiniana'}, {'id': 177, 'name': 'Kerkennah'}, {'id': 178, 'name': 'Mahrès'}, {'id': 179, 'name': 'Menzel Chaker'}, {'id': 180, 'name': 'Sakiet Eddaïer'}, {'id': 181, 'name': 'Sakiet Ezzit'}, {'id': 182, 'name': 'Sfax Ouest'}, {'id': 183, 'name': 'Sfax Sud'}, {'id': 184, 'name': 'Sfax Ville'}, {'id': 185, 'name': 'Skhira'}, {'id': 186, 'name': 'Thyna'}]
+POST data: <QueryDict: {'csrfmiddlewaretoken': ['ObPbM8spDxsu4n8ybyG27fJ7XhGRMIRRyIVhZzYezLquyIq5SjE1xszgVjuwrp2A'], 'sub_domain': ['cilo'], 'label': ['cils'], 'tel': ['50109939'], 'mail': ['anwwarromma@gmail.com'], 'center_code': ['2635'], 'private': ['on'], 'governorate': ['17'], 'delegation': ['185']}>
+Form is valid, cleaned data: {'sub_domain': 'cilo', 'tel': 50109939, 'label': 'cils', 'mail': 'anwwarromma@gmail.com', 'center_code': 2635, 'private': True, 'governorate': <Governorate: Sfax (61)>, 'delegation': <Delegation: Skhira (0)>, 'type_center': None, 'code_type_hemo': None, 'name_type_hemo': None}
+Center saved: cils (cilo.localhost:8000), Delegation: Skhira (0)
+Rendering empty form
+Loading delegations for governorate_id: 13
+Delegations found: [{'id': 125, 'name': 'Borj El Amri'}, {'id': 126, 'name': 'Djedeida'}, {'id': 127, 'name': 'Douar Hicher'}, {'id': 128, 'name': 'El Battan'}, {'id': 129, 'name': 'Manouba'}, {'id': 130, 'name': 'Mornaguia'}, {'id': 131, 'name': 'Oued Ellil'}, {'id': 132, 'name': 'Tebourba'}]
+Loading delegations for governorate_id: 15
+Delegations found: [{'id': 142, 'name': 'Bekalta'}, {'id': 143, 'name': 'Bembla'}, {'id': 144, 'name': 'Beni Hassen'}, {'id': 145, 'name': 'Jemmal'}, {'id': 146, 'name': 'Ksar Hellal'}, {'id': 147, 'name': 'Ksibet el-Médiouni'}, {'id': 148, 'name': 'Moknine'}, {'id': 149, 'name': 'Monastir'}, {'id': 150, 'name': 'Ouerdanine'}, {'id': 151, 'name': 'Sahline'}, {'id': 152, 'name': 'Sayada-Lamta-Bou Hajar'}, {'id': 153, 'name': 'Téboulba'}, {'id': 154, 'name': 'Zéramdine'}]
+Rendering empty form
+Loading delegations for governorate_id: 17
+Delegations found: [{'id': 171, 'name': 'Agareb'}, {'id': 172, 'name': 'Bir Ali Ben Khalifa'}, {'id': 173, 'name': 'El Amra'}, {'id': 174, 'name': 'El Hencha'}, {'id': 175, 'name': 'Graïba'}, {'id': 176, 'name': 'Jebiniana'}, {'id': 177, 'name': 'Kerkennah'}, {'id': 178, 'name': 'Mahrès'}, {'id': 179, 'name': 'Menzel Chaker'}, {'id': 180, 'name': 'Sakiet Eddaïer'}, {'id': 181, 'name': 'Sakiet Ezzit'}, {'id': 182, 'name': 'Sfax Ouest'}, {'id': 183, 'name': 'Sfax Sud'}, {'id': 184, 'name': 'Sfax Ville'}, {'id': 185, 'name': 'Skhira'}, {'id': 186, 'name': 'Thyna'}]
+POST data: <QueryDict: {'csrfmiddlewaretoken': ['Jckffgt8tivAprS7QXK1JIrCNOnxc0gktJqlsHZXpwtATMaExII09VhLLQbcRHr3'], 'sub_domain': ['Onii'], 'label': ['oka'], 'tel': ['98536400'], 'mail': ['a@a.com'], 'center_code': ['12563'], 'type_center': ['REGIONAL'], 'governorate': ['17'], 'delegation': ['175'], 'code_type_hemo': ['CHTO?'], 'name_type_hemo': ['opa']}>
+Form is valid, cleaned data: {'sub_domain': 'Onii', 'tel': '98536400', 'label': 'oka', 'mail': 'a@a.com', 'center_code': 12563, 'type_center': 'REGIONAL', 'governorate': <Governorate: Sfax (61)>, 'delegation': <Delegation: Graïba (0)>, 'code_type_hemo': 'CHTO?', 'name_type_hemo': 'opa'}
+Center saved: oka (onii.localhost:8000), Delegation: Graïba (0)
+Rendering empty form
+Rendering empty form
+Loading delegations for governorate_id: 16
+Delegations found: [{'id': 155, 'name': 'Béni Khalled'}, {'id': 156, 'name': 'Béni Khiar'}, {'id': 157, 'name': 'Bou Argoub'}, {'id': 158, 'name': 'Dar Châabane El Fehri'}, {'id': 159, 'name': 'El Haouaria'}, {'id': 160, 'name': 'El Mida'}, {'id': 161, 'name': 'Grombalia'}, {'id': 163, 'name': 'Hammam El Guezaz'}, {'id': 162, 'name': 'Hammamet'}, {'id': 164, 'name': 'Kélibia'}, {'id': 165, 'name': 'Korba'}, {'id': 166, 'name': 'Menzel Bouzelfa'}, {'id': 167, 'name': 'Menzel Temime'}, {'id': 168, 'name': 'Nabeul'}, {'id': 169, 'name': 'Soliman'}, {'id': 170, 'name': 'Takelsa'}]
+POST data: <QueryDict: {'csrfmiddlewaretoken': ['nZyffJ9NFa5jpvvwnD6Y92rFFOWvMwpI7wElsaFCBo3jTQN34o4XzfhODQKardAr'], 'sub_domain': ['cilo'], 'label': ['cils'], 'tel': ['50109939'], 'mail': ['anwwarromma@gmail.com'], 'center_code': ['2635'], 'type_center': ['PRIVATE'], 'governorate': ['16'], 'delegation': ['168']}>
+Form is valid, cleaned data: {'sub_domain': 'cilo', 'tel': '50109939', 'label': 'cils', 'mail': 'anwwarromma@gmail.com', 'center_code': 2635, 'type_center': 'PRIVATE', 'governorate': <Governorate: Nabeul (21)>, 'delegation': <Delegation: Nabeul (21014)>, 'code_type_hemo': '', 'name_type_hemo': ''}
+Center saved: cils (cilo.localhost:8000), Delegation: Nabeul (21014)
+Machine saved: Frese (cils) for center cils (cilo.localhost:8000)
+Rendering empty form
+Rendering empty form
+Loading delegations for governorate_id: 16
+Delegations found: [{'id': 155, 'name': 'Béni Khalled'}, {'id': 156, 'name': 'Béni Khiar'}, {'id': 157, 'name': 'Bou Argoub'}, {'id': 158, 'name': 'Dar Châabane El Fehri'}, {'id': 159, 'name': 'El Haouaria'}, {'id': 160, 'name': 'El Mida'}, {'id': 161, 'name': 'Grombalia'}, {'id': 163, 'name': 'Hammam El Guezaz'}, {'id': 162, 'name': 'Hammamet'}, {'id': 164, 'name': 'Kélibia'}, {'id': 165, 'name': 'Korba'}, {'id': 166, 'name': 'Menzel Bouzelfa'}, {'id': 167, 'name': 'Menzel Temime'}, {'id': 168, 'name': 'Nabeul'}, {'id': 169, 'name': 'Soliman'}, {'id': 170, 'name': 'Takelsa'}]
+POST data: <QueryDict: {'csrfmiddlewaretoken': ['1E7gOaABnKHXzuoPDjiOJRU2TvlTD6VOLbdm1B6qjYFX3PGmk4gN94KbRx9yiN6x'], 'sub_domain': ['Dineri'], 'label': ['Kaboot'], 'tel': ['454545'], 'mail': ['c@c.com'], 'adresse': ['susah'], 'center_code': ['12563'], 'type_center': ['REGIONAL'], 'governorate': ['16'], 'delegation': ['168'], 'code_type_hemo': ['MD2200'], 'name_type_hemo': ['UNITE HEMODIALYSE']}>
+Form is valid, cleaned data: {'sub_domain': 'Dineri', 'tel': '454545', 'label': 'Kaboot', 'mail': 'c@c.com', 'adresse': 'susah', 'center_code': 12563, 'type_center': 'REGIONAL', 'governorate': <Governorate: Nabeul (21)>, 'delegation': <Delegation: Nabeul (21014)>, 'code_type_hemo': 'MD2200', 'name_type_hemo': 'UNITE HEMODIALYSE'}
+Center saved: Kaboot (dineri.localhost:8000), Delegation: Nabeul (21014)
+Rendering empty form
