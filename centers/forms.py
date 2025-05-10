@@ -1,5 +1,5 @@
 from django import forms
-from .models import Center, TechnicalStaff, MedicalStaff, ParamedicalStaff, Governorate, Delegation, Membrane, Filtre, Machine
+from .models import Center, TechnicalStaff, MedicalStaff, ParamedicalStaff, Governorate, Delegation, Membrane, Filtre, Machine, CNAM, Patient, TypeHemo, MethodHemo, HemodialysisSession ,TransmittableDisease, TransmittableDiseaseRef,Complications, ComplicationsRef
 import logging
 
 logger = logging.getLogger(__name__)
@@ -14,7 +14,7 @@ class CenterForm(forms.ModelForm):
             'type_center': forms.Select(attrs={'class': 'form-control'}),
             'code_type_hemo': forms.Select(attrs={'class': 'form-control'}),
             'name_type_hemo': forms.Select(attrs={'class': 'form-control'}),
-            'adresse': forms.TextInput(attrs={'placeholder': 'Address', 'class': 'form-control'}),  # Widget for adresse
+            'adresse': forms.TextInput(attrs={'placeholder': 'Address', 'class': 'form-control'}),
         }
 
     def __init__(self, *args, **kwargs):
@@ -189,3 +189,119 @@ class MachineForm(forms.ModelForm):
         if commit:
             instance.save()
         return instance
+
+class PatientForm(BaseStaffForm):
+    new_cnam_number = forms.CharField(max_length=50, required=False, label="New CNAM Number")
+
+    class Meta:
+        model = Patient
+        fields = ['nom', 'prenom', 'cin', 'cnam', 'new_cnam_number', 'entry_date', 'previously_dialysed', 'date_first_dia', 'blood_type']
+        widgets = {
+            'nom': forms.TextInput(attrs={'placeholder': 'Last Name', 'class': 'form-control'}),
+            'prenom': forms.TextInput(attrs={'placeholder': 'First Name', 'class': 'form-control'}),
+            'cin': forms.TextInput(attrs={'placeholder': 'CIN', 'class': 'form-control'}),
+            'cnam': forms.Select(attrs={'class': 'form-control'}),
+            'entry_date': forms.DateInput(attrs={'type': 'date', 'class': 'form-control'}),
+            'previously_dialysed': forms.CheckboxInput(attrs={'class': 'form-control'}),
+            'date_first_dia': forms.DateInput(attrs={'type': 'date', 'class': 'form-control'}),
+            'blood_type': forms.Select(attrs={'class': 'form-control'}),
+        }
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['cnam'].queryset = CNAM.objects.all()
+        self.fields['cnam'].required = False
+        self.fields['blood_type'].choices = Patient.BLOOD_TYPE_CHOICES
+
+    def clean(self):
+        cleaned_data = super().clean()
+        cnam = cleaned_data.get('cnam')
+        new_cnam_number = cleaned_data.get('new_cnam_number')
+        previously_dialysed = cleaned_data.get('previously_dialysed')
+        date_first_dia = cleaned_data.get('date_first_dia')
+
+        if not cnam and not new_cnam_number:
+            self.add_error('new_cnam_number', "Select an existing CNAM number or provide a new one.")
+        elif cnam and new_cnam_number:
+            self.add_error('new_cnam_number', "Cannot select an existing CNAM and provide a new number.")
+
+        if previously_dialysed and not date_first_dia:
+            self.add_error('date_first_dia', "Date of first dialysis is required if previously dialysed.")
+        if not previously_dialysed and date_first_dia:
+            self.add_error('date_first_dia', "Date of first dialysis should not be set if not previously dialysed.")
+
+        return cleaned_data
+
+    def save(self, commit=True):
+        instance = super().save(commit=False)
+        new_cnam_number = self.cleaned_data.get('new_cnam_number')
+
+        if new_cnam_number:
+            cnam, _ = CNAM.objects.get_or_create(number=new_cnam_number)
+            instance.cnam = cnam
+
+        if self.center:
+            instance.center = self.center
+
+        if commit:
+            instance.save()
+        return instance
+
+class HemodialysisSessionForm(BaseStaffForm):
+    class Meta:
+        model = HemodialysisSession
+        fields = ['type', 'method', 'date_of_session', 'responsible_doc']
+        widgets = {
+            'type': forms.Select(attrs={'class': 'form-control'}),
+            'method': forms.Select(attrs={'class': 'form-control'}),
+            'date_of_session': forms.DateInput(attrs={'type': 'date', 'class': 'form-control'}),
+            'responsible_doc': forms.Select(attrs={'class': 'form-control'}),
+        }
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        if self.center:
+            self.fields['responsible_doc'].queryset = MedicalStaff.objects.filter(center=self.center)
+        self.fields['type'].queryset = TypeHemo.objects.all()
+        self.fields['method'].queryset = MethodHemo.objects.all()
+
+    def clean(self):
+        cleaned_data = super().clean()
+        type_hemo = cleaned_data.get('type')
+        method = cleaned_data.get('method')
+        if type_hemo and method and method.type_hemo != type_hemo:
+            self.add_error('method', 'Selected method does not belong to the chosen type.')
+        return cleaned_data
+class TransmittableDiseaseForm(forms.ModelForm):
+    def __init__(self, *args, **kwargs):
+        self.center = kwargs.pop('center', None)
+        super().__init__(*args, **kwargs)
+
+    class Meta:
+        model = TransmittableDisease
+        fields = ['disease', 'date_of_contraction']
+        widgets = {
+            'date_of_contraction': forms.DateInput(attrs={'type': 'date'}),
+        }
+
+class TransmittableDiseaseRefForm(forms.ModelForm):
+    class Meta:
+        model = TransmittableDiseaseRef
+        fields = ['label_disease', 'type_of_transmission']
+class ComplicationsForm(forms.ModelForm):
+    def __init__(self, *args, **kwargs):
+        self.center = kwargs.pop('center', None)
+        super().__init__(*args, **kwargs)
+
+    class Meta:
+        model = Complications
+        fields = ['complication', 'notes', 'date_of_contraction']
+        widgets = {
+            'notes': forms.Textarea(attrs={'rows': 4, 'cols': 50}),
+            'date_of_contraction': forms.DateInput(attrs={'type': 'date'}),
+        }
+
+class ComplicationsRefForm(forms.ModelForm):
+    class Meta:
+        model = ComplicationsRef
+        fields = ['label_complication']

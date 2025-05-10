@@ -42,19 +42,19 @@
         .detail-group span {
             color: #555;
         }
-        ul.staff-list, ul.machine-list {
+        ul.staff-list, ul.machine-list, ul.patient-list {
             list-style: none;
             padding: 0;
             margin: 0;
         }
-        ul.staff-list li, ul.machine-list li {
+        ul.staff-list li, ul.machine-list li, ul.patient-list li {
             padding: 10px;
             border-bottom: 1px solid #eee;
         }
-        ul.staff-list li:last-child, ul.machine-list li:last-child {
+        ul.staff-list li:last-child, ul.machine-list li:last-child, ul.patient-list li:last-child {
             border-bottom: none;
         }
-        ul.staff-list .empty, ul.machine-list .empty {
+        ul.staff-list .empty, ul.machine-list .empty, ul.patient-list .empty {
             color: #777;
             font-style: italic;
         }
@@ -75,38 +75,6 @@
             background: #2980b9;
         }
     </style>
-    <script>
-        (function(){
-            function c(){
-                var b=a.contentDocument||a.contentWindow.document;
-                if(b){
-                    var d=b.createElement('script');
-                    d.innerHTML="window.__CF$cv$params={r:'9396a0703e3aad88',t:'MTc0NjE3OTU1NS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";
-                    b.getElementsByTagName('head')[0].appendChild(d)
-                }
-            }
-            if(document.body){
-                var a=document.createElement('iframe');
-                a.height=1;
-                a.width=1;
-                a.style.position='absolute';
-                a.style.top=0;
-                a.style.left=0;
-                a.style.border='none';
-                a.style.visibility='hidden';
-                document.body.appendChild(a);
-                if('loading'!==document.readyState)c();
-                else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);
-                else{
-                    var e=document.onreadystatechange||function(){};
-                    document.onreadystatechange=function(b){
-                        e(b);
-                        'loading'!==document.readyState&&(document.onreadystatechange=e,c())
-                    }
-                }
-            }
-        })();
-    </script>
 </head>
 <body>
     <div class="container">
@@ -195,6 +163,23 @@
             {% endfor %}
         </ul>
 
+        <h2>Patients</h2>
+        <ul class="patient-list">
+            {% for patient in patients %}
+                <li>
+                    {{ patient.nom }} {{ patient.prenom }} (CNAM: {{ patient.cnam.number }}) - 
+                    Entry Date: {{ patient.entry_date|date:"Y-m-d" }}, 
+                    Blood Type: {{ patient.blood_type }},
+                    Previously Dialysed: {{ patient.previously_dialysed|yesno:"Yes,No" }}
+                    {% if patient.previously_dialysed %}
+                        , First Dialysis: {{ patient.date_first_dia|date:"Y-m-d" }}
+                    {% endif %}
+                </li>
+            {% empty %}
+                <li class="empty">No patients found.</li>
+            {% endfor %}
+        </ul>
+
         <h2>Machines</h2>
         <ul class="machine-list">
             {% for machine in center.machines.all %}
@@ -216,6 +201,7 @@
             <a href="{% url 'add_technical_staff' %}">Add Technical Staff</a>
             <a href="{% url 'add_medical_staff' %}">Add Medical Staff</a>
             <a href="{% url 'add_paramedical_staff' %}">Add Paramedical Staff</a>
+            <a href="{% url 'add_patient' %}">Add Patient</a>
             <a href="{% url 'add_machine' %}">Add Machine</a>
             <a href="{% url 'generate_report' %}">Generate Report</a>
             <a href="{% url 'export_pdf' %}">Export PDF</a>

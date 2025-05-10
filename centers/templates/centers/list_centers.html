@@ -1,24 +1,64 @@
-<!-- centers/templates/centers/list_centers.html -->
 <!DOCTYPE html>
 <html>
 <head>
     <title>All Hemodialysis Centers</title>
     <meta charset="UTF-8">
     <style>
-        .center-list {
-            margin: 20px;
+        body {
             font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 20px;
+            color: #333;
         }
-        .center-card {
-            border: 1px solid #ddd;
-            padding: 15px;
-            margin-bottom: 10px;
-            border-radius: 5px;
-            background-color: #f9f9f9;
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #f9f9f9;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
         }
-        .center-card h3 {
-            margin-top: 0;
+        h1 {
             color: #2c3e50;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .add-center {
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        .btn {
+            display: inline-block;
+            padding: 10px 15px;
+            background: #3498db;
+            color: white;
+            text-decoration: none;
+            border-radius: 4px;
+            font-weight: bold;
+        }
+        .btn:hover {
+            background: #2980b9;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: #fff;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            margin-bottom: 20px;
+        }
+        th, td {
+            padding: 10px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+        th {
+            background: #2c3e50;
+            color: white;
+            font-weight: bold;
+        }
+        tr:hover {
+            background: #f1f1f1;
         }
         .center-link {
             color: #3498db;
@@ -27,59 +67,62 @@
         .center-link:hover {
             text-decoration: underline;
         }
-        .add-center {
-            margin: 20px 0;
-        }
-        .btn {
-            display: inline-block;
-            padding: 10px 15px;
-            background-color: #3498db;
-            color: white;
-            text-decoration: none;
-            border-radius: 4px;
-            font-weight: bold;
-        }
-        .btn:hover {
-            background-color: #2980b9;
-        }
-        .field-label {
-            font-weight: bold;
-            color: #34495e;
+        .no-data {
+            text-align: center;
+            color: #666;
+            font-style: italic;
+            padding: 20px;
         }
     </style>
 </head>
 <body>
-    <div class="center-list">
+    <div class="container">
         <h1>Hemodialysis Centers</h1>
-        
+
         <div class="add-center">
             <a href="{% url 'add_center' %}" class="btn">Add New Center</a>
         </div>
 
         {% if centers %}
-            {% for center in centers %}
-                <div class="center-card">
-                    <h3>{{ center.label }}</h3>
-                    <p><span class="field-label">Subdomain:</span> 
-                        <a href="http://{{ center.sub_domain }}.localhost:8000" class="center-link">
-                            {{ center.sub_domain }}.localhost:8000
-                        </a>
-                    </p>
-                    <p><span class="field-label">Center Code:</span> {{ center.center_code }}</p>
-                    <p><span class="field-label">Address:</span> {{ center.adresse|default:"Not provided" }}</p>
-                    <p><span class="field-label">Type:</span> {{ center.type_center }}</p>
-                    <p><span class="field-label">Hemodialysis Code:</span> {{ center.code_type_hemo|default:"None" }}</p>
-                    <p><span class="field-label">Hemodialysis Type:</span> {{ center.name_type_hemo|default:"None" }}</p>
-                    <p><span class="field-label">Governorate:</span> {{ center.governorate.name }}</p>
-                    <p><span class="field-label">Delegation:</span> {% if center.delegation %}{{ center.delegation.name }}{% else %}Not specified{% endif %}</p>
-                    <p><span class="field-label">Contact:</span> 
-                        Tel: {{ center.tel|default:"Not provided" }} | 
-                        Email: {{ center.mail|default:"Not provided" }}
-                    </p>
-                </div>
-            {% endfor %}
+            <table>
+                <thead>
+                    <tr>
+                        <th>Center Name</th>
+                        <th>Subdomain</th>
+                        <th>Center Code</th>
+                        <th>Address</th>
+                        <th>Type</th>
+                        <th>Governorate</th>
+                        <th>Delegation</th>
+                        <th>Contact</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for center in centers %}
+                        <tr>
+                            <td>
+                                {% if request.tenant %}
+                                    <a href="http://{{ center.sub_domain }}.localhost:8000" class="center-link">{{ center.label }}</a>
+                                {% else %}
+                                    <a href="{% url 'superadmin_center_detail' center.pk %}" class="center-link">{{ center.label }}</a>
+                                {% endif %}
+                            </td>
+                            <td>{{ center.sub_domain }}.localhost:8000</td>
+                            <td>{{ center.center_code|default:"Not set" }}</td>
+                            <td>{{ center.adresse|default:"Not provided" }}</td>
+                            <td>{{ center.get_type_center_display }}</td>
+                            <td>{{ center.governorate.name|default:"Not set" }}</td>
+                            <td>{{ center.delegation.name|default:"Not specified" }}</td>
+                            <td>
+                                Tel: {{ center.tel|default:"Not provided" }}<br>
+                                Email: {{ center.mail|default:"Not provided" }}
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
         {% else %}
-            <p>No centers found.</p>
+            <p class="no-data">No centers found.</p>
         {% endif %}
     </div>
 </body>

@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Add New Patient</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 20px;
+            color: #333;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #f9f9f9;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #2c3e50;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        input[type="text"],
+        input[type="date"],
+        select,
+        input[type="checkbox"] {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        input[type="checkbox"] {
+            width: auto;
+        }
+        button {
+            background: #3498db;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            font-size: 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 15px;
+        }
+        button:hover {
+            background: #2980b9;
+        }
+        .btn-secondary {
+            background: #6c757d;
+            width: auto;
+            margin-left: 10px;
+        }
+        .btn-secondary:hover {
+            background: #5a6268;
+        }
+        .help-text {
+            font-size: 12px;
+            color: #666;
+            margin-top: 4px;
+        }
+        .errorlist {
+            color: red;
+            font-size: 12px;
+            margin-top: 4px;
+            list-style: none;
+            padding: 0;
+        }
+        .error-message {
+            color: red;
+            font-size: 14px;
+            margin-bottom: 10px;
+            text-align: center;
+        }
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.4);
+        }
+        .modal-content {
+            background-color: #fefefe;
+            margin: 15% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%;
+            max-width: 500px;
+            border-radius: 8px;
+        }
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+        }
+        .close:hover,
+        .close:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
+        #id_date_first_dia_group {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Add New Patient for {{ center.label }}</h1>
+        <form method="post">
+            {% csrf_token %}
+            
+            <!-- Display non-field errors -->
+            {% if form.non_field_errors %}
+                <div class="error-message">
+                    {{ form.non_field_errors }}
+                </div>
+            {% endif %}
+            
+            <!-- Basic Information -->
+            <div class="form-group">
+                <label for="{{ form.nom.id_for_label }}">Last Name</label>
+                {{ form.nom }}
+                {% if form.nom.errors %}
+                    <ul class="errorlist">
+                        {% for error in form.nom.errors %}
+                            <li>{{ error }}</li>
+                        {% endfor %}
+                    </ul>
+                {% endif %}
+                <p class="help-text">Patient's last name</p>
+            </div>
+            
+            <div class="form-group">
+                <label for="{{ form.prenom.id_for_label }}">First Name</label>
+                {{ form.prenom }}
+                {% if form.prenom.errors %}
+                    <ul class="errorlist">
+                        {% for error in form.prenom.errors %}
+                            <li>{{ error }}</li>
+                        {% endfor %}
+                    </ul>
+                {% endif %}
+                <p class="help-text">Patient's first name</p>
+            </div>
+            
+            <div class="form-group">
+                <label for="{{ form.cin.id_for_label }}">CIN</label>
+                {{ form.cin }}
+                {% if form.cin.errors %}
+                    <ul class="errorlist">
+                        {% for error in form.cin.errors %}
+                            <li>{{ error }}</li>
+                        {% endfor %}
+                    </ul>
+                {% endif %}
+                <p class="help-text">Patient's identification number (must be unique)</p>
+            </div>
+            
+            <div class="form-group">
+                <label for="{{ form.cnam.id_for_label }}">CNAM Number</label>
+                <div style="display: flex; align-items: center;">
+                    {{ form.cnam }}
+                    <button type="button" class="btn-secondary" onclick="openCnamModal()">Add New CNAM</button>
+                </div>
+                {% if form.cnam.errors %}
+                    <ul class="errorlist">
+                        {% for error in form.cnam.errors %}
+                            <li>{{ error }}</li>
+                        {% endfor %}
+                    </ul>
+                {% endif %}
+                <p class="help-text">Select an existing CNAM number or add a new one</p>
+            </div>
+            
+            <div class="form-group">
+                <label for="{{ form.new_cnam_number.id_for_label }}">New CNAM Number (Fallback)</label>
+                {{ form.new_cnam_number }}
+                {% if form.new_cnam_number.errors %}
+                    <ul class="errorlist">
+                        {% for error in form.new_cnam_number.errors %}
+                            <li>{{ error }}</li>
+                        {% endfor %}
+                    </ul>
+                {% endif %}
+                <p class="help-text">Enter a new CNAM number here if you prefer not to use the modal</p>
+            </div>
+            
+            <div class="form-group">
+                <label for="{{ form.entry_date.id_for_label }}">Entry Date</label>
+                {{ form.entry_date }}
+                {% if form.entry_date.errors %}
+                    <ul class="errorlist">
+                        {% for error in form.entry_date.errors %}
+                            <li>{{ error }}</li>
+                        {% endfor %}
+                    </ul>
+                {% endif %}
+                <p class="help-text">Date the patient entered the center</p>
+            </div>
+            
+            <div class="form-group">
+                <label for="{{ form.previously_dialysed.id_for_label }}">Previously Dialysed</label>
+                {{ form.previously_dialysed }}
+                {% if form.previously_dialysed.errors %}
+                    <ul class="errorlist">
+                        {% for error in form.previously_dialysed.errors %}
+                            <li>{{ error }}</li>
+                        {% endfor %}
+                    </ul>
+                {% endif %}
+                <p class="help-text">Check if the patient has been dialysed before</p>
+            </div>
+            
+            <div class="form-group" id="id_date_first_dia_group">
+                <label for="{{ form.date_first_dia.id_for_label }}">Date of First Dialysis</label>
+                {{ form.date_first_dia }}
+                {% if form.date_first_dia.errors %}
+                    <ul class="errorlist">
+                        {% for error in form.date_first_dia.errors %}
+                            <li>{{ error }}</li>
+                        {% endfor %}
+                    </ul>
+                {% endif %}
+                <p class="help-text">Date of the patient's first dialysis (required if previously dialysed)</p>
+            </div>
+            
+            <div class="form-group">
+                <label for="{{ form.blood_type.id_for_label }}">Blood Type</label>
+                {{ form.blood_type }}
+                {% if form.blood_type.errors %}
+                    <ul class="errorlist">
+                        {% for error in form.blood_type.errors %}
+                            <li>{{ error }}</li>
+                        {% endfor %}
+                    </ul>
+                {% endif %}
+                <p class="help-text">Select the patient's blood type</p>
+            </div>
+            
+            <button type="submit">Add Patient</button>
+        </form>
+    </div>
+
+    <!-- Modal for Adding New CNAM -->
+    <div id="addCnamModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeCnamModal()">&times;</span>
+            <h2>Add New CNAM</h2>
+            <form id="add-cnam-form">
+                {% csrf_token %}
+                <div class="form-group">
+                    <label for="cnam-number">CNAM Number</label>
+                    <input type="text" id="cnam-number" name="number" required>
+                    <p class="help-text">Enter a unique CNAM number</p>
+                </div>
+                <button type="submit">Save CNAM</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        function getCookie(name) {
+            let cookieValue = null;
+            if (document.cookie && document.cookie !== '') {
+                const cookies = document.cookie.split(';');
+                for (let i = 0; i < cookies.length; i++) {
+                    const cookie = cookies[i].trim();
+                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+        const csrftoken = getCookie('csrftoken');
+
+        function openCnamModal() {
+            document.getElementById('addCnamModal').style.display = 'block';
+        }
+
+        function closeCnamModal() {
+            document.getElementById('addCnamModal').style.display = 'none';
+            document.getElementById('add-cnam-form').reset();
+        }
+
+        window.onclick = function(event) {
+            const modal = document.getElementById('addCnamModal');
+            if (event.target == modal) {
+                closeCnamModal();
+            }
+        }
+
+        document.getElementById('add-cnam-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const cnamNumber = document.getElementById('cnam-number').value;
+            fetch("{% url 'add_cnam' %}", {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                    'X-CSRFToken': csrftoken
+                },
+                body: new URLSearchParams({
+                    'number': cnamNumber
+                })
+            })
+            .then(response => {
+                if (!response.ok) throw new Error('Network response was not ok');
+                return response.json();
+            })
+            .then(data => {
+                const cnamSelect = document.getElementById('id_cnam');
+                const newOption = document.createElement('option');
+                newOption.value = data.id;
+                newOption.text = data.number;
+                newOption.selected = true;
+                cnamSelect.appendChild(newOption);
+                closeCnamModal();
+            })
+            .catch(error => {
+                console.error('Error adding CNAM:', error);
+                alert('Error adding CNAM: ' + error.message);
+            });
+        });
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const previouslyDialysedCheckbox = document.getElementById('id_previously_dialysed');
+            const dateFirstDiaGroup = document.getElementById('id_date_first_dia_group');
+
+            function toggleDateFirstDia() {
+                dateFirstDiaGroup.style.display = previouslyDialysedCheckbox.checked ? 'block' : 'none';
+                if (!previouslyDialysedCheckbox.checked) {
+                    document.getElementById('id_date_first_dia').value = '';
+                }
+            }
+
+            toggleDateFirstDia();
+            previouslyDialysedCheckbox.addEventListener('change', toggleDateFirstDia);
+        });
+    </script>
+</body>
+</html>

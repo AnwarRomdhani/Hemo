@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>{{ center.label }} - Patient List</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 20px;
+            color: #333;
+            background: #f4f4f4;
+        }
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #ffffff;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #2c3e50;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+        th, td {
+            padding: 10px;
+            border: 1px solid #ddd;
+            text-align: left;
+        }
+        th {
+            background: #3498db;
+            color: white;
+            font-weight: bold;
+        }
+        tr:nth-child(even) {
+            background: #f9f9f9;
+        }
+        tr:hover {
+            background: #e6f3ff;
+        }
+        .no-data {
+            text-align: center;
+            color: #777;
+            font-style: italic;
+            padding: 20px;
+        }
+        .action-links {
+            margin-top: 20px;
+            text-align: center;
+        }
+        .action-links a {
+            display: inline-block;
+            background: #3498db;
+            color: white;
+            padding: 10px 15px;
+            text-decoration: none;
+            border-radius: 4px;
+            margin: 0 10px;
+        }
+        .action-links a:hover {
+            background: #2980b9;
+        }
+        .detail-button {
+            display: inline-block;
+            background: #2ecc71;
+            color: white;
+            padding: 6px 12px;
+            text-decoration: none;
+            border-radius: 4px;
+        }
+        .detail-button:hover {
+            background: #27ae60;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>{{ center.label }} - Patient List</h1>
+
+        {% if patients %}
+            <table>
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>CIN</th>
+                        <th>CNAM</th>
+                        <th>Entry Date</th>
+                        <th>Blood Type</th>
+                        <th>Previously Dialysed</th>
+                        <th>First Dialysis</th>
+                        <th>Details</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for patient in patients %}
+                        <tr>
+                            <td>{{ patient.nom }} {{ patient.prenom }}</td>
+                            <td>{{ patient.cin }}</td>
+                            <td>{{ patient.cnam.number }}</td>
+                            <td>{{ patient.entry_date|date:"Y-m-d" }}</td>
+                            <td>{{ patient.blood_type }}</td>
+                            <td>{{ patient.previously_dialysed|yesno:"Yes,No" }}</td>
+                            <td>
+                                {% if patient.previously_dialysed %}
+                                    {{ patient.date_first_dia|date:"Y-m-d" }}
+                                {% else %}
+                                    N/A
+                                {% endif %}
+                            </td>
+                            <td>
+                                <a href="{% url 'patient_detail' patient.pk %}" class="detail-button">View Details</a>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% else %}
+            <p class="no-data">No patients found for this center.</p>
+        {% endif %}
+
+        <div class="action-links">
+            <a href="{% url 'center_detail' %}">Back to Center Details</a>
+            <a href="{% url 'add_patient' %}">Add New Patient</a>
+        </div>
+    </div>
+</body>
+</html>

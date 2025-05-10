@@ -1,0 +1,211 @@
+<script type="text/javascript">
+        var gk_isXlsx = false;
+        var gk_xlsxFileLookup = {};
+        var gk_fileData = {};
+        function filledCell(cell) {
+          return cell !== '' && cell != null;
+        }
+        function loadFileData(filename) {
+        if (gk_isXlsx && gk_xlsxFileLookup[filename]) {
+            try {
+                var workbook = XLSX.read(gk_fileData[filename], { type: 'base64' });
+                var firstSheetName = workbook.SheetNames[0];
+                var worksheet = workbook.Sheets[firstSheetName];
+
+                // Convert sheet to JSON to filter blank rows
+                var jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1, blankrows: false, defval: '' });
+                // Filter out blank rows (rows where all cells are empty, null, or undefined)
+                var filteredData = jsonData.filter(row => row.some(filledCell));
+
+                // Heuristic to find the header row by ignoring rows with fewer filled cells than the next row
+                var headerRowIndex = filteredData.findIndex((row, index) =>
+                  row.filter(filledCell).length >= filteredData[index + 1]?.filter(filledCell).length
+                );
+                // Fallback
+                if (headerRowIndex === -1 || headerRowIndex > 25) {
+                  headerRowIndex = 0;
+                }
+
+                // Convert filtered JSON back to CSV
+                var csv = XLSX.utils.aoa_to_sheet(filteredData.slice(headerRowIndex)); // Create a new sheet from filtered array of arrays
+                csv = XLSX.utils.sheet_to_csv(csv, { header: 1 });
+                return csv;
+            } catch (e) {
+                console.error(e);
+                return "";
+            }
+        }
+        return gk_fileData[filename] || "";
+        }
+        </script><!DOCTYPE html>
+<html>
+<head>
+    <title>Super Admin: Center Details</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 20px;
+            color: #333;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #f9f9f9;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #2c3e50;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        h2 {
+            color: #2c3e50;
+            margin-top: 20px;
+            margin-bottom: 10px;
+        }
+        h3 {
+            color: #34495e;
+            margin-top: 15px;
+            margin-bottom: 8px;
+        }
+        .section {
+            margin-bottom: 20px;
+            padding: 15px;
+            background: #fff;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        .section p {
+            margin: 5px 0;
+        }
+        .section ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        .section ul li {
+            padding: 5px 0;
+            border-bottom: 1px solid #eee;
+        }
+        .section ul li:last-child {
+            border-bottom: none;
+        }
+        .section a {
+            color: #3498db;
+            text-decoration: none;
+        }
+        .section a:hover {
+            text-decoration: underline;
+        }
+        .no-data {
+            color: #666;
+            font-style: italic;
+        }
+        .button {
+            background: #3498db;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            font-size: 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            text-align: center;
+            display: inline-block;
+            margin: 5px 5px 0 0;
+            text-decoration: none;
+        }
+        .button:hover {
+            background: #2980b9;
+        }
+        .error-message {
+            color: red;
+            font-size: 14px;
+            margin-bottom: 10px;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Super Admin: Center Details</h1>
+
+        <!-- Center Information -->
+        <div class="section">
+            <h2>{{ center.label }}</h2>
+            <p><strong>Subdomain:</strong> {{ center.sub_domain }}.localhost:8000</p>
+            <p><strong>Address:</strong> {{ center.adresse|default:"Not provided" }}</p>
+            <p><strong>Phone Number:</strong> {{ center.tel|default:"Not provided" }}</p>
+            <p><strong>Email:</strong> {{ center.mail|default:"Not provided" }}</p>
+            <p><strong>Governorate:</strong> {{ center.governorate.name|default:"Not set" }}</p>
+            <p><strong>Delegation:</strong> {{ center.delegation.name|default:"Not set" }}</p>
+            <p><strong>Center Type:</strong> {{ center.get_type_center_display }}</p>
+            <p><strong>Center Code:</strong> {{ center.center_code|default:"Not set" }}</p>
+            <p><strong>Hemodialysis Code:</strong> {{ center.code_type_hemo|default:"Not set" }}</p>
+            <p><strong>Hemodialysis Type:</strong> {{ center.name_type_hemo|default:"Not set" }}</p>
+        </div>
+
+        <!-- Staff Information -->
+        <div class="section">
+            <h2>Staff</h2>
+            <h3>Technical Staff</h3>
+            {% if technical_staff %}
+                <ul>
+                    {% for staff in technical_staff %}
+                        <li>{{ staff.nom }} {{ staff.prenom }} (CIN: {{ staff.cin }}, Qualification: {{ staff.qualification }})</li>
+                    {% endfor %}
+                </ul>
+            {% else %}
+                <p class="no-data">No technical staff assigned.</p>
+            {% endif %}
+
+            <h3>Medical Staff</h3>
+            {% if medical_staff %}
+                <ul>
+                    {% for staff in medical_staff %}
+                        <li>{{ staff.nom }} {{ staff.prenom }} (CIN: {{ staff.cin }}, CNOM: {{ staff.cnom }})</li>
+                    {% endfor %}
+                </ul>
+            {% else %}
+                <p class="no-data">No medical staff assigned.</p>
+            {% endif %}
+
+            <h3>Paramedical Staff</h3>
+            {% if paramedical_staff %}
+                <ul>
+                    {% for staff in paramedical_staff %}
+                        <li>{{ staff.nom }} {{ staff.prenom }} (CIN: {{ staff.cin }}, Qualification: {{ staff.qualification }})</li>
+                    {% endfor %}
+                </ul>
+            {% else %}
+                <p class="no-data">No paramedical staff assigned.</p>
+            {% endif %}
+        </div>
+
+        <!-- Patient Information -->
+        <div class="section">
+            <h2>Patients</h2>
+            {% if patients %}
+                <ul>
+                    {% for patient in patients %}
+                        <li>
+                            <a href="{% url 'patient_detail' patient.pk %}">{{ patient.nom }} {{ patient.prenom }}</a>
+                            (CIN: {{ patient.cin }}, CNAM: {{ patient.cnam.number }}, Status: {{ patient.status }}, Blood Type: {{ patient.blood_type }})
+                        </li>
+                    {% endfor %}
+                </ul>
+            {% else %}
+                <p class="no-data">No patients assigned.</p>
+            {% endif %}
+        </div>
+
+        <!-- Admin Actions -->
+        <div>
+            <a href="{% url 'list_centers' %}" class="button">Back to Center List</a>
+            <a href="{% url 'add_center' %}?center_id={{ center.pk }}" class="button">Edit Center</a>
+        </div>
+    </div>
+</body>
+</html>

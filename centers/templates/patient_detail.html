@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>{{ patient.nom }} {{ patient.prenom }} - Patient Details</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 20px;
+            color: #333;
+            background: #f4f4f4;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #ffffff;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #2c3e50;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        h2 {
+            color: #34495e;
+            margin-top: 20px;
+            margin-bottom: 10px;
+            border-bottom: 2px solid #3498db;
+            padding-bottom: 5px;
+        }
+        .detail-group {
+            margin-bottom: 15px;
+        }
+        .detail-group label {
+            display: inline-block;
+            width: 200px;
+            font-weight: bold;
+            color: #2c3e50;
+        }
+        .detail-group span {
+            color: #555;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+        th, td {
+            padding: 10px;
+            border: 1px solid #ddd;
+            text-align: left;
+        }
+        th {
+            background: #3498db;
+            color: white;
+            font-weight: bold;
+        }
+        tr:nth-child(even) {
+            background: #f9f9f9;
+        }
+        tr:hover {
+            background: #e6f3ff;
+        }
+        .no-data {
+            text-align: center;
+            color: #777;
+            font-style: italic;
+            padding: 20px;
+        }
+        .action-links {
+            margin-top: 20px;
+            text-align: center;
+        }
+        .action-links a {
+            display: inline-block;
+            background: #3498db;
+            color: white;
+            padding: 10px 15px;
+            text-decoration: none;
+            border-radius: 4px;
+            margin: 0 10px;
+        }
+        .action-links a:hover {
+            background: #2980b9;
+        }
+        .add-button {
+            display: inline-block;
+            background: #28a745;
+            color: white;
+            padding: 10px 15px;
+            text-decoration: none;
+            border-radius: 4px;
+            margin-bottom: 10px;
+            cursor: pointer;
+        }
+        .add-button:hover {
+            background: #218838;
+        }
+        .form-container {
+            display: none;
+            margin-top: 10px;
+            padding: 15px;
+            background: #f9f9f9;
+            border-radius: 4px;
+            border: 1px solid #ddd;
+        }
+        .form-container.active {
+            display: block;
+        }
+        .form-group {
+            margin-bottom: 10px;
+        }
+        .form-group label {
+            display: inline-block;
+            width: 150px;
+            font-weight: bold;
+            color: #2c3e50;
+        }
+        .form-group select, .form-group input {
+            padding: 5px;
+            width: 200px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        .form-group input[type="submit"] {
+            background: #3498db;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            cursor: pointer;
+            width: auto;
+        }
+        .form-group input[type="submit"]:hover {
+            background: #2980b9;
+        }
+        .errorlist {
+            color: #dc3545;
+            font-size: 0.9em;
+            margin-left: 150px;
+            list-style: none;
+            padding: 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>{{ patient.nom }} {{ patient.prenom }} - Patient Details</h1>
+
+        <h2>Patient Information</h2>
+        <div class="detail-group">
+            <label>Name:</label>
+            <span>{{ patient.nom }} {{ patient.prenom }}</span>
+        </div>
+        <div class="detail-group">
+            <label>CIN:</label>
+            <span>{{ patient.cin }}</span>
+        </div>
+        <div class="detail-group">
+            <label>CNAM:</label>
+            <span>{{ patient.cnam.number }}</span>
+        </div>
+        <div class="detail-group">
+            <label>Entry Date:</label>
+            <span>{{ patient.entry_date|date:"Y-m-d" }}</span>
+        </div>
+        <div class="detail-group">
+            <label>Blood Type:</label>
+            <span>{{ patient.blood_type }}</span>
+        </div>
+        <div class="detail-group">
+            <label>Previously Dialysed:</label>
+            <span>{{ patient.previously_dialysed|yesno:"Yes,No" }}</span>
+        </div>
+        <div class="detail-group">
+            <label>First Dialysis:</label>
+            <span>
+                {% if patient.previously_dialysed %}
+                    {{ patient.date_first_dia|date:"Y-m-d" }}
+                {% else %}
+                    N/A
+                {% endif %}
+            </span>
+        </div>
+
+        <h2>Medical Activity</h2>
+        {% if patient.medical_activity %}
+            <div class="detail-group">
+                <label>Created At:</label>
+                <span>{{ patient.medical_activity.created_at|date:"Y-m-d" }}</span>
+            </div>
+        {% else %}
+            <p class="no-data">No medical activity recorded.</p>
+        {% endif %}
+
+        <h2>Hemodialysis Sessions</h2>
+        {% if patient.medical_activity.hemodialysis_sessions.exists %}
+            <table>
+                <thead>
+                    <tr>
+                        <th>Type</th>
+                        <th>Method</th>
+                        <th>Date</th>
+                        <th>Responsible Doctor</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for session in patient.medical_activity.hemodialysis_sessions.all %}
+                        <tr>
+                            <td>{{ session.type.name }}</td>
+                            <td>{{ session.method.name }}</td>
+                            <td>{{ session.date_of_session|date:"Y-m-d" }}</td>
+                            <td>{{ session.responsible_doc.nom }} {{ session.responsible_doc.prenom }} ({{ session.responsible_doc.cnom }})</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% else %}
+            <p class="no-data">No hemodialysis sessions recorded.</p>
+        {% endif %}
+
+        <a href="#" class="add-button" onclick="toggleForm()">Add Hemodialysis Session</a>
+        <div class="form-container" id="session-form">
+            <form method="post">
+                {% csrf_token %}
+                <div class="form-group">
+                    <label for="{{ form.type.id_for_label }}">Type:</label>
+                    {{ form.type }}
+                    {{ form.type.errors }}
+                </div>
+                <div class="form-group">
+                    <label for="{{ form.method.id_for_label }}">Method:</label>
+                    {{ form.method }}
+                    {{ form.method.errors }}
+                </div>
+                <div class="form-group">
+                    <label for="{{ form.date_of_session.id_for_label }}">Date of Session:</label>
+                    {{ form.date_of_session }}
+                    {{ form.date_of_session.errors }}
+                </div>
+                <div class="form-group">
+                    <label for="{{ form.responsible_doc.id_for_label }}">Responsible Doctor:</label>
+                    {{ form.responsible_doc }}
+                    {{ form.responsible_doc.errors }}
+                </div>
+                <div class="form-group">
+                    <input type="submit" value="Save Session">
+                </div>
+            </form>
+        </div>
+
+        <div class="action-links">
+            <a href="{% url 'list_patients' %}">Back to Patient List</a>
+        </div>
+    </div>
+
+    <script>
+        function toggleForm() {
+            const formContainer = document.getElementById('session-form');
+            formContainer.classList.toggle('active');
+        }
+
+        // Dynamic method filtering based on type
+        document.addEventListener('DOMContentLoaded', function() {
+            const typeSelect = document.querySelector('#{{ form.type.id_for_label }}');
+            const methodSelect = document.querySelector('#{{ form.method.id_for_label }}');
+            const methodsByType = {
+                {% for type_hemo in form.type.queryset %}
+                    '{{ type_hemo.id }}': [
+                        {% for method in type_hemo.methods.all %}
+                            { id: '{{ method.id }}', name: '{{ method.name }}' },
+                        {% endfor %}
+                    ],
+                {% endfor %}
+            };
+
+            function updateMethodOptions() {
+                const selectedType = typeSelect.value;
+                const methods = methodsByType[selectedType] || [];
+                methodSelect.innerHTML = '<option value="">Select Method</option>';
+                methods.forEach(method => {
+                    const option = document.createElement('option');
+                    option.value = method.id;
+                    option.text = method.name;
+                    methodSelect.appendChild(option);
+                });
+            }
+
+            typeSelect.addEventListener('change', updateMethodOptions);
+            updateMethodOptions(); // Initialize on page load
+        });
+    </script>
+</body>
+</html>

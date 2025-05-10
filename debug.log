@@ -54,3 +54,71 @@ POST data: <QueryDict: {'csrfmiddlewaretoken': ['1E7gOaABnKHXzuoPDjiOJRU2TvlTD6V
 Form is valid, cleaned data: {'sub_domain': 'Dineri', 'tel': '454545', 'label': 'Kaboot', 'mail': 'c@c.com', 'adresse': 'susah', 'center_code': 12563, 'type_center': 'REGIONAL', 'governorate': <Governorate: Nabeul (21)>, 'delegation': <Delegation: Nabeul (21014)>, 'code_type_hemo': 'MD2200', 'name_type_hemo': 'UNITE HEMODIALYSE'}
 Center saved: Kaboot (dineri.localhost:8000), Delegation: Nabeul (21014)
 Rendering empty form
+Patients fetched for center ARIANA: [{'nom': 'Kaboot', 'prenom': 'Tréfle'}]
+Patients fetched for center ARIANA: [{'nom': 'Kaboot', 'prenom': 'Tréfle'}]
+Patient fetched: Kaboot Tréfle (99856312) for center ARIANA
+Patient fetched: Kaboot Tréfle (99856312) for center ARIANA
+Patient fetched: Kaboot Tréfle (99856312) for center ARIANA
+Patient fetched: Kaboot Tréfle (99856312) for center ARIANA
+Patient fetched: Kaboot Tréfle (99856312) for center ARIANA
+Patient fetched: Kaboot Tréfle (99856312) for center ARIANA
+Patient fetched: Kaboot Tréfle (99856312) for center ARIANA
+Patient fetched: Kaboot Tréfle (99856312) for center ARIANA
+Loading methods for type_hemo_id: 1
+Methods found: [{'id': 2, 'name': 'Bicarbonate'}, {'id': 3, 'name': 'Erythropoietin'}, {'id': 5, 'name': 'Filtration 84%'}, {'id': 4, 'name': 'Hemodiafiltration'}, {'id': 1, 'name': 'Hemodialysis'}]
+Loading methods for type_hemo_id: 2
+Methods found: [{'id': 7, 'name': 'DPA'}, {'id': 6, 'name': 'DPCA'}]
+Patient fetched: Kaboot Tréfle (99856312) for center ARIANA
+Loading methods for type_hemo_id: 1
+Methods found: [{'id': 2, 'name': 'Bicarbonate'}, {'id': 3, 'name': 'Erythropoietin'}, {'id': 5, 'name': 'Filtration 84%'}, {'id': 4, 'name': 'Hemodiafiltration'}, {'id': 1, 'name': 'Hemodialysis'}]
+Patient fetched: Kaboot Tréfle (99856312) for center ARIANA
+Patients fetched for center ARIANA: []
+Patient form is invalid: <ul class="errorlist"><li>cin<ul class="errorlist"><li>Patient with this Cin already exists.</li></ul></li></ul>
+Patient form is invalid: <ul class="errorlist"><li>cin<ul class="errorlist"><li>Patient with this Cin already exists.</li></ul></li></ul>
+Patients fetched for center ARIANA: [{'nom': 'Contréé', 'prenom': '120'}, {'nom': 'Contréé', 'prenom': '120'}, {'nom': 'Contréé', 'prenom': '120'}, {'nom': 'Contréé', 'prenom': '120'}]
+Patient fetched: Contréé 120 (124571) for center ARIANA
+Loading methods for type_hemo_id: 1
+Methods found: [{'id': 2, 'name': 'Bicarbonate'}, {'id': 3, 'name': 'Erythropoietin'}, {'id': 5, 'name': 'Filtration 84%'}, {'id': 4, 'name': 'Hemodiafiltration'}, {'id': 1, 'name': 'Hemodialysis'}]
+Patient fetched: Contréé 120 (124571) for center ARIANA
+Hemodialysis session saved for patient Contréé 120 (124571): Hemodialysis Session for Contréé 120 (124571) on 2003-02-22
+Patient fetched: Contréé 120 (124571) for center ARIANA
+Patient fetched: Contréé 120 (124571) for center ARIANA
+TransmittableDiseaseRef saved: HIV
+Patient fetched: Contréé 120 (124571) for center ARIANA
+Patient fetched: Contréé 120 (124571) for center ARIANA
+Transmittable disease saved for patient Contréé 120 (124571): HIV for Contréé 120 (124571) on 2000-12-03
+Patient fetched: Contréé 120 (124571) for center ARIANA
+Patients fetched for center ARIANA: [{'nom': 'Contréé', 'prenom': '120'}, {'nom': 'Contréé', 'prenom': '120'}, {'nom': 'Contréé', 'prenom': '120'}, {'nom': 'Contréé', 'prenom': '120'}]
+Patients fetched for center CENTRE  HAMDA EL AOUANI: []
+Patients fetched for center CENTRE  HAMDA EL AOUANI: [{'nom': 'samir', 'prenom': 'péceron'}]
+Patient fetched: samir péceron (56784236) for center CENTRE  HAMDA EL AOUANI
+ComplicationsRef saved: Vadim
+Patient fetched: samir péceron (56784236) for center CENTRE  HAMDA EL AOUANI
+Patient fetched: samir péceron (56784236) for center CENTRE  HAMDA EL AOUANI
+Patient fetched: samir péceron (56784236) for center CENTRE  HAMDA EL AOUANI
+Complication saved for patient samir péceron (56784236): Vadim for samir péceron (56784236) on 2000-12-31
+Patient fetched: samir péceron (56784236) for center CENTRE  HAMDA EL AOUANI
+Patients fetched for center ARIANA: [{'nom': 'Contréé', 'prenom': '120'}, {'nom': 'Contréé', 'prenom': '120'}, {'nom': 'Contréé', 'prenom': '120'}, {'nom': 'Contréé', 'prenom': '120'}]
+Patient fetched: Contréé 120 (124571) for center ARIANA
+TransmittableDiseaseRef saved: hepathite
+Patient fetched: Contréé 120 (124571) for center ARIANA
+Patients fetched for center ARIANA: [{'nom': 'Contréé', 'prenom': '120'}, {'nom': 'Contréé', 'prenom': '120'}, {'nom': 'Contréé', 'prenom': '120'}, {'nom': 'Contréé', 'prenom': '120'}]
+Patients fetched for center ARIANA: [{'nom': 'Contréé', 'prenom': '120'}, {'nom': 'Contréé', 'prenom': '120'}, {'nom': 'Contréé', 'prenom': '120'}, {'nom': 'Contréé', 'prenom': '120'}]
+Rendering empty form
+Patients fetched for center ARIANA: [{'nom': 'Contréé', 'prenom': '120'}, {'nom': 'Contréé', 'prenom': '120'}, {'nom': 'Contréé', 'prenom': '120'}, {'nom': 'Contréé', 'prenom': '120'}]
+Patient fetched: Contréé 120 (65439876) for center ARIANA
+Patients fetched for center CENTRE D'HEMODIALYSE DE SIDI HESSINE: []
+Patients fetched for center CENTRE D'HEMODIALYSE DE SIDI HESSINE: [{'nom': 'ffffffff', 'prenom': '5588'}]
+Patient fetched: ffffffff 5588 (12345679) for center CENTRE D'HEMODIALYSE DE SIDI HESSINE
+Rendering empty form
+Loading delegations for governorate_id: 17
+Delegations found: [{'id': 171, 'name': 'Agareb'}, {'id': 172, 'name': 'Bir Ali Ben Khalifa'}, {'id': 173, 'name': 'El Amra'}, {'id': 174, 'name': 'El Hencha'}, {'id': 175, 'name': 'Graïba'}, {'id': 176, 'name': 'Jebiniana'}, {'id': 177, 'name': 'Kerkennah'}, {'id': 178, 'name': 'Mahrès'}, {'id': 179, 'name': 'Menzel Chaker'}, {'id': 180, 'name': 'Sakiet Eddaïer'}, {'id': 181, 'name': 'Sakiet Ezzit'}, {'id': 182, 'name': 'Sfax Ouest'}, {'id': 183, 'name': 'Sfax Sud'}, {'id': 184, 'name': 'Sfax Ville'}, {'id': 185, 'name': 'Skhira'}, {'id': 186, 'name': 'Thyna'}]
+POST data: <QueryDict: {'csrfmiddlewaretoken': ['96BBCXoeYDX9S6PaPw8IQJT910qeQNgtTDHHPoU3URV9mr7Hwh6HgWJiZ2eTvurc'], 'sub_domain': ['cilo'], 'label': ['Kaboot'], 'tel': ['45454522'], 'mail': ['h@c.com'], 'adresse': ['susah'], 'center_code': ['12563'], 'type_center': ['REGIONAL'], 'governorate': ['17'], 'delegation': ['185'], 'code_type_hemo': ['MD2200'], 'name_type_hemo': ['SERVICE HEMODIALYSE']}>
+Form is invalid: <ul class="errorlist"><li>sub_domain<ul class="errorlist"><li>Center with this Sub domain already exists.</li></ul></li></ul>
+Loading delegations for governorate_id: 17
+Delegations found: [{'id': 171, 'name': 'Agareb'}, {'id': 172, 'name': 'Bir Ali Ben Khalifa'}, {'id': 173, 'name': 'El Amra'}, {'id': 174, 'name': 'El Hencha'}, {'id': 175, 'name': 'Graïba'}, {'id': 176, 'name': 'Jebiniana'}, {'id': 177, 'name': 'Kerkennah'}, {'id': 178, 'name': 'Mahrès'}, {'id': 179, 'name': 'Menzel Chaker'}, {'id': 180, 'name': 'Sakiet Eddaïer'}, {'id': 181, 'name': 'Sakiet Ezzit'}, {'id': 182, 'name': 'Sfax Ouest'}, {'id': 183, 'name': 'Sfax Sud'}, {'id': 184, 'name': 'Sfax Ville'}, {'id': 185, 'name': 'Skhira'}, {'id': 186, 'name': 'Thyna'}]
+POST data: <QueryDict: {'csrfmiddlewaretoken': ['2QKSa3FVTNRbWJIG1PUfSu7WoCWSdPNkMnQYnubKP1Pbq40dIASeiHX5mEKxSwY3'], 'sub_domain': ['cilo9'], 'label': ['Kaboot'], 'tel': ['45454522'], 'mail': ['h@c.com'], 'adresse': ['susah'], 'center_code': ['12563'], 'type_center': ['REGIONAL'], 'governorate': ['17'], 'delegation': [''], 'code_type_hemo': ['MD2200'], 'name_type_hemo': ['SERVICE HEMODIALYSE']}>
+Form is valid, cleaned data: {'sub_domain': 'cilo9', 'tel': '45454522', 'label': 'Kaboot', 'mail': 'h@c.com', 'adresse': 'susah', 'center_code': 12563, 'type_center': 'REGIONAL', 'governorate': <Governorate: Sfax (61)>, 'delegation': None, 'code_type_hemo': 'MD2200', 'name_type_hemo': 'SERVICE HEMODIALYSE'}
+Center saved: Kaboot (cilo9.localhost:8000), Delegation: None
+Rendering empty form
+Rendering empty form
