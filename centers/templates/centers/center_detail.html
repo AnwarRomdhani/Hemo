@@ -74,10 +74,32 @@
         .action-links a:hover {
             background: #2980b9;
         }
+        .auth-links {
+            text-align: right;
+            margin-bottom: 10px;
+        }
+        .btn {
+            display: inline-block;
+            padding: 8px 12px;
+            background: #3498db;
+            color: white;
+            text-decoration: none;
+            border-radius: 4px;
+        }
+        .btn:hover {
+            background: #2980b9;
+        }
     </style>
 </head>
 <body>
     <div class="container">
+        <div class="auth-links">
+            {% if user.is_authenticated %}
+                <p>Welcome, {{ user.username }} | <a href="{% url 'logout' %}" class="btn">Logout</a></p>
+            {% else %}
+                <p><a href="{% url 'login' %}" class="btn">Login</a></p>
+            {% endif %}
+        </div>
         <h1>{{ center.label }} - Center Details</h1>
 
         <h2>Center Information</h2>
@@ -201,6 +223,8 @@
             <a href="{% url 'add_technical_staff' %}">Add Technical Staff</a>
             <a href="{% url 'add_medical_staff' %}">Add Medical Staff</a>
             <a href="{% url 'add_paramedical_staff' %}">Add Paramedical Staff</a>
+            <a href="{% url 'add_administrative_staff' %}">Add Administrative Staff</a>
+            <a href="{% url 'add_worker_staff' %}">Add Worker Staff</a>
             <a href="{% url 'add_patient' %}">Add Patient</a>
             <a href="{% url 'add_machine' %}">Add Machine</a>
             <a href="{% url 'generate_report' %}">Generate Report</a>

@@ -1,47 +1,125 @@
 import logging
 from django.shortcuts import render, redirect, get_object_or_404
 from django.http import HttpResponse, JsonResponse
+from django.contrib.auth.decorators import user_passes_test, login_required
+from django.contrib.auth import authenticate, login
 from reportlab.pdfgen import canvas
 from io import BytesIO
-
-from .models import Center, TechnicalStaff, MedicalStaff, ParamedicalStaff, Delegation, Patient, CNAM, MethodHemo, MedicalActivity, TransmittableDiseaseRef, ComplicationsRef
-from .forms import CenterForm, TechnicalStaffForm, MedicalStaffForm, ParamedicalStaffForm, MachineForm, PatientForm, HemodialysisSessionForm, TransmittableDiseaseForm, TransmittableDiseaseRefForm, ComplicationsForm, ComplicationsRefForm
+from .models import Center, TechnicalStaff, MedicalStaff, ParamedicalStaff, AdministrativeStaff, WorkerStaff, Delegation, Patient, CNAM, MethodHemo, MedicalActivity, TransmittableDiseaseRef, ComplicationsRef
+from .forms import TechnicalStaffForm, MedicalStaffForm, ParamedicalStaffForm, AdministrativeStaffForm, WorkerStaffForm, MachineForm, PatientForm, HemodialysisSessionForm, TransmittableDiseaseForm, TransmittableDiseaseRefForm, ComplicationsForm, ComplicationsRefForm
 
 logger = logging.getLogger(__name__)
 
-def add_center(request):
-    center_id = request.GET.get('center_id')
-    instance = get_object_or_404(Center, pk=center_id) if center_id else None
-    if request.method == 'POST':
-        form = CenterForm(request.POST, instance=instance)
-        logger.debug("POST data: %s", request.POST)
-        if form.is_valid():
-            logger.info("Form is valid, cleaned data: %s", form.cleaned_data)
-            try:
-                center = form.save()
-                logger.info("Center saved: %s, Delegation: %s", center, center.delegation)
-                # Redirect to superadmin_center_detail for super admin, subdomain for center users
-                if not request.tenant:
-                    return redirect('superadmin_center_detail', pk=center.pk)
-                return redirect(f"http://{center.sub_domain | default:'center1'}.localhost:8000/")
-            except Exception as e:
-                logger.error("Error saving center: %s", str(e))
-                form.add_error(None, f"Error saving center: {str(e)}")
-        else:
-            logger.warning("Form is invalid: %s", form.errors)
-            return render(request, 'centers/add_center.html', {'form': form})
-    else:
-        form = CenterForm(instance=instance)
-        logger.debug("Rendering form with instance: %s", instance)
-    return render(request, 'centers/add_center.html', {'form': form})
+def CenterLoginView(request):
+    tenant = getattr(request, 'tenant', None)
+    if not tenant:
+        logger.error("No tenant found for login request")
+        return render(request, 'centers/login.html', {
+            'error': 'Invalid center subdomain.'
+        })
 
+    if request.method == 'POST':
+        username = request.POST.get('username')
+        password = request.POST.get('password')
+        user = authenticate(request, username=username, password=password)
+        
+        if user is not None:
+            # Reject superusers
+            if user.is_superuser:
+                logger.warning("Superadmin %s attempted login at center %s", username, tenant.label)
+                return render(request, 'centers/login.html', {
+                    'error': 'Superadmin accounts cannot log in to center portals.'
+                })
+            # Check all staff types for this center
+            staff_types = [AdministrativeStaff, ParamedicalStaff, TechnicalStaff, MedicalStaff, WorkerStaff]
+            staff = None
+            for staff_type in staff_types:
+                try:
+                    staff = staff_type.objects.get(user=user, center=tenant)
+                    logger.debug("Found %s for user %s in center %s", staff_type.__name__, username, tenant.label)
+                    break
+                except staff_type.DoesNotExist:
+                    logger.debug("No %s found for user %s in center %s", staff_type.__name__, username, tenant.label)
+                    continue
+            
+            if staff:
+                login(request, user)
+                logger.info("User %s logged in for center %s as %s", username, tenant.label, staff.__class__.__name__)
+                return redirect('center_detail')
+            else:
+                logger.warning("User %s not authorized for center %s", username, tenant.label)
+                return render(request, 'centers/login.html', {
+                    'error': 'You are not authorized for this center.'
+                })
+        else:
+            logger.warning("Failed login attempt for username: %s at center %s", username, tenant.label)
+            return render(request, 'centers/login.html', {
+                'error': 'Invalid username or password.'
+            })
+    return render(request, 'centers/login.html', {'center': tenant})
+
+def get_user_role(user):
+    if not user.is_authenticated:
+        return None
+    if user.is_superuser:
+        return 'SUPERADMIN'
+    try:
+        if hasattr(user, 'technical_profile'):
+            return user.technical_profile.role
+        elif hasattr(user, 'medical_profile'):
+            return user.medical_profile.role
+        elif hasattr(user, 'paramedical_profile'):
+            return user.paramedical_profile.role
+        elif hasattr(user, 'administrative_profile'):
+            return user.administrative_profile.role
+        elif hasattr(user, 'worker_profile'):
+            return user.worker_profile.role
+    except AttributeError:
+        return None
+    return None
+
+def is_local_admin(user):
+    if not user.is_authenticated:
+        return False
+    if user.is_superuser:
+        return True
+    role = get_user_role(user)
+    return role == 'LOCAL_ADMIN'
+
+def is_submitter(user):
+    if not user.is_authenticated:
+        return False
+    if user.is_superuser or is_local_admin(user):
+        return True
+    role = get_user_role(user)
+    return role in ['SUBMITTER', 'MEDICAL_PARA_STAFF']
+
+def is_medical_para_staff(user):
+    if not user.is_authenticated:
+        return False
+    if user.is_superuser or is_local_admin(user):
+        return True
+    role = get_user_role(user)
+    return role == 'MEDICAL_PARA_STAFF'
+
+def is_viewer(user):
+    if not user.is_authenticated:
+        return False
+    if user.is_superuser or is_local_admin(user) or is_submitter(user) or is_medical_para_staff(user):
+        return True
+    role = get_user_role(user)
+    return role == 'VIEWER'
+
+@login_required
 def generate_report(request):
     center = request.tenant
     if not center:
         return HttpResponse("No center found for this subdomain.", status=404)
-    technical_staff = center.technicalstaff_staff.all()
-    medical_staff = center.medicalstaff_staff.all()
-    paramedical_staff = center.paramedicalstaff_staff.all()
+    if not is_viewer(request.user):
+        return HttpResponse("Permission denied.", status=403)
+    technical_staff = center.technical_staff.all()
+    medical_staff = center.medical_staff.all()
+    paramedical_staff = center.paramedical_staff.all()
     patients = center.patient_staff.all()
     return render(request, 'centers/report.html', {
         'center': center,
@@ -51,13 +129,16 @@ def generate_report(request):
         'patients': patients,
     })
 
+@login_required
 def export_pdf(request):
     center = request.tenant
     if not center:
         return HttpResponse("No center found for this subdomain.", status=404)
-    technical_staff = center.technicalstaff_staff.all()
-    medical_staff = center.medicalstaff_staff.all()
-    paramedical_staff = center.paramedicalstaff_staff.all()
+    if not is_viewer(request.user):
+        return HttpResponse("Permission denied.", status=403)
+    technical_staff = center.technical_staff.all()
+    medical_staff = center.medical_staff.all()
+    paramedical_staff = center.paramedical_staff.all()
     patients = center.patient_staff.all()
     buffer = BytesIO()
     pdf = canvas.Canvas(buffer)
@@ -90,7 +171,7 @@ def export_pdf(request):
         draw_line(f"- {staff.nom} {staff.prenom} ({staff.qualification})", x=120)
     draw_line("4 -- Patients:")
     for patient in patients:
-        draw_line(f"- {patient.nom} {staff.prenom} (CNAM: {patient.cnam.number}, Status: {patient.status})", x=120)
+        draw_line(f"- {patient.nom} {patient.prenom} (CNAM: {patient.cnam.number}, Status: {patient.status})", x=120)
     pdf.showPage()
     pdf.save()
     buffer.seek(0)
@@ -98,31 +179,32 @@ def export_pdf(request):
         'Content-Disposition': 'attachment; filename="report.pdf"'
     })
 
+@login_required
 def center_detail(request):
     center = request.tenant
     if not center:
         return render(request, 'centers/404.html', status=404)
+    if not is_viewer(request.user):
+        return HttpResponse("Permission denied.", status=403)
     return render(request, 'centers/center_detail.html', {
         'center': center,
-        'technical_staff': center.technicalstaff_staff.all(),
-        'medical_staff': center.medicalstaff_staff.all(),
-        'paramedical_staff': center.paramedicalstaff_staff.all(),
+        'technical_staff': center.technical_staff.all(),
+        'medical_staff': center.medical_staff.all(),
+        'paramedical_staff': center.paramedical_staff.all(),
         'patients': center.patient_staff.all(),
     })
 
+@user_passes_test(is_local_admin)
 def add_machine(request):
-    if not hasattr(request, 'tenant') or not request.tenant:
+    center = request.tenant
+    if not center:
         logger.error("No tenant provided for add_machine")
         return render(request, 'centers/error.html', {'message': 'No center selected. Please access via a valid tenant.'}, status=400)
-    center = request.tenant
-    if not isinstance(center, Center):
-        logger.error("Invalid tenant type: %s", type(center))
-        return render(request, 'centers/error.html', {'message': 'Invalid center configuration.'}, status=400)
     if request.method == 'POST':
         form = MachineForm(request.POST, center=center)
         if form.is_valid():
             machine = form.save()
-            logger.info("Machine saved: %s for center %s", machine, center)
+            logger.info("Machine saved: %s for center %s", machine, center.label)
             return redirect('center_detail')
         else:
             logger.warning("Machine form is invalid: %s", form.errors)
@@ -130,6 +212,7 @@ def add_machine(request):
         form = MachineForm(center=center)
     return render(request, 'centers/add_machine.html', {'form': form, 'center': center})
 
+@user_passes_test(is_local_admin)
 def add_technical_staff(request):
     center = request.tenant
     if not center:
@@ -137,8 +220,11 @@ def add_technical_staff(request):
     if request.method == 'POST':
         form = TechnicalStaffForm(request.POST, center=center)
         if form.is_valid():
-            form.save()
+            staff = form.save()
+            logger.info("Technical staff saved: %s", staff)
             return redirect('center_detail')
+        else:
+            logger.warning("Technical staff form is invalid: %s", form.errors)
     else:
         form = TechnicalStaffForm(center=center)
     return render(request, 'centers/add_technical_staff.html', {
@@ -146,6 +232,7 @@ def add_technical_staff(request):
         'center': center
     })
 
+@user_passes_test(is_local_admin)
 def add_medical_staff(request):
     center = request.tenant
     if not center:
@@ -153,8 +240,11 @@ def add_medical_staff(request):
     if request.method == 'POST':
         form = MedicalStaffForm(request.POST, center=center)
         if form.is_valid():
-            form.save()
+            staff = form.save()
+            logger.info("Medical staff saved: %s", staff)
             return redirect('center_detail')
+        else:
+            logger.warning("Medical staff form is invalid: %s", form.errors)
     else:
         form = MedicalStaffForm(center=center)
     return render(request, 'centers/add_medical_staff.html', {
@@ -162,22 +252,73 @@ def add_medical_staff(request):
         'center': center
     })
 
+@user_passes_test(is_local_admin)
 def add_paramedical_staff(request):
     center = request.tenant
     if not center:
         return render(request, 'centers/404.html', status=404)
     if request.method == 'POST':
         form = ParamedicalStaffForm(request.POST, center=center)
+        logger.debug("POST data for add_paramedical_staff: %s", dict(request.POST))
         if form.is_valid():
-            form.save()
-            return redirect('center_detail')
+            try:
+                staff = form.save()
+                logger.info("Paramedical staff saved: %s for center %s", staff, center.label)
+                return redirect('center_detail')
+            except Exception as e:
+                logger.error("Error saving paramedical staff: %s", str(e))
+                form.add_error(None, f"Error: {str(e)}")
+        else:
+            logger.warning("Paramedical staff form is invalid: %s", form.errors)
     else:
         form = ParamedicalStaffForm(center=center)
     return render(request, 'centers/add_paramedical_staff.html', {
         'form': form,
+        'center': center,
+        'error': form.errors
+    })
+
+@user_passes_test(is_local_admin)
+def add_administrative_staff(request):
+    center = request.tenant
+    if not center:
+        return render(request, 'centers/404.html', status=404)
+    if request.method == 'POST':
+        form = AdministrativeStaffForm(request.POST, center=center)
+        if form.is_valid():
+            staff = form.save()
+            logger.info("Administrative staff saved: %s", staff)
+            return redirect('center_detail')
+        else:
+            logger.warning("Administrative staff form is invalid: %s", form.errors)
+    else:
+        form = AdministrativeStaffForm(center=center)
+    return render(request, 'centers/add_administrative_staff.html', {
+        'form': form,
         'center': center
     })
 
+@user_passes_test(is_local_admin)
+def add_worker_staff(request):
+    center = request.tenant
+    if not center:
+        return render(request, 'centers/404.html', status=404)
+    if request.method == 'POST':
+        form = WorkerStaffForm(request.POST, center=center)
+        if form.is_valid():
+            staff = form.save()
+            logger.info("Worker staff saved: %s", staff)
+            return redirect('center_detail')
+        else:
+            logger.warning("Worker staff form is invalid: %s", form.errors)
+    else:
+        form = WorkerStaffForm(center=center)
+    return render(request, 'centers/add_worker_staff.html', {
+        'form': form,
+        'center': center
+    })
+
+@user_passes_test(is_medical_para_staff)
 def add_patient(request):
     center = request.tenant
     if not center:
@@ -209,14 +350,6 @@ def add_cnam(request):
         logger.error("Error adding CNAM: %s", str(e))
         return JsonResponse({'error': str(e)}, status=500)
 
-def list_centers(request):
-    if hasattr(request, 'tenant') and request.tenant:
-        return redirect('center_detail')
-    centers = Center.objects.all().order_by('label')
-    return render(request, 'centers/list_centers.html', {
-        'centers': centers
-    })
-
 def load_delegations(request):
     governorate_id = request.GET.get('governorate_id')
     logger.debug("Loading delegations for governorate_id: %s", governorate_id)
@@ -231,11 +364,14 @@ def load_methods(request):
     logger.debug("Methods found: %s", list(methods.values('id', 'name')))
     return render(request, 'centers/method_dropdown_list_options.html', {'methods': methods})
 
+@login_required
 def list_patients(request):
     center = request.tenant
     if not center:
         logger.error("No tenant provided for list_patients")
         return render(request, 'centers/404.html', status=404)
+    if not is_viewer(request.user):
+        return HttpResponse("Permission denied.", status=403)
     patients = center.patient_staff.all()
     logger.debug("Patients fetched for center %s: %s", center.label, list(patients.values('nom', 'prenom')))
     return render(request, 'centers/list_patients.html', {
@@ -243,6 +379,7 @@ def list_patients(request):
         'patients': patients,
     })
 
+@user_passes_test(is_local_admin)
 def add_disease_ref(request):
     center = request.tenant
     if not center:
@@ -263,6 +400,7 @@ def add_disease_ref(request):
         'center': center
     })
 
+@user_passes_test(is_local_admin)
 def add_complication_ref(request):
     center = request.tenant
     if not center:
@@ -283,15 +421,18 @@ def add_complication_ref(request):
         'center': center
     })
 
+@login_required
 def patient_detail(request, pk):
     center = request.tenant
     if not center:
         logger.error("No tenant provided for patient_detail")
         return render(request, 'centers/404.html', status=404)
+    if not is_viewer(request.user):
+        return HttpResponse("Permission denied.", status=403)
     patient = get_object_or_404(Patient, pk=pk, center=center)
     logger.debug("Patient fetched: %s for center %s", patient, center.label)
     
-    if request.method == 'POST':
+    if request.method == 'POST' and is_submitter(request.user):
         session_form = HemodialysisSessionForm(request.POST, center=center, prefix='session')
         disease_form = TransmittableDiseaseForm(request.POST, center=center, prefix='disease')
         complication_form = ComplicationsForm(request.POST, center=center, prefix='complication')
@@ -356,6 +497,18 @@ def patient_detail(request, pk):
         session_form = HemodialysisSessionForm(center=center, prefix='session')
         disease_form = TransmittableDiseaseForm(center=center, prefix='disease')
         complication_form = ComplicationsForm(center=center, prefix='complication')
+
+    # Disable forms for non-submitters
+    if not is_submitter(request.user):
+        session_form.fields['type'].disabled = True
+        session_form.fields['method'].disabled = True
+        session_form.fields['date_of_session'].disabled = True
+        session_form.fields['responsible_doc'].disabled = True
+        disease_form.fields['disease'].disabled = True
+        disease_form.fields['date_of_contraction'].disabled = True
+        complication_form.fields['complication'].disabled = True
+        complication_form.fields['notes'].disabled = True
+        complication_form.fields['date_of_contraction'].disabled = True
     
     return render(request, 'centers/patient_detail.html', {
         'center': center,
@@ -363,14 +516,4 @@ def patient_detail(request, pk):
         'session_form': session_form,
         'disease_form': disease_form,
         'complication_form': complication_form,
-    })
-
-def superadmin_center_detail(request, pk):
-    center = get_object_or_404(Center, pk=pk)
-    return render(request, 'centers/superadmin_center_detail.html', {
-        'center': center,
-        'technical_staff': center.technicalstaff_staff.all(),
-        'medical_staff': center.medicalstaff_staff.all(),
-        'paramedical_staff': center.paramedicalstaff_staff.all(),
-        'patients': center.patient_staff.all(),
     })

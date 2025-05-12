@@ -73,10 +73,21 @@
             font-style: italic;
             padding: 20px;
         }
+        .auth-links {
+            text-align: right;
+            margin-bottom: 10px;
+        }
     </style>
 </head>
 <body>
     <div class="container">
+        <div class="auth-links">
+            {% if user.is_authenticated %}
+                <p>Welcome, {{ user.username }} | <a href="{% url 'logout' %}" class="btn">Logout</a></p>
+            {% else %}
+                <p><a href="{% url 'login' %}" class="btn">Login</a></p>
+            {% endif %}
+        </div>
         <h1>Hemodialysis Centers</h1>
 
         <div class="add-center">
@@ -101,11 +112,7 @@
                     {% for center in centers %}
                         <tr>
                             <td>
-                                {% if request.tenant %}
-                                    <a href="http://{{ center.sub_domain }}.localhost:8000" class="center-link">{{ center.label }}</a>
-                                {% else %}
-                                    <a href="{% url 'superadmin_center_detail' center.pk %}" class="center-link">{{ center.label }}</a>
-                                {% endif %}
+                                <a href="{% url 'superadmin_center_detail' center.pk %}" class="center-link">{{ center.label }}</a>
                             </td>
                             <td>{{ center.sub_domain }}.localhost:8000</td>
                             <td>{{ center.center_code|default:"Not set" }}</td>

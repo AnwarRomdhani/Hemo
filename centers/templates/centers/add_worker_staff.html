@@ -1,7 +1,46 @@
-<!DOCTYPE html>
+<script type="text/javascript">
+        var gk_isXlsx = false;
+        var gk_xlsxFileLookup = {};
+        var gk_fileData = {};
+        function filledCell(cell) {
+          return cell !== '' && cell != null;
+        }
+        function loadFileData(filename) {
+        if (gk_isXlsx && gk_xlsxFileLookup[filename]) {
+            try {
+                var workbook = XLSX.read(gk_fileData[filename], { type: 'base64' });
+                var firstSheetName = workbook.SheetNames[0];
+                var worksheet = workbook.Sheets[firstSheetName];
+
+                // Convert sheet to JSON to filter blank rows
+                var jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1, blankrows: false, defval: '' });
+                // Filter out blank rows (rows where all cells are empty, null, or undefined)
+                var filteredData = jsonData.filter(row => row.some(filledCell));
+
+                // Heuristic to find the header row by ignoring rows with fewer filled cells than the next row
+                var headerRowIndex = filteredData.findIndex((row, index) =>
+                  row.filter(filledCell).length >= filteredData[index + 1]?.filter(filledCell).length
+                );
+                // Fallback
+                if (headerRowIndex === -1 || headerRowIndex > 25) {
+                  headerRowIndex = 0;
+                }
+
+                // Convert filtered JSON back to CSV
+                var csv = XLSX.utils.aoa_to_sheet(filteredData.slice(headerRowIndex)); // Create a new sheet from filtered array of arrays
+                csv = XLSX.utils.sheet_to_csv(csv, { header: 1 });
+                return csv;
+            } catch (e) {
+                console.error(e);
+                return "";
+            }
+        }
+        return gk_fileData[filename] || "";
+        }
+        </script><!DOCTYPE html>
 <html>
 <head>
-    <title>Add Paramedical Staff to {{ center.label }}</title>
+    <title>Add Worker Staff to {{ center.label }}</title>
     <meta charset="UTF-8">
     <style>
         body {
@@ -101,7 +140,7 @@
                 <p><a href="{% url 'login' %}" class="btn">Login</a></p>
             {% endif %}
         </div>
-        <h1>Add Paramedical Staff to {{ center.label }}</h1>
+        <h1>Add Worker Staff to {{ center.label }}</h1>
         
         {% if error %}
             <div class="error-message">{{ error }}</div>
@@ -120,7 +159,7 @@
             </div>
         {% endif %}
 
-        <form method="post" action="{% url 'add_paramedical_staff' %}">
+        <form method="post" action="{% url 'add_worker_staff' %}">
             {% csrf_token %}
             <div class="form-group">
                 <label for="{{ form.nom.id_for_label }}">Last Name</label>
@@ -141,13 +180,6 @@
                 {{ form.cin }}
                 {% if form.cin.errors %}
                     <div class="field-error">{{ form.cin.errors }}</div>
-                {% endif %}
-            </div>
-            <div class="form-group">
-                <label for="{{ form.qualification.id_for_label }}">Qualification</label>
-                {{ form.qualification }}
-                {% if form.qualification.errors %}
-                    <div class="field-error">{{ form.qualification.errors }}</div>
                 {% endif %}
             </div>
             <div class="form-group">
@@ -178,7 +210,7 @@
                     <div class="field-error">{{ form.password.errors }}</div>
                 {% endif %}
             </div>
-            <button type="submit">Add Paramedical Staff</button>
+            <button type="submit">Add Worker Staff</button>
         </form>
         <a href="{% url 'center_detail' %}" class="btn" style="margin-top: 10px;">Back to Center</a>
     </div>

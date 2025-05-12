@@ -1,14 +1,14 @@
 # urls.py (updated)
 from django.urls import path
-from .views import (add_center, center_detail, 
+from .views import (center_detail, 
                    add_technical_staff, add_medical_staff, add_paramedical_staff,
                    generate_report, export_pdf,load_delegations,add_machine,add_patient,add_cnam,
-                   list_patients,patient_detail,load_methods,add_disease_ref,add_complication_ref,superadmin_center_detail
+                   list_patients,patient_detail,load_methods,add_disease_ref,add_complication_ref,CenterLoginView
                    )
+from django.contrib.auth.views import LoginView, LogoutView
 
 urlpatterns = [
     path('add_patient/', add_patient, name='add_patient'),
-    path('add-center/', add_center, name='add_center'),
     path('', center_detail, name='center_detail'),
     path('add_cnam/',add_cnam, name='add_cnam'),
     path('add-technical-staff/', add_technical_staff, name='add_technical_staff'),
@@ -23,5 +23,6 @@ urlpatterns = [
     path('load-methods/', load_methods, name='load_methods'),
     path('add-disease-ref/', add_disease_ref, name='add_disease_ref'),
     path('add-complication-ref/', add_complication_ref, name='add_complication_ref'),
-    path('centers/<int:pk>/', superadmin_center_detail, name='superadmin_center_detail'),
+    path('login/', CenterLoginView, name='login'),
+    path('logout/', LogoutView.as_view(next_page='login'), name='logout'),
 ]

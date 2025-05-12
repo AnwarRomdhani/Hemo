@@ -122,3 +122,52 @@ Form is valid, cleaned data: {'sub_domain': 'cilo9', 'tel': '45454522', 'label':
 Center saved: Kaboot (cilo9.localhost:8000), Delegation: None
 Rendering empty form
 Rendering empty form
+Rendering form with instance: ARIANA (ariana.localhost:8000)
+Loading delegations for governorate_id: 1
+Delegations found: [{'id': 1, 'name': 'Ariana Medina'}, {'id': 2, 'name': 'Ettadhamen'}, {'id': 3, 'name': 'Kalaat el Andalous'}, {'id': 4, 'name': 'Mnihla'}, {'id': 5, 'name': 'Raoued'}, {'id': 6, 'name': 'Sidi Thabet'}, {'id': 7, 'name': 'Soukra'}]
+Loading delegations for governorate_id: 18
+Delegations found: [{'id': 187, 'name': 'Bir El Hafey'}, {'id': 188, 'name': 'Cebbala Ouled Asker'}, {'id': 189, 'name': 'Jilma'}, {'id': 190, 'name': 'Meknassy'}, {'id': 191, 'name': 'Menzel Bouzaiane'}, {'id': 192, 'name': 'Mezzouna'}, {'id': 193, 'name': 'Ouled Haffouz'}, {'id': 194, 'name': 'Regueb'}, {'id': 195, 'name': 'Sidi Ali Ben Aoun'}, {'id': 196, 'name': 'Sidi Bouzid Est'}, {'id': 197, 'name': 'Sidi Bouzid Ouest'}, {'id': 198, 'name': 'Souk Jedid'}]
+Loading delegations for governorate_id: 4
+Delegations found: [{'id': 29, 'name': 'Bizerte Nord'}, {'id': 30, 'name': 'Bizerte Sud'}, {'id': 31, 'name': 'Djoumine'}, {'id': 32, 'name': 'El Alia'}, {'id': 33, 'name': 'Ghar El Melh'}, {'id': 34, 'name': 'Ghezala'}, {'id': 35, 'name': 'Mateur'}, {'id': 36, 'name': 'Menzel Bourguiba'}, {'id': 37, 'name': 'Menzel Jemil'}, {'id': 38, 'name': 'Ras Jabel'}, {'id': 39, 'name': 'Sejenane'}, {'id': 40, 'name': 'Tinja'}, {'id': 41, 'name': 'Utique'}, {'id': 42, 'name': 'Zarzouna'}]
+Loading delegations for governorate_id: 6
+Delegations found: [{'id': 53, 'name': 'Belkhir'}, {'id': 54, 'name': 'El Guetar'}, {'id': 55, 'name': 'El Ksar'}, {'id': 56, 'name': 'Gafsa Nord'}, {'id': 57, 'name': 'Gafsa Sud'}, {'id': 58, 'name': 'Mdhilla'}, {'id': 59, 'name': 'Metlaoui'}, {'id': 60, 'name': 'Oum El Araies'}, {'id': 61, 'name': 'Redeyef'}, {'id': 62, 'name': 'Sidi Aïch'}, {'id': 63, 'name': 'Sned'}]
+Loading delegations for governorate_id: 19
+Delegations found: [{'id': 199, 'name': 'Bargou'}, {'id': 200, 'name': 'Bou Arada'}, {'id': 201, 'name': 'El Aroussa'}, {'id': 202, 'name': 'El Krib'}, {'id': 203, 'name': 'Gaâfour'}, {'id': 204, 'name': 'Kesra'}, {'id': 205, 'name': 'Makthar'}, {'id': 206, 'name': 'Rouhia'}, {'id': 207, 'name': 'Sidi Bou Rouis'}, {'id': 208, 'name': 'Siliana Nord'}, {'id': 209, 'name': 'Siliana Sud'}]
+Loading delegations for governorate_id: 3
+Delegations found: [{'id': 17, 'name': 'Ben Arous'}, {'id': 18, 'name': 'Bou Mhel El Bassatine'}, {'id': 19, 'name': 'El Mourouj'}, {'id': 20, 'name': 'Ezzahra'}, {'id': 21, 'name': 'Fouchana'}, {'id': 22, 'name': 'Hammam Chôtt'}, {'id': 23, 'name': 'Hammam Lif'}, {'id': 24, 'name': 'La Nouvelle Medina'}, {'id': 25, 'name': 'Megrine'}, {'id': 26, 'name': 'Mohamedia'}, {'id': 27, 'name': 'Mornag'}, {'id': 28, 'name': 'Radès'}]
+Loading delegations for governorate_id: 3
+Delegations found: [{'id': 17, 'name': 'Ben Arous'}, {'id': 18, 'name': 'Bou Mhel El Bassatine'}, {'id': 19, 'name': 'El Mourouj'}, {'id': 20, 'name': 'Ezzahra'}, {'id': 21, 'name': 'Fouchana'}, {'id': 22, 'name': 'Hammam Chôtt'}, {'id': 23, 'name': 'Hammam Lif'}, {'id': 24, 'name': 'La Nouvelle Medina'}, {'id': 25, 'name': 'Megrine'}, {'id': 26, 'name': 'Mohamedia'}, {'id': 27, 'name': 'Mornag'}, {'id': 28, 'name': 'Radès'}]
+Failed login attempt for username: john at center cils
+Failed login attempt for username: john at center cils
+Superadmin jolda attempted login at center cils
+Failed login attempt for username: john at center cils
+Failed login attempt for username: john at center cils
+Failed login attempt for username: vadim at center cils
+Failed login attempt for username: vadim at center cils
+Failed login attempt for username: john at center cils
+Failed login attempt for username: vadima at center cils
+Failed login attempt for username: panama at center cils
+Failed login attempt for username: panama at center cils
+Failed login attempt for username: katana at center cils
+Failed login attempt for username: filo at center cils
+Center staff logged in: ok for center cils
+Paramedical staff saved: Chan Jolda (7854697)
+User oni not authorized for center cils
+User oni not authorized for center cils
+Center staff logged in: ok for center cils
+User oni not authorized for center cils
+Center staff logged in: ok for center cils
+Medical staff saved: Chan Jolda (965874)
+User okasa not authorized for center cils
+Failed login attempt for username: oni at center cils
+User okasa not authorized for center cils
+Center staff logged in: ok for center cils
+POST data for add_paramedical_staff: {'csrfmiddlewaretoken': ['BEeiGCTaoLr7IHKOI0ynANT1ZMI8Iyxti2YWBEd3h8O1bXFrGb8nyKk46BIKgFLd'], 'nom': ['okari'], 'prenom': ['nasay'], 'cin': ['1598624'], 'qualification': ['Major'], 'role': ['MEDICAL_PARA_STAFF'], 'username': ['john'], 'email': ['o@o.cpa'], 'password': ['azerty123']}
+Paramedical staff saved: okari nasay (1598624) for center cils
+No AdministrativeStaff found for user john in center cils
+Found ParamedicalStaff for user john in center cils
+User john logged in for center cils as ParamedicalStaff
+Found AdministrativeStaff for user ok in center cils
+User ok logged in for center cils as AdministrativeStaff
+Patients fetched for center cils: [{'nom': 'JOKEDA', 'prenom': 'ikea'}]
+Patient fetched: JOKEDA ikea (98564723) for center cils

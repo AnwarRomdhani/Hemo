@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Add Paramedical Staff to {{ center.label }}</title>
+    <title>Add Technical Staff to {{ center.label }}</title>
     <meta charset="UTF-8">
     <style>
         body {
@@ -101,7 +101,7 @@
                 <p><a href="{% url 'login' %}" class="btn">Login</a></p>
             {% endif %}
         </div>
-        <h1>Add Paramedical Staff to {{ center.label }}</h1>
+        <h1>Add Technical Staff to {{ center.label }}</h1>
         
         {% if error %}
             <div class="error-message">{{ error }}</div>
@@ -120,7 +120,7 @@
             </div>
         {% endif %}
 
-        <form method="post" action="{% url 'add_paramedical_staff' %}">
+        <form method="post" action="{% url 'add_technical_staff' %}">
             {% csrf_token %}
             <div class="form-group">
                 <label for="{{ form.nom.id_for_label }}">Last Name</label>
@@ -178,7 +178,7 @@
                     <div class="field-error">{{ form.password.errors }}</div>
                 {% endif %}
             </div>
-            <button type="submit">Add Paramedical Staff</button>
+            <button type="submit">Add Technical Staff</button>
         </form>
         <a href="{% url 'center_detail' %}" class="btn" style="margin-top: 10px;">Back to Center</a>
     </div>

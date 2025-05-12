@@ -1,15 +1,186 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Add Medical Staff - {{ center.label }}</title>
+    <title>Add Medical Staff to {{ center.label }}</title>
+    <meta charset="UTF-8">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 20px;
+            color: #333;
+            background: #f4f4f4;
+        }
+        .container {
+            max-width: 600px;
+            margin: 50px auto;
+            padding: 20px;
+            background: #fff;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #2c3e50;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        input[type="text"],
+        input[type="email"],
+        input[type="password"],
+        select {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        button {
+            background: #2c3e50;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            font-size: 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 10px;
+        }
+        button:hover {
+            background: #34495e;
+        }
+        .error-message {
+            color: red;
+            font-size: 14px;
+            margin-bottom: 10px;
+        }
+        .field-error {
+            color: red;
+            font-size: 12px;
+            margin-top: 5px;
+        }
+        .debug-info {
+            background: #f8f8f8;
+            padding: 10px;
+            border: 1px solid #ddd;
+            margin-bottom: 15px;
+            font-size: 12px;
+            color: #555;
+            white-space: pre-wrap;
+        }
+        .auth-links {
+            text-align: right;
+            margin-bottom: 10px;
+        }
+        .btn {
+            display: inline-block;
+            padding: 8px 12px;
+            background: #3498db;
+            color: white;
+            text-decoration: none;
+            border-radius: 4px;
+        }
+        .btn:hover {
+            background: #2980b9;
+        }
+    </style>
 </head>
 <body>
-    <h1>Add Medical Staff to {{ center.label }}</h1>
-    <form method="post">
-        {% csrf_token %}
-        {{ form.as_p }}
-        <button type="submit">Add Medical Staff</button>
-    </form>
-    <p><a href="{% url 'center_detail' %}">Back to Center</a></p>
+    <div class="container">
+        <div class="auth-links">
+            {% if user.is_authenticated %}
+                <p>Welcome, {{ user.username }} | <a href="{% url 'logout' %}" class="btn">Logout</a></p>
+            {% else %}
+                <p><a href="{% url 'login' %}" class="btn">Login</a></p>
+            {% endif %}
+        </div>
+        <h1>Add Medical Staff to {{ center.label }}</h1>
+        
+        {% if error %}
+            <div class="error-message">{{ error }}</div>
+        {% endif %}
+        {% if form.errors %}
+            <div class="debug-info">
+                <strong>Form Errors:</strong><br>
+                {{ form.errors|safe }}
+            </div>
+        {% endif %}
+        {% if form.non_field_errors %}
+            <div class="error-message">
+                {% for error in form.non_field_errors %}
+                    {{ error }}<br>
+                {% endfor %}
+            </div>
+        {% endif %}
+
+        <form method="post" action="{% url 'add_medical_staff' %}">
+            {% csrf_token %}
+            <div class="form-group">
+                <label for="{{ form.nom.id_for_label }}">Last Name</label>
+                {{ form.nom }}
+                {% if form.nom.errors %}
+                    <div class="field-error">{{ form.nom.errors }}</div>
+                {% endif %}
+            </div>
+            <div class="form-group">
+                <label for="{{ form.prenom.id_for_label }}">First Name</label>
+                {{ form.prenom }}
+                {% if form.prenom.errors %}
+                    <div class="field-error">{{ form.prenom.errors }}</div>
+                {% endif %}
+            </div>
+            <div class="form-group">
+                <label for="{{ form.cin.id_for_label }}">CIN</label>
+                {{ form.cin }}
+                {% if form.cin.errors %}
+                    <div class="field-error">{{ form.cin.errors }}</div>
+                {% endif %}
+            </div>
+            <div class="form-group">
+                <label for="{{ form.cnom.id_for_label }}">CNOM</label>
+                {{ form.cnom }}
+                {% if form.cnom.errors %}
+                    <div class="field-error">{{ form.cnom.errors }}</div>
+                {% endif %}
+            </div>
+            <div class="form-group">
+                <label for="{{ form.role.id_for_label }}">Role</label>
+                {{ form.role }}
+                {% if form.role.errors %}
+                    <div class="field-error">{{ form.role.errors }}</div>
+                {% endif %}
+            </div>
+            <div class="form-group">
+                <label for="{{ form.username.id_for_label }}">Username</label>
+                {{ form.username }}
+                {% if form.username.errors %}
+                    <div class="field-error">{{ form.username.errors }}</div>
+                {% endif %}
+            </div>
+            <div class="form-group">
+                <label for="{{ form.email.id_for_label }}">Email</label>
+                {{ form.email }}
+                {% if form.email.errors %}
+                    <div class="field-error">{{ form.email.errors }}</div>
+                {% endif %}
+            </div>
+            <div class="form-group">
+                <label for="{{ form.password.id_for_label }}">Password</label>
+                {{ form.password }}
+                {% if form.password.errors %}
+                    <div class="field-error">{{ form.password.errors }}</div>
+                {% endif %}
+            </div>
+            <button type="submit">Add Medical Staff</button>
+        </form>
+        <a href="{% url 'center_detail' %}" class="btn" style="margin-top: 10px;">Back to Center</a>
+    </div>
 </body>
 </html>

@@ -1,7 +1,7 @@
 import logging
 from django.db import models
 from django.core.exceptions import ValidationError
-
+from django.contrib.auth.models import User
 logger = logging.getLogger(__name__)
 
 class Center(models.Model):
@@ -72,39 +72,110 @@ class Person(models.Model):
     def __str__(self):
         return f"{self.nom} {self.prenom} ({self.cin})"
 
-class Staff(Person):
+class AdministrativeStaff(models.Model):
+    ROLE_CHOICES = [
+        ('LOCAL_ADMIN', 'Local Admin'),
+        ('SUBMITTER', 'Submitter'),
+        ('MEDICAL_PARA_STAFF', 'Medical & Paramedical Staff'),
+        ('VIEWER', 'Viewer'),
+    ]
+    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='administrative_profile', null=False, blank=False)
+    nom = models.CharField(max_length=100)
+    prenom = models.CharField(max_length=100)
+    cin = models.CharField(max_length=50, unique=True)
+    center = models.ForeignKey(Center, on_delete=models.CASCADE, related_name='administrative_staff')
+    role = models.CharField(max_length=20, choices=ROLE_CHOICES, default='VIEWER')
+    job_title = models.CharField(max_length=100)  # E.g., Secretary, Manager
+
     class Meta:
-        abstract = True
+        db_table = 'centers_administrativestaff'
 
-class TechnicalStaff(Staff):
-    qualification = models.CharField(max_length=100)
+    def __str__(self):
+        return f"{self.nom} {self.prenom} ({self.cin})"
 
-    class Meta:
-        db_table = 'centers_technicalstaff'
-
-class MedicalStaff(Staff):
+class MedicalStaff(models.Model):
+    ROLE_CHOICES = [
+        ('LOCAL_ADMIN', 'Local Admin'),
+        ('SUBMITTER', 'Submitter'),
+        ('MEDICAL_PARA_STAFF', 'Medical & Paramedical Staff'),
+        ('VIEWER', 'Viewer'),
+    ]
+    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='medical_profile', null=False, blank=False)
+    nom = models.CharField(max_length=100)
+    prenom = models.CharField(max_length=100)
+    cin = models.CharField(max_length=50, unique=True)
+    center = models.ForeignKey(Center, on_delete=models.CASCADE, related_name='medical_staff')
+    role = models.CharField(max_length=20, choices=ROLE_CHOICES, default='MEDICAL_PARA_STAFF')
     cnom = models.CharField(max_length=100)
 
     class Meta:
         db_table = 'centers_medicalstaff'
 
-class ParamedicalStaff(Staff):
+    def __str__(self):
+        return f"{self.nom} {self.prenom} ({self.cin})"
+
+class ParamedicalStaff(models.Model):
+    ROLE_CHOICES = [
+        ('LOCAL_ADMIN', 'Local Admin'),
+        ('SUBMITTER', 'Submitter'),
+        ('MEDICAL_PARA_STAFF', 'Medical & Paramedical Staff'),
+        ('VIEWER', 'Viewer'),
+    ]
+    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='paramedical_profile', null=False, blank=False)
+    nom = models.CharField(max_length=100)
+    prenom = models.CharField(max_length=100)
+    cin = models.CharField(max_length=50, unique=True)
+    center = models.ForeignKey(Center, on_delete=models.CASCADE, related_name='paramedical_staff')
+    role = models.CharField(max_length=20, choices=ROLE_CHOICES, default='MEDICAL_PARA_STAFF')
     qualification = models.CharField(max_length=100)
 
     class Meta:
         db_table = 'centers_paramedicalstaff'
 
-class AdministrativeStaff(Staff):
-    role = models.CharField(max_length=100)  # E.g., Secretary, Manager
+    def __str__(self):
+        return f"{self.nom} {self.prenom} ({self.cin})"
+
+class TechnicalStaff(models.Model):
+    ROLE_CHOICES = [
+        ('LOCAL_ADMIN', 'Local Admin'),
+        ('SUBMITTER', 'Submitter'),
+        ('MEDICAL_PARA_STAFF', 'Medical & Paramedical Staff'),
+        ('VIEWER', 'Viewer'),
+    ]
+    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='technical_profile', null=False, blank=False)
+    nom = models.CharField(max_length=100)
+    prenom = models.CharField(max_length=100)
+    cin = models.CharField(max_length=50, unique=True)
+    center = models.ForeignKey(Center, on_delete=models.CASCADE, related_name='technical_staff')
+    role = models.CharField(max_length=20, choices=ROLE_CHOICES, default='VIEWER')
+    qualification = models.CharField(max_length=100)
 
     class Meta:
-        db_table = 'centers_administrativestaff'
+        db_table = 'centers_technicalstaff'
 
-class WorkerStaff(Staff):
+    def __str__(self):
+        return f"{self.nom} {self.prenom} ({self.cin})"
+
+class WorkerStaff(models.Model):
+    ROLE_CHOICES = [
+        ('LOCAL_ADMIN', 'Local Admin'),
+        ('SUBMITTER', 'Submitter'),
+        ('MEDICAL_PARA_STAFF', 'Medical & Paramedical Staff'),
+        ('VIEWER', 'Viewer'),
+    ]
+    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='worker_profile', null=False, blank=False)
+    nom = models.CharField(max_length=100)
+    prenom = models.CharField(max_length=100)
+    cin = models.CharField(max_length=50, unique=True)
+    center = models.ForeignKey(Center, on_delete=models.CASCADE, related_name='worker_staff')
+    role = models.CharField(max_length=20, choices=ROLE_CHOICES, default='VIEWER')
     job_title = models.CharField(max_length=100)  # E.g., Janitor, Technician
 
     class Meta:
         db_table = 'centers_workerstaff'
+
+    def __str__(self):
+        return f"{self.nom} {self.prenom} ({self.cin})"
 
 class CNAM(models.Model):
     number = models.CharField(max_length=50, unique=True)
@@ -173,7 +244,7 @@ class Filtre(models.Model):
     STERILISATION_CHOICES = [
         ('WATER_STEAM', 'Water Steam'),
         ('GAMMA_RAYS', 'Gamma Rays'),
-        ('ETHYLENE_OXIDE', 'Ethylene Oxide'),
+        ('ETH ethylene_OXIDE', 'Ethylene Oxide'),
     ]
     type = models.CharField(max_length=100)
     sterilisation = models.CharField(max_length=100, blank=True)
