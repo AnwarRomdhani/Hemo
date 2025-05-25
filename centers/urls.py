@@ -2,8 +2,21 @@
 from django.urls import path
 from .views import (center_detail, 
                    add_technical_staff, add_medical_staff, add_paramedical_staff,
-                   generate_report, export_pdf,load_delegations,add_machine,add_patient,add_cnam,
-                   list_patients,patient_detail,load_methods,add_disease_ref,add_complication_ref,CenterLoginView
+                   export_pdf,load_delegations,add_machine,add_patient,add_cnam,
+                   list_patients,patient_detail,load_methods,add_disease_ref,add_complication_ref,CenterLoginView,verify_email,add_administrative_staff,add_worker_staff
+                   ,center_users_list,delete_staff,add_transplantation_ref,declare_deceased,
+
+                   CenterLoginAPIView,AddAdministrativeStaffAPIView,AddMedicalStaffAPIView,AddParamedicalStaffAPIView,
+                   AddTechnicalStaffAPIView,AddWorkerStaffAPIView,AddPatientAPIView,
+                   DeclareDeceasedAPIView,AddComplicationsAPIView,AddHemodialysisSessionAPIView,
+                   AddTransmittableDiseaseAPIView,AddTransplantationAPIView,AddComplicationsRefAPIView,
+                   AddTransmittableDiseaseRefAPIView,AddTransplantationRefAPIView,AddMachineAPIView,UserProfileView,
+                   PatientsView,PatientMedicalActivityView,PatientDetailAPIView,MedicalStaffAPIView ,TypeHemoAPIView,
+                   MethodHemoAPIView,TransmittableDiseaseRefAPIView,TransplantationRefAPIView,ComplicationsRefAPIView,
+                   CNAMListAPIView,AdministrativeStaffListAPIView,ParamedicalStaffListAPIView,MedicalStaffListAPIView,WorkerStaffListAPIView
+                   ,TechnicalStaffListAPIView,UpdateAdministrativeStaffAPIView,UpdateMedicalStaffAPIView,UpdateParamedicalStaffAPIView
+                   ,UpdateAdministrativeStaffAPIView,UpdateTechnicalStaffAPIView,UpdateWorkerStaffAPIView,DeleteAdministrativeStaffAPIView,DeleteMedicalStaffAPIView
+                   ,DeleteParamedicalStaffAPIView,DeleteTechnicalStaffAPIView,DeleteWorkerStaffAPIView
                    )
 from django.contrib.auth.views import LoginView, LogoutView
 
@@ -14,7 +27,8 @@ urlpatterns = [
     path('add-technical-staff/', add_technical_staff, name='add_technical_staff'),
     path('add-medical-staff/', add_medical_staff, name='add_medical_staff'),
     path('add-paramedical-staff/', add_paramedical_staff, name='add_paramedical_staff'),
-    path('report/', generate_report, name='generate_report'),
+    path('add-adminstrative-staff/', add_administrative_staff, name='add_administrative_staff'),
+    path('add-worker-staff/', add_worker_staff, name='add_worker_staff'),
     path('export-pdf/', export_pdf, name='export_pdf'),
     path('ajax/load-delegations/', load_delegations, name='load_delegations'),
     path('add_machine/', add_machine, name='add_machine'),
@@ -24,5 +38,54 @@ urlpatterns = [
     path('add-disease-ref/', add_disease_ref, name='add_disease_ref'),
     path('add-complication-ref/', add_complication_ref, name='add_complication_ref'),
     path('login/', CenterLoginView, name='login'),
+    path('verify-email/', verify_email, name='verify_email'),
     path('logout/', LogoutView.as_view(next_page='login'), name='logout'),
+    path('users/', center_users_list, name='center_users_list'),
+    path('users/<int:staff_id>/delete/', delete_staff, name='delete_staff'),
+    path('transplantation-ref/add/', add_transplantation_ref, name='add_transplantation_ref'),
+    path('patients/<int:pk>/declare-deceased/', declare_deceased, name='declare_deceased'),
+
+    path('api/login/', CenterLoginAPIView.as_view(), name='center_login_api'),
+    path('api/add-administrative-staff/', AddAdministrativeStaffAPIView.as_view(), name='add_administrative_staff_api'),
+    path('api/add-technical-staff/', AddTechnicalStaffAPIView.as_view(), name='add_technical_staff_api'),
+    path('api/add-medical-staff/', AddMedicalStaffAPIView.as_view(), name='add_medical_staff_api'),
+    path('api/add-paramedical-staff/', AddParamedicalStaffAPIView.as_view(), name='add_paramedical_staff_api'),
+    path('api/add-worker-staff/', AddWorkerStaffAPIView.as_view(), name='add_worker_staff_api'),
+    path('api/add-patient/', AddPatientAPIView.as_view(), name='add_patient_api'),
+    path('api/declare-deceased/<int:patient_id>/', DeclareDeceasedAPIView.as_view(), name='declare_deceased_api'),
+    path('api/add-hemodialysis-session/<int:patient_id>/', AddHemodialysisSessionAPIView.as_view(), name='add_hemodialysis_session_api'),
+    path('api/add-transmittable-disease/<int:patient_id>/', AddTransmittableDiseaseAPIView.as_view(), name='add_transmittable_disease_api'),
+    path('api/add-complications/<int:patient_id>/', AddComplicationsAPIView.as_view(), name='add_complications_api'),
+    path('api/add-transplantation/<int:patient_id>/', AddTransplantationAPIView.as_view(), name='add_transplantation_api'),
+    path('api/add-transmittable-disease-ref/', AddTransmittableDiseaseRefAPIView.as_view(), name='add-transmittable-disease-ref'),
+    path('api/add-complications-ref/', AddComplicationsRefAPIView.as_view(), name='add-complications-ref'),
+    path('api/add-transplantation-ref/', AddTransplantationRefAPIView.as_view(), name='add-transplantation-ref'),
+    path('api/add-machine/', AddMachineAPIView.as_view(), name='add-machine'),
+    path('api/user-profile/', UserProfileView.as_view(), name='user-profile'),
+    path('api/patients/', PatientsView.as_view(), name='patients'),
+    path('api/patients/<int:patient_id>/medical-activity/', PatientMedicalActivityView.as_view(), name='patient-medical-activity'),
+    path('api/patients/<int:patient_id>/', PatientDetailAPIView.as_view(), name='patient-detail'),
+    path('api/medical-staff/', MedicalStaffAPIView.as_view(), name='medical_staff_list'),
+     path('api/type-hemo/', TypeHemoAPIView.as_view(), name='type_hemo_list'),
+    path('api/method-hemo/', MethodHemoAPIView.as_view(), name='method_hemo_list'),
+    path('api/transmittable-disease-ref/', TransmittableDiseaseRefAPIView.as_view(), name='transmittable_disease_ref'),
+    path('api/complications-ref/', ComplicationsRefAPIView.as_view(), name='complications_ref'),
+    path('api/transplantation-ref/', TransplantationRefAPIView.as_view(), name='transplantation_ref'),
+    path('api/cnams/', CNAMListAPIView.as_view(), name='cnam_list_api'),
+    path('api/administrative-staff/', AdministrativeStaffListAPIView.as_view(), name='administrative_staff_list_api'),
+    path('api/medical-staff/', MedicalStaffListAPIView.as_view(), name='medical_staff_list_api'),
+    path('api/paramedical-staff/', ParamedicalStaffListAPIView.as_view(), name='paramedical_staff_list_api'),
+    path('api/technical-staff/', TechnicalStaffListAPIView.as_view(), name='technical_staff_list_api'),
+    path('api/worker-staff/', WorkerStaffListAPIView.as_view(), name='worker_staff_list_api'),
+      path('api/update-medical-staff/<int:pk>/', UpdateMedicalStaffAPIView.as_view(), name='update-medical-staff'),
+    path('api/delete-medical-staff/<int:pk>/', DeleteMedicalStaffAPIView.as_view(), name='delete-medical-staff'),
+    path('api/update-paramedical-staff/<int:pk>/', UpdateParamedicalStaffAPIView.as_view(), name='update-paramedical-staff'),
+    path('api/delete-paramedical-staff/<int:pk>/', DeleteParamedicalStaffAPIView.as_view(), name='delete-paramedical-staff'),
+    path('api/update-administrative-staff/<int:pk>/', UpdateAdministrativeStaffAPIView.as_view(), name='update-administrative-staff'),
+    path('api/delete-administrative-staff/<int:pk>/', DeleteAdministrativeStaffAPIView.as_view(), name='delete-administrative-staff'),
+    path('api/update-worker-staff/<int:pk>/', UpdateWorkerStaffAPIView.as_view(), name='update-worker-staff'),
+    path('api/delete-worker-staff/<int:pk>/', DeleteWorkerStaffAPIView.as_view(), name='delete-worker-staff'),
+    path('api/update-technical-staff/<int:pk>/', UpdateTechnicalStaffAPIView.as_view(), name='update-technical-staff'),
+    path('api/delete-technical-staff/<int:pk>/', DeleteTechnicalStaffAPIView.as_view(), name='delete-technical-staff'),
+
 ]

@@ -1,0 +1,6241 @@
+[
+{
+  "model": "centers.center",
+  "pk": 12,
+  "fields": {
+    "sub_domain": "onii",
+    "label": "oka",
+    "tel": "98536400",
+    "mail": "a@a.com",
+    "adresse": "",
+    "governorate": 17,
+    "delegation": 175,
+    "type_center": "REGIONAL",
+    "code_type_hemo": "CHTO?",
+    "name_type_hemo": "opa",
+    "center_code": 12563
+  }
+},
+{
+  "model": "centers.center",
+  "pk": 13,
+  "fields": {
+    "sub_domain": "cilo",
+    "label": "cils",
+    "tel": "50109939",
+    "mail": "anwwarromma@gmail.com",
+    "adresse": "",
+    "governorate": 16,
+    "delegation": 168,
+    "type_center": "PRIVATE",
+    "code_type_hemo": "",
+    "name_type_hemo": "",
+    "center_code": 2635
+  }
+},
+{
+  "model": "centers.center",
+  "pk": 14,
+  "fields": {
+    "sub_domain": "dineri",
+    "label": "Kaboot",
+    "tel": "454545",
+    "mail": "c@c.com",
+    "adresse": "susah",
+    "governorate": 16,
+    "delegation": 168,
+    "type_center": "REGIONAL",
+    "code_type_hemo": "MD2200",
+    "name_type_hemo": "UNITE HEMODIALYSE",
+    "center_code": 12563
+  }
+},
+{
+  "model": "centers.center",
+  "pk": 15,
+  "fields": {
+    "sub_domain": "clinique-de-dialyse-echifa",
+    "label": "CLINIQUE DE DIALYSE ECHIFA",
+    "tel": "",
+    "mail": "",
+    "adresse": "LE BARDO",
+    "governorate": 23,
+    "delegation": null,
+    "type_center": "PRIVATE",
+    "code_type_hemo": "",
+    "name_type_hemo": "",
+    "center_code": 9110041
+  }
+},
+{
+  "model": "centers.center",
+  "pk": 16,
+  "fields": {
+    "sub_domain": "clinique-de-dialyse-du-bardo",
+    "label": "CLINIQUE DE DIALYSE DU BARDO",
+    "tel": "",
+    "mail": "",
+    "adresse": "LE BARDO",
+    "governorate": 23,
+    "delegation": null,
+    "type_center": "PRIVATE",
+    "code_type_hemo": "",
+    "name_type_hemo": "",
+    "center_code": 9110042
+  }
+},
+{
+  "model": "centers.center",
+  "pk": 17,
+  "fields": {
+    "sub_domain": "hopital-charles-nicolle",
+    "label": "HOPITAL CHARLES NICOLLE",
+    "tel": "",
+    "mail": "",
+    "adresse": "",
+    "governorate": 23,
+    "delegation": null,
+    "type_center": "UNIVERSITY",
+    "code_type_hemo": "UNITEP",
+    "name_type_hemo": "UNITE HEMODIALYSE PEDIATRIQUE",
+    "center_code": 10008
+  }
+},
+{
+  "model": "centers.center",
+  "pk": 18,
+  "fields": {
+    "sub_domain": "hopital-charles-nicolle-1",
+    "label": "HOPITAL CHARLES NICOLLE",
+    "tel": "",
+    "mail": "",
+    "adresse": "",
+    "governorate": 23,
+    "delegation": null,
+    "type_center": "UNIVERSITY",
+    "code_type_hemo": "UNITE",
+    "name_type_hemo": "UNITE HEMODIALYSE",
+    "center_code": 10008
+  }
+},
+{
+  "model": "centers.center",
+  "pk": 19,
+  "fields": {
+    "sub_domain": "hopital-la-rabta",
+    "label": "HOPITAL LA RABTA",
+    "tel": "",
+    "mail": "",
+    "adresse": "",
+    "governorate": 23,
+    "delegation": null,
+    "type_center": "UNIVERSITY",
+    "code_type_hemo": "UNITE",
+    "name_type_hemo": "UNITE HEMODIALYSE",
+    "center_code": 10009
+  }
+},
+{
+  "model": "centers.center",
+  "pk": 20,
+  "fields": {
+    "sub_domain": "unite-de-dialyse-udial",
+    "label": "UNITE DE DIALYSE UDIAL ",
+    "tel": "",
+    "mail": "",
+    "adresse": "BAB SOUIKA",
+    "governorate": 23,
+    "delegation": null,
+    "type_center": "PRIVATE",
+    "code_type_hemo": "",
+    "name_type_hemo": "",
+    "center_code": 9110082
+  }
+},
+{
+  "model": "centers.center",
+  "pk": 21,
+  "fields": {
+    "sub_domain": "centre-dutilisation-du-rein-artificiel-de-tunisie-curat",
+    "label": "CENTRE D'UTILISATION DU REIN ARTIFICIEL DE TUNISIE \"CURAT\"",
+    "tel": "",
+    "mail": "",
+    "adresse": "11 Rue Mohamed Ali El Annabi 1002 Tunis Belvédère, Tunis",
+    "governorate": 23,
+    "delegation": null,
+    "type_center": "PRIVATE",
+    "code_type_hemo": "",
+    "name_type_hemo": "",
+    "center_code": 9110081
+  }
+},
+{
+  "model": "centers.center",
+  "pk": 22,
+  "fields": {
+    "sub_domain": "centre-de-dialyse-omar-el-hrairia",
+    "label": "CENTRE DE DIALYSE OMAR EL HRAIRIA",
+    "tel": "",
+    "mail": "",
+    "adresse": "EL HRAIRIA",
+    "governorate": 23,
+    "delegation": null,
+    "type_center": "PRIVATE",
+    "code_type_hemo": "",
+    "name_type_hemo": "",
+    "center_code": 9110087
+  }
+},
+{
+  "model": "centers.center",
+  "pk": 23,
+  "fields": {
+    "sub_domain": "centre-dhemodialyse-les-cliniques-el-manar",
+    "label": "CENTRE D'HEMODIALYSE LES CLINIQUES EL MANAR",
+    "tel": "",
+    "mail": "",
+    "adresse": "EL MENZAH",
+    "governorate": 23,
+    "delegation": null,
+    "type_center": "PRIVATE",
+    "code_type_hemo": "",
+    "name_type_hemo": "",
+    "center_code": 9110083
+  }
+},
+{
+  "model": "centers.center",
+  "pk": 24,
+  "fields": {
+    "sub_domain": "polyclinique-omar-dhemodialyse---el-menzeh-9",
+    "label": "POLYCLINIQUE OMAR D'HEMODIALYSE - EL MENZEH 9",
+    "tel": "",
+    "mail": "",
+    "adresse": "El Menzeh 9",
+    "governorate": 23,
+    "delegation": null,
+    "type_center": "PRIVATE",
+    "code_type_hemo": "",
+    "name_type_hemo": "",
+    "center_code": 9110086
+  }
+},
+{
+  "model": "centers.center",
+  "pk": 25,
+  "fields": {
+    "sub_domain": "centre-dhemodialyse-lespoir---el-menzeh",
+    "label": "CENTRE D'HEMODIALYSE L'ESPOIR - EL MENZEH",
+    "tel": "",
+    "mail": "",
+    "adresse": "El Menzah",
+    "governorate": 23,
+    "delegation": null,
+    "type_center": "PRIVATE",
+    "code_type_hemo": "",
+    "name_type_hemo": "",
+    "center_code": 9110089
+  }
+},
+{
+  "model": "centers.center",
+  "pk": 26,
+  "fields": {
+    "sub_domain": "centre-dhemodialyse-mutuelle-ville",
+    "label": "CENTRE D'HEMODIALYSE MUTUELLE VILLE",
+    "tel": "",
+    "mail": "",
+    "adresse": "El Menzah",
+    "governorate": 23,
+    "delegation": null,
+    "type_center": "PRIVATE",
+    "code_type_hemo": "",
+    "name_type_hemo": "",
+    "center_code": 9110090
+  }
+},
+{
+  "model": "centers.center",
+  "pk": 27,
+  "fields": {
+    "sub_domain": "centre-de-dialyse-de-tunis-mahmoud-el-matri-tunidial",
+    "label": "CENTRE DE DIALYSE DE TUNIS \"MAHMOUD EL MATRI\" \"TUNIDIAL\"",
+    "tel": "",
+    "mail": "",
+    "adresse": "3, Rue Habib KHANFIR El Menzah 9, Tunis, ",
+    "governorate": 23,
+    "delegation": null,
+    "type_center": "PRIVATE",
+    "code_type_hemo": "",
+    "name_type_hemo": "",
+    "center_code": 96102112
+  }
+},
+{
+  "model": "centers.center",
+  "pk": 28,
+  "fields": {
+    "sub_domain": "hopital-khereddine",
+    "label": "HOPITAL KHEREDDINE",
+    "tel": "",
+    "mail": "",
+    "adresse": "",
+    "governorate": 23,
+    "delegation": null,
+    "type_center": "REGIONAL",
+    "code_type_hemo": "MD2200",
+    "name_type_hemo": "SERVICE HEMODIALYSE",
+    "center_code": 30001
+  }
+},
+{
+  "model": "centers.center",
+  "pk": 29,
+  "fields": {
+    "sub_domain": "hopital-mongi-slim-la-marsa",
+    "label": "HOPITAL MONGI SLIM LA MARSA",
+    "tel": "",
+    "mail": "",
+    "adresse": "",
+    "governorate": 23,
+    "delegation": null,
+    "type_center": "UNIVERSITY",
+    "code_type_hemo": "MD2200",
+    "name_type_hemo": "SERVICE HEMODIALYSE",
+    "center_code": 10004
+  }
+},
+{
+  "model": "centers.center",
+  "pk": 30,
+  "fields": {
+    "sub_domain": "clinique-dhemodialyse-mehdi",
+    "label": "CLINIQUE D'HEMODIALYSE MEHDI",
+    "tel": "",
+    "mail": "",
+    "adresse": "Avenue de la Promenade les Côtes de Carthage, Résidence Golden Tulip 1057 Gammarth, Tunis.",
+    "governorate": 23,
+    "delegation": null,
+    "type_center": "PRIVATE",
+    "code_type_hemo": "",
+    "name_type_hemo": "",
+    "center_code": 9110031
+  }
+},
+{
+  "model": "centers.center",
+  "pk": 31,
+  "fields": {
+    "sub_domain": "clinique-du-dialyse-du-lac",
+    "label": "CLINIQUE DU DIALYSE DU LAC ",
+    "tel": "",
+    "mail": "",
+    "adresse": "LA MARSA",
+    "governorate": 23,
+    "delegation": null,
+    "type_center": "PRIVATE",
+    "code_type_hemo": "",
+    "name_type_hemo": "",
+    "center_code": 9110032
+  }
+},
+{
+  "model": "centers.center",
+  "pk": 32,
+  "fields": {
+    "sub_domain": "clinique-ammar-du-rein-artificiel-de-la-marsa",
+    "label": "CLINIQUE AMMAR DU REIN ARTIFICIEL DE LA MARSA",
+    "tel": "",
+    "mail": "",
+    "adresse": "LA MARSA",
+    "governorate": 23,
+    "delegation": null,
+    "type_center": "PRIVATE",
+    "code_type_hemo": "",
+    "name_type_hemo": "",
+    "center_code": 9110088
+  }
+},
+{
+  "model": "centers.center",
+  "pk": 33,
+  "fields": {
+    "sub_domain": "centre-dhemodialyse-el-amal---montfleury",
+    "label": "CENTRE D'HEMODIALYSE EL AMAL - MONTFLEURY",
+    "tel": "",
+    "mail": "",
+    "adresse": "SIDI EL BECHIR",
+    "governorate": 23,
+    "delegation": null,
+    "type_center": "PRIVATE",
+    "code_type_hemo": "",
+    "name_type_hemo": "",
+    "center_code": 9110085
+  }
+},
+{
+  "model": "centers.center",
+  "pk": 34,
+  "fields": {
+    "sub_domain": "centre-dhemodialyse-de-sidi-hessine",
+    "label": "CENTRE D'HEMODIALYSE DE SIDI HESSINE",
+    "tel": "",
+    "mail": "",
+    "adresse": "Route el Attar Sidi Hassine 1095 Tunis Tunisia",
+    "governorate": 23,
+    "delegation": null,
+    "type_center": "PRIVATE",
+    "code_type_hemo": "",
+    "name_type_hemo": "",
+    "center_code": 9110071
+  }
+},
+{
+  "model": "centers.center",
+  "pk": 35,
+  "fields": {
+    "sub_domain": "hopital-mahmoud-el-matri",
+    "label": "HOPITAL MAHMOUD EL MATRI",
+    "tel": "",
+    "mail": "",
+    "adresse": "",
+    "governorate": 1,
+    "delegation": 1,
+    "type_center": "REGIONAL",
+    "code_type_hemo": "MD2200",
+    "name_type_hemo": "SERVICE HEMODIALYSE",
+    "center_code": 30030
+  }
+},
+{
+  "model": "centers.center",
+  "pk": 36,
+  "fields": {
+    "sub_domain": "ariana",
+    "label": "ARIANA",
+    "tel": "",
+    "mail": "",
+    "adresse": "34 Avenue Farhat Hached 2080 Ariana - ARIANA",
+    "governorate": 1,
+    "delegation": 1,
+    "type_center": "PRIVATE",
+    "code_type_hemo": "",
+    "name_type_hemo": "",
+    "center_code": 9120011
+  }
+},
+{
+  "model": "centers.center",
+  "pk": 37,
+  "fields": {
+    "sub_domain": "el-montazeh",
+    "label": "EL MONTAZEH",
+    "tel": "",
+    "mail": "",
+    "adresse": "27 bd de la Qualité de la Vie 2058 Riadh Landalous - ARIANA",
+    "governorate": 1,
+    "delegation": 1,
+    "type_center": "PRIVATE",
+    "code_type_hemo": "",
+    "name_type_hemo": "",
+    "center_code": 9120012
+  }
+},
+{
+  "model": "centers.center",
+  "pk": 38,
+  "fields": {
+    "sub_domain": "el-hadded",
+    "label": "EL HADDED",
+    "tel": "",
+    "mail": "",
+    "adresse": "27 Rue Abou Bakr Khawarizmi 2091 Menzah 6 - ARIANA",
+    "governorate": 1,
+    "delegation": 1,
+    "type_center": "PRIVATE",
+    "code_type_hemo": "",
+    "name_type_hemo": "",
+    "center_code": 9120013
+  }
+},
+{
+  "model": "centers.center",
+  "pk": 39,
+  "fields": {
+    "sub_domain": "el-farabi",
+    "label": "EL FARABI",
+    "tel": "",
+    "mail": "",
+    "adresse": "",
+    "governorate": 1,
+    "delegation": 1,
+    "type_center": "PRIVATE",
+    "code_type_hemo": "",
+    "name_type_hemo": "",
+    "center_code": 9120014
+  }
+},
+{
+  "model": "centers.center",
+  "pk": 40,
+  "fields": {
+    "sub_domain": "jardins-de-mnihla",
+    "label": "JARDINS DE MNIHLA",
+    "tel": "",
+    "mail": "",
+    "adresse": "Cité Ali Bourguiba RESIDENCE ENNASSER MNIHLA 2094 ARIANA",
+    "governorate": 1,
+    "delegation": 4,
+    "type_center": "PRIVATE",
+    "code_type_hemo": "",
+    "name_type_hemo": "",
+    "center_code": 9120021
+  }
+},
+{
+  "model": "centers.center",
+  "pk": 41,
+  "fields": {
+    "sub_domain": "hopital-douar-hicher-ettadhamen",
+    "label": "HOPITAL DOUAR HICHER ETTADHAMEN",
+    "tel": "",
+    "mail": "",
+    "adresse": "",
+    "governorate": 1,
+    "delegation": 2,
+    "type_center": "CIRCONSCRIPTION",
+    "code_type_hemo": "MD2200",
+    "name_type_hemo": "SERVICE HEMODIALYSE",
+    "center_code": 40002
+  }
+},
+{
+  "model": "centers.center",
+  "pk": 42,
+  "fields": {
+    "sub_domain": "ettadhamen",
+    "label": "ETTADHAMEN",
+    "tel": "",
+    "mail": "",
+    "adresse": "Avenue de l'Indépendance 2041 Cité Ettadhamen - ARIANA",
+    "governorate": 1,
+    "delegation": 2,
+    "type_center": "PRIVATE",
+    "code_type_hemo": "",
+    "name_type_hemo": "",
+    "center_code": 9120031
+  }
+},
+{
+  "model": "centers.center",
+  "pk": 43,
+  "fields": {
+    "sub_domain": "el-ghazella",
+    "label": "EL GHAZELLA",
+    "tel": "",
+    "mail": "",
+    "adresse": "27 Rue du Chott El Jérid 2083 Cité El Ghazala - ARIANA",
+    "governorate": 1,
+    "delegation": 5,
+    "type_center": "PRIVATE",
+    "code_type_hemo": "",
+    "name_type_hemo": "",
+    "center_code": 9120051
+  }
+},
+{
+  "model": "centers.center",
+  "pk": 44,
+  "fields": {
+    "sub_domain": "michket-ariana-soghra-raoued",
+    "label": "MICHKET ARIANA SOGHRA RAOUED",
+    "tel": "",
+    "mail": "",
+    "adresse": "",
+    "governorate": 1,
+    "delegation": 5,
+    "type_center": "PRIVATE",
+    "code_type_hemo": "",
+    "name_type_hemo": "",
+    "center_code": 9120052
+  }
+},
+{
+  "model": "centers.center",
+  "pk": 45,
+  "fields": {
+    "sub_domain": "clinique-errahma",
+    "label": "CLINIQUE ERRAHMA",
+    "tel": "",
+    "mail": "",
+    "adresse": "11 Rue Houcine Bouzaïene 2013 Ben Arous, BEN AROUS",
+    "governorate": 3,
+    "delegation": 17,
+    "type_center": "PRIVATE",
+    "code_type_hemo": "",
+    "name_type_hemo": "",
+    "center_code": 9130011
+  }
+},
+{
+  "model": "centers.center",
+  "pk": 46,
+  "fields": {
+    "sub_domain": "clinique-alyssa",
+    "label": "CLINIQUE ALYSSA",
+    "tel": "",
+    "mail": "",
+    "adresse": "19 Rue des Aghlabides 2097 Boumhel, BEN AROUS",
+    "governorate": 3,
+    "delegation": 18,
+    "type_center": "PRIVATE",
+    "code_type_hemo": "",
+    "name_type_hemo": "",
+    "center_code": 9130021
+  }
+},
+{
+  "model": "centers.center",
+  "pk": 47,
+  "fields": {
+    "sub_domain": "clinique-reins-artificials",
+    "label": "CLINIQUE REINS ARTIFICIALS",
+    "tel": "",
+    "mail": "",
+    "adresse": "18 Rue El Metlaoui 2074 Mourouj, BEN AROUS",
+    "governorate": 3,
+    "delegation": 19,
+    "type_center": "PRIVATE",
+    "code_type_hemo": "",
+    "name_type_hemo": "",
+    "center_code": 9130031
+  }
+},
+{
+  "model": "centers.center",
+  "pk": 48,
+  "fields": {
+    "sub_domain": "clinique-essafa",
+    "label": "CLINIQUE ESSAFA",
+    "tel": "",
+    "mail": "",
+    "adresse": " 1 Rue Farhat Hached 2074 Mourouj, BEN AROUS",
+    "governorate": 3,
+    "delegation": 19,
+    "type_center": "PRIVATE",
+    "code_type_hemo": "",
+    "name_type_hemo": "",
+    "center_code": 9130032
+  }
+},
+{
+  "model": "centers.center",
+  "pk": 49,
+  "fields": {
+    "sub_domain": "clinique-dar-echifa",
+    "label": "CLINIQUE DAR ECHIFA",
+    "tel": "",
+    "mail": "",
+    "adresse": "1 RUE IBN ALJAZZAR 2082 Mhamedia-Fouchana -  Ben Arous",
+    "governorate": 3,
+    "delegation": 21,
+    "type_center": "PRIVATE",
+    "code_type_hemo": "",
+    "name_type_hemo": "",
+    "center_code": 9130101
+  }
+},
+{
+  "model": "centers.center",
+  "pk": 50,
+  "fields": {
+    "sub_domain": "clinique-boukornine",
+    "label": "CLINIQUE BOUKORNINE",
+    "tel": "",
+    "mail": "",
+    "adresse": " 5 Avenue Farhat Hached 2050 Hammam Lif, BEN AROUS",
+    "governorate": 3,
+    "delegation": 23,
+    "type_center": "PRIVATE",
+    "code_type_hemo": "",
+    "name_type_hemo": "",
+    "center_code": 9130071
+  }
+},
+{
+  "model": "centers.center",
+  "pk": 51,
+  "fields": {
+    "sub_domain": "clinique-el-jedoui",
+    "label": "CLINIQUE EL JEDOUI",
+    "tel": "",
+    "mail": "",
+    "adresse": "6 Rue de Tazarka 2033 Mégrine, BEN AROUS",
+    "governorate": 3,
+    "delegation": 25,
+    "type_center": "PRIVATE",
+    "code_type_hemo": "",
+    "name_type_hemo": "",
+    "center_code": 9130091
+  }
+},
+{
+  "model": "centers.center",
+  "pk": 52,
+  "fields": {
+    "sub_domain": "clinique-mornag",
+    "label": "CLINIQUE MORNAG",
+    "tel": "",
+    "mail": "",
+    "adresse": "Avenue de l'Environnement. Mornag, ben arous",
+    "governorate": 3,
+    "delegation": 27,
+    "type_center": "PRIVATE",
+    "code_type_hemo": "",
+    "name_type_hemo": "",
+    "center_code": 9130111
+  }
+},
+{
+  "model": "centers.center",
+  "pk": 53,
+  "fields": {
+    "sub_domain": "hopital-regional-de-ben-arous",
+    "label": "HOPITAL REGIONAL DE BEN AROUS",
+    "tel": "",
+    "mail": "",
+    "adresse": "",
+    "governorate": 3,
+    "delegation": 24,
+    "type_center": "REGIONAL",
+    "code_type_hemo": "MD2200",
+    "name_type_hemo": "SERVICE HEMODIALYSE",
+    "center_code": 30031
+  }
+},
+{
+  "model": "centers.center",
+  "pk": 54,
+  "fields": {
+    "sub_domain": "clinique-el-medina",
+    "label": "CLINIQUE EL MEDINA",
+    "tel": "",
+    "mail": "",
+    "adresse": "19 Rue de Kairouan 2063 Nouvelle Médina, BEN AROUS",
+    "governorate": 3,
+    "delegation": 24,
+    "type_center": "PRIVATE",
+    "code_type_hemo": "",
+    "name_type_hemo": "",
+    "center_code": 9130012
+  }
+},
+{
+  "model": "centers.center",
+  "pk": 55,
+  "fields": {
+    "sub_domain": "clinique-latif",
+    "label": "CLINIQUE LATIF",
+    "tel": "",
+    "mail": "",
+    "adresse": "Avenue des Martyrs 2086 Douar Hicher - MANOUBA",
+    "governorate": 13,
+    "delegation": 127,
+    "type_center": "PRIVATE",
+    "code_type_hemo": "",
+    "name_type_hemo": "",
+    "center_code": 9140041
+  }
+},
+{
+  "model": "centers.center",
+  "pk": 56,
+  "fields": {
+    "sub_domain": "centre-dhemodialyse-denden",
+    "label": "CENTRE D'HEMODIALYSE DENDEN",
+    "tel": "",
+    "mail": "",
+    "adresse": "2 Rue Mustapha Khaznadar 2011 Denden - MANOUBA.",
+    "governorate": 13,
+    "delegation": 129,
+    "type_center": "PRIVATE",
+    "code_type_hemo": "",
+    "name_type_hemo": "",
+    "center_code": 9140031
+  }
+},
+{
+  "model": "centers.center",
+  "pk": 57,
+  "fields": {
+    "sub_domain": "clinique-dhemodialyse-bourguiba",
+    "label": "CLINIQUE D'HEMODIALYSE BOURGUIBA",
+    "tel": "",
+    "mail": "",
+    "adresse": "Rue d'Alexandrie Cité El Amel 2011 Denden - MANOUBA",
+    "governorate": 13,
+    "delegation": 129,
+    "type_center": "PRIVATE",
+    "code_type_hemo": "",
+    "name_type_hemo": "",
+    "center_code": 9140032
+  }
+},
+{
+  "model": "centers.center",
+  "pk": 58,
+  "fields": {
+    "sub_domain": "centre-radial",
+    "label": "CENTRE RADIAL",
+    "tel": "",
+    "mail": "",
+    "adresse": "37 Avenue Farhat Hached 2010 , La Manouba",
+    "governorate": 13,
+    "delegation": 129,
+    "type_center": "PRIVATE",
+    "code_type_hemo": "",
+    "name_type_hemo": "",
+    "center_code": 9140071
+  }
+},
+{
+  "model": "centers.center",
+  "pk": 59,
+  "fields": {
+    "sub_domain": "groupement-de-sante-de-base-de-manouba",
+    "label": "GROUPEMENT DE SANTE DE BASE DE MANOUBA",
+    "tel": "",
+    "mail": "",
+    "adresse": "",
+    "governorate": 13,
+    "delegation": 129,
+    "type_center": "BASIC",
+    "code_type_hemo": "UNITE",
+    "name_type_hemo": "UNITE HEMODIALYSE",
+    "center_code": 21400501
+  }
+},
+{
+  "model": "centers.center",
+  "pk": 60,
+  "fields": {
+    "sub_domain": "hopital-de-tebourba",
+    "label": "HOPITAL DE TEBOURBA",
+    "tel": "",
+    "mail": "",
+    "adresse": "",
+    "governorate": 13,
+    "delegation": 132,
+    "type_center": "CIRCONSCRIPTION",
+    "code_type_hemo": "MD2200",
+    "name_type_hemo": "SERVICE HEMODIALYSE",
+    "center_code": 40001
+  }
+},
+{
+  "model": "centers.center",
+  "pk": 61,
+  "fields": {
+    "sub_domain": "hopital-de-grombalia",
+    "label": "HOPITAL DE GROMBALIA",
+    "tel": "",
+    "mail": "",
+    "adresse": "",
+    "governorate": 16,
+    "delegation": 161,
+    "type_center": "CIRCONSCRIPTION",
+    "code_type_hemo": "MD2200",
+    "name_type_hemo": "SERVICE HEMODIALYSE",
+    "center_code": 40007
+  }
+},
+{
+  "model": "centers.center",
+  "pk": 62,
+  "fields": {
+    "sub_domain": "centre-el-hayat-grombalia",
+    "label": "CENTRE EL HAYAT GROMBALIA",
+    "tel": "",
+    "mail": "",
+    "adresse": "1 Rue de Tazarka 8030 Grombalia, NABEUL",
+    "governorate": 16,
+    "delegation": 161,
+    "type_center": "PRIVATE",
+    "code_type_hemo": "",
+    "name_type_hemo": "",
+    "center_code": 9210121
+  }
+},
+{
+  "model": "centers.center",
+  "pk": 63,
+  "fields": {
+    "sub_domain": "centre-de-dialyse-hammamet--nabeul",
+    "label": "CENTRE DE DIALYSE HAMMAMET -NABEUL",
+    "tel": "",
+    "mail": "",
+    "adresse": "Avenue d'Abou Dhabi Km 98050 Hammamet, NABEUL",
+    "governorate": 16,
+    "delegation": 162,
+    "type_center": "PRIVATE",
+    "code_type_hemo": "",
+    "name_type_hemo": "",
+    "center_code": 9210141
+  }
+},
+{
+  "model": "centers.center",
+  "pk": 64,
+  "fields": {
+    "sub_domain": "centre-international-de-dialyse-nabeul",
+    "label": "CENTRE INTERNATIONAL DE DIALYSE NABEUL",
+    "tel": "",
+    "mail": "",
+    "adresse": "Route Hammamet- Nabeul-Km 6,Nabeul",
+    "governorate": 16,
+    "delegation": 162,
+    "type_center": "PRIVATE",
+    "code_type_hemo": "",
+    "name_type_hemo": "",
+    "center_code": 9210211
+  }
+},
+{
+  "model": "centers.center",
+  "pk": 65,
+  "fields": {
+    "sub_domain": "clara-kelibiaazur",
+    "label": "CLARA KELIBIA(AZUR)",
+    "tel": "",
+    "mail": "",
+    "adresse": "233 Avenue des Martyrs rte du Port 8090 Kélibia, NABEUL",
+    "governorate": 16,
+    "delegation": 164,
+    "type_center": "PRIVATE",
+    "code_type_hemo": "",
+    "name_type_hemo": "",
+    "center_code": 9210151
+  }
+},
+{
+  "model": "centers.center",
+  "pk": 66,
+  "fields": {
+    "sub_domain": "polyclinique-dhemodialyse-sidi-belkacem-korba",
+    "label": "POLYCLINIQUE D'HEMODIALYSE SIDI BELKACEM KORBA",
+    "tel": "",
+    "mail": "",
+    "adresse": " Rue Ibn Arafa 8070 Korba, NABEUL",
+    "governorate": 16,
+    "delegation": 165,
+    "type_center": "PRIVATE",
+    "code_type_hemo": "",
+    "name_type_hemo": "",
+    "center_code": 9210161
+  }
+},
+{
+  "model": "centers.center",
+  "pk": 67,
+  "fields": {
+    "sub_domain": "centre-dhemodialyse-les-orangers-manzel-bouzelfa",
+    "label": "CENTRE D'HEMODIALYSE LES ORANGERS MANZEL BOUZELFA",
+    "tel": "",
+    "mail": "",
+    "adresse": "ROUTE BENI KHALLED 8010 Menzel Bou Zelfa Nabeul",
+    "governorate": 16,
+    "delegation": 166,
+    "type_center": "PRIVATE",
+    "code_type_hemo": "",
+    "name_type_hemo": "",
+    "center_code": 9210181
+  }
+},
+{
+  "model": "centers.center",
+  "pk": 68,
+  "fields": {
+    "sub_domain": "hopital-de-menzel-temime",
+    "label": "HOPITAL DE MENZEL TEMIME",
+    "tel": "",
+    "mail": "",
+    "adresse": "",
+    "governorate": 16,
+    "delegation": 167,
+    "type_center": "REGIONAL",
+    "code_type_hemo": "MD2200",
+    "name_type_hemo": "SERVICE HEMODIALYSE",
+    "center_code": 30006
+  }
+},
+{
+  "model": "centers.center",
+  "pk": 69,
+  "fields": {
+    "sub_domain": "hopital-mohamed-tahar-maamouri-de-nabeul",
+    "label": "HOPITAL MOHAMED TAHAR MAAMOURI DE NABEUL",
+    "tel": "",
+    "mail": "",
+    "adresse": "",
+    "governorate": 16,
+    "delegation": 168,
+    "type_center": "UNIVERSITY",
+    "code_type_hemo": "MD2200",
+    "name_type_hemo": "SERVICE HEMODIALYSE",
+    "center_code": 30005
+  }
+},
+{
+  "model": "centers.center",
+  "pk": 70,
+  "fields": {
+    "sub_domain": "clinique-el-houda-de-dialyse",
+    "label": "CLINIQUE EL HOUDA DE DIALYSE",
+    "tel": "",
+    "mail": "",
+    "adresse": " 15 Rue du 3 Septembre 8000 , NABEUL",
+    "governorate": 16,
+    "delegation": 168,
+    "type_center": "PRIVATE",
+    "code_type_hemo": "",
+    "name_type_hemo": "",
+    "center_code": 9210212
+  }
+},
+{
+  "model": "centers.center",
+  "pk": 71,
+  "fields": {
+    "sub_domain": "clinique-de-dialyse-soliman",
+    "label": "CLINIQUE DE DIALYSE SOLIMAN",
+    "tel": "",
+    "mail": "",
+    "adresse": "Cité du 1er Juin 8020 Soliman, NABEUL",
+    "governorate": 16,
+    "delegation": 169,
+    "type_center": "PRIVATE",
+    "code_type_hemo": "",
+    "name_type_hemo": "",
+    "center_code": 9210231
+  }
+},
+{
+  "model": "centers.center",
+  "pk": 72,
+  "fields": {
+    "sub_domain": "clinique-tberbou-majous-fahs",
+    "label": "CLINIQUE TBERBOU MAJOUS FAHS",
+    "tel": "",
+    "mail": "",
+    "adresse": "36 Avenue de la République 1140 Fahs, ZAGHOUAN",
+    "governorate": 24,
+    "delegation": 259,
+    "type_center": "PRIVATE",
+    "code_type_hemo": "",
+    "name_type_hemo": "",
+    "center_code": 9220031
+  }
+},
+{
+  "model": "centers.center",
+  "pk": 73,
+  "fields": {
+    "sub_domain": "hopital-de-zaghouan",
+    "label": "HOPITAL DE ZAGHOUAN",
+    "tel": "",
+    "mail": "",
+    "adresse": "",
+    "governorate": 24,
+    "delegation": 262,
+    "type_center": "REGIONAL",
+    "code_type_hemo": "MD2200",
+    "name_type_hemo": "SERVICE HEMODIALYSE",
+    "center_code": 30007
+  }
+},
+{
+  "model": "centers.center",
+  "pk": 74,
+  "fields": {
+    "sub_domain": "clinique-maabed-el-miyeh-zaghouan",
+    "label": "CLINIQUE MAABED EL MIYEH ZAGHOUAN",
+    "tel": "",
+    "mail": "",
+    "adresse": " 17 Rue Nesrine 1100 Zaghouan, ZAGHOUAN",
+    "governorate": 24,
+    "delegation": 262,
+    "type_center": "PRIVATE",
+    "code_type_hemo": "",
+    "name_type_hemo": "",
+    "center_code": 9220071
+  }
+},
+{
+  "model": "centers.center",
+  "pk": 75,
+  "fields": {
+    "sub_domain": "hopital-habib-bougatfa-de-bizerte",
+    "label": "HOPITAL HABIB BOUGATFA DE BIZERTE",
+    "tel": "",
+    "mail": "",
+    "adresse": "",
+    "governorate": 4,
+    "delegation": 29,
+    "type_center": "UNIVERSITY",
+    "code_type_hemo": "MD2200",
+    "name_type_hemo": "SERVICE HEMODIALYSE",
+    "center_code": 30003
+  }
+},
+{
+  "model": "centers.center",
+  "pk": 76,
+  "fields": {
+    "sub_domain": "centre-dial-corniche-bizerte",
+    "label": "CENTRE DIAL CORNICHE BIZERTE",
+    "tel": "",
+    "mail": "",
+    "adresse": "312 Rue de Tanger Cité Bougatfa Aïn Meriem, 7000 Bizerte",
+    "governorate": 4,
+    "delegation": 29,
+    "type_center": "PRIVATE",
+    "code_type_hemo": "",
+    "name_type_hemo": "",
+    "center_code": 9230021
+  }
+},
+{
+  "model": "centers.center",
+  "pk": 77,
+  "fields": {
+    "sub_domain": "centre-cran-bizerte",
+    "label": "CENTRE CRAN-BIZERTE",
+    "tel": "",
+    "mail": "",
+    "adresse": "06 bd du 14 Janvier 7000 Bizerte - BIZERTE ",
+    "governorate": 4,
+    "delegation": 29,
+    "type_center": "PRIVATE",
+    "code_type_hemo": "",
+    "name_type_hemo": "",
+    "center_code": 9230022
+  }
+},
+{
+  "model": "centers.center",
+  "pk": 78,
+  "fields": {
+    "sub_domain": "centre-bidial-bizerte",
+    "label": "CENTRE BIDIAL-BIZERTE",
+    "tel": "",
+    "mail": "",
+    "adresse": " 2 Rue de Carthage 7000 Bizerte - BIZERTE.",
+    "governorate": 4,
+    "delegation": 29,
+    "type_center": "PRIVATE",
+    "code_type_hemo": "",
+    "name_type_hemo": "",
+    "center_code": 9230023
+  }
+},
+{
+  "model": "centers.center",
+  "pk": 79,
+  "fields": {
+    "sub_domain": "centre-ozalis-el-alia",
+    "label": "CENTRE OZALIS EL ALIA",
+    "tel": "",
+    "mail": "",
+    "adresse": "El Alia ; Bizerte",
+    "governorate": 4,
+    "delegation": 32,
+    "type_center": "PRIVATE",
+    "code_type_hemo": "",
+    "name_type_hemo": "",
+    "center_code": 9230031
+  }
+},
+{
+  "model": "centers.center",
+  "pk": 80,
+  "fields": {
+    "sub_domain": "centre-les-trois-pyramides-ghar-el-meleh",
+    "label": "CENTRE LES TROIS PYRAMIDES GHAR EL MELEH",
+    "tel": "",
+    "mail": "",
+    "adresse": "Ghar el Meleh ; Bizerte",
+    "governorate": 4,
+    "delegation": 33,
+    "type_center": "PRIVATE",
+    "code_type_hemo": "",
+    "name_type_hemo": "",
+    "center_code": 9230041
+  }
+},
+{
+  "model": "centers.center",
+  "pk": 81,
+  "fields": {
+    "sub_domain": "centre-midial-mateur",
+    "label": "CENTRE MIDIAL MATEUR",
+    "tel": "",
+    "mail": "",
+    "adresse": "Cité Zouhour |n°217030 Mateur, BIZERTE",
+    "governorate": 4,
+    "delegation": 35,
+    "type_center": "PRIVATE",
+    "code_type_hemo": "",
+    "name_type_hemo": "",
+    "center_code": 9230081
+  }
+},
+{
+  "model": "centers.center",
+  "pk": 82,
+  "fields": {
+    "sub_domain": "hopital-de-menzel-bourguiba",
+    "label": "HOPITAL DE MENZEL BOURGUIBA",
+    "tel": "",
+    "mail": "",
+    "adresse": "",
+    "governorate": 4,
+    "delegation": 36,
+    "type_center": "REGIONAL",
+    "code_type_hemo": "MD2200",
+    "name_type_hemo": "SERVICE HEMODIALYSE",
+    "center_code": 30002
+  }
+},
+{
+  "model": "centers.center",
+  "pk": 83,
+  "fields": {
+    "sub_domain": "centre-el-faraj-menzel-bourguiba",
+    "label": "CENTRE EL FARAJ-MENZEL BOURGUIBA",
+    "tel": "",
+    "mail": "",
+    "adresse": "R. Adib Nejaai 7050, Menzel Bourguiba, BIZERTE",
+    "governorate": 4,
+    "delegation": 36,
+    "type_center": "PRIVATE",
+    "code_type_hemo": "",
+    "name_type_hemo": "",
+    "center_code": 9230101
+  }
+},
+{
+  "model": "centers.center",
+  "pk": 84,
+  "fields": {
+    "sub_domain": "centre-ras-djebel",
+    "label": "CENTRE RAS DJEBEL",
+    "tel": "",
+    "mail": "",
+    "adresse": "rte de la Plage Aïn Charchara 7070 Ras Jebel, BIZERTE",
+    "governorate": 4,
+    "delegation": 38,
+    "type_center": "PRIVATE",
+    "code_type_hemo": "",
+    "name_type_hemo": "",
+    "center_code": 9230141
+  }
+},
+{
+  "model": "centers.center",
+  "pk": 85,
+  "fields": {
+    "sub_domain": "hopital-de-sejnane",
+    "label": "HOPITAL DE SEJNANE",
+    "tel": "",
+    "mail": "",
+    "adresse": "",
+    "governorate": 4,
+    "delegation": 39,
+    "type_center": "CIRCONSCRIPTION",
+    "code_type_hemo": "UNITE",
+    "name_type_hemo": "UNITE HEMODIALYSE",
+    "center_code": 40006
+  }
+},
+{
+  "model": "centers.center",
+  "pk": 86,
+  "fields": {
+    "sub_domain": "hopital-de-beja",
+    "label": "HOPITAL DE BEJA",
+    "tel": "",
+    "mail": "",
+    "adresse": "",
+    "governorate": 2,
+    "delegation": 9,
+    "type_center": "REGIONAL",
+    "code_type_hemo": "MD2200",
+    "name_type_hemo": "SERVICE HEMODIALYSE",
+    "center_code": 30009
+  }
+},
+{
+  "model": "centers.center",
+  "pk": 87,
+  "fields": {
+    "sub_domain": "clinique-nour-de-dialyse",
+    "label": "CLINIQUE NOUR DE DIALYSE",
+    "tel": "",
+    "mail": "",
+    "adresse": "Rue Omar Ibn Khattab Cité Ferdawes TARHOUNI BEJA NORD 9000 BEJA",
+    "governorate": 2,
+    "delegation": 9,
+    "type_center": "PRIVATE",
+    "code_type_hemo": "",
+    "name_type_hemo": "",
+    "center_code": 9310011
+  }
+},
+{
+  "model": "centers.center",
+  "pk": 88,
+  "fields": {
+    "sub_domain": "clinique-beja-de-dialyse",
+    "label": "CLINIQUE BEJA DE DIALYSE",
+    "tel": "",
+    "mail": "",
+    "adresse": "Rue Pont du Trajan, Cité El Habib Sidi Frej- Béja 9000",
+    "governorate": 2,
+    "delegation": 9,
+    "type_center": "PRIVATE",
+    "code_type_hemo": "",
+    "name_type_hemo": "",
+    "center_code": 9310012
+  }
+},
+{
+  "model": "centers.center",
+  "pk": 89,
+  "fields": {
+    "sub_domain": "hopital-de-medjez-el-bab",
+    "label": "HOPITAL DE MEDJEZ EL BAB",
+    "tel": "",
+    "mail": "",
+    "adresse": "",
+    "governorate": 2,
+    "delegation": 12,
+    "type_center": "REGIONAL",
+    "code_type_hemo": "MD2200",
+    "name_type_hemo": "SERVICE HEMODIALYSE",
+    "center_code": 30010
+  }
+},
+{
+  "model": "centers.center",
+  "pk": 90,
+  "fields": {
+    "sub_domain": "clinique-mdjez-el-beb-de-dialyse",
+    "label": "CLINIQUE MDJEZ EL BEB DE DIALYSE",
+    "tel": "",
+    "mail": "",
+    "adresse": "9 cite des enseignants Mejez El Bab 9070 - Beja ",
+    "governorate": 2,
+    "delegation": 12,
+    "type_center": "PRIVATE",
+    "code_type_hemo": "",
+    "name_type_hemo": "",
+    "center_code": 9310041
+  }
+},
+{
+  "model": "centers.center",
+  "pk": 91,
+  "fields": {
+    "sub_domain": "centre-de-dialyse-boussalem",
+    "label": "CENTRE DE DIALYSE BOUSSALEM",
+    "tel": "",
+    "mail": "",
+    "adresse": "Cité El Khadra 8170 Bou Salem - JENDOUBA",
+    "governorate": 7,
+    "delegation": 66,
+    "type_center": "PRIVATE",
+    "code_type_hemo": "",
+    "name_type_hemo": "",
+    "center_code": 9320051
+  }
+},
+{
+  "model": "centers.center",
+  "pk": 92,
+  "fields": {
+    "sub_domain": "centre-de-dialyse-el-hamd",
+    "label": "CENTRE DE DIALYSE EL HAMD",
+    "tel": "",
+    "mail": "",
+    "adresse": "Tobornok |Lot. AFH |n°18160 Ghardimaou, Jendouba",
+    "governorate": 7,
+    "delegation": 68,
+    "type_center": "PRIVATE",
+    "code_type_hemo": "",
+    "name_type_hemo": "",
+    "center_code": 9320091
+  }
+},
+{
+  "model": "centers.center",
+  "pk": 93,
+  "fields": {
+    "sub_domain": "centre-el-amel-de-dialyse-jendouba-sud",
+    "label": "CENTRE EL AMEL DE DIALYSE JENDOUBA SUD",
+    "tel": "",
+    "mail": "",
+    "adresse": "17 Rue El Khansa 8100 Jendouba ",
+    "governorate": 7,
+    "delegation": null,
+    "type_center": "PRIVATE",
+    "code_type_hemo": "",
+    "name_type_hemo": "",
+    "center_code": 9320101
+  }
+},
+{
+  "model": "centers.center",
+  "pk": 94,
+  "fields": {
+    "sub_domain": "centre-el-mehdi-de-dialyse-jendouba-sud",
+    "label": "CENTRE EL MEHDI DE DIALYSE JENDOUBA SUD",
+    "tel": "",
+    "mail": "",
+    "adresse": "Cité Riadh 8100 Jendouba",
+    "governorate": 7,
+    "delegation": null,
+    "type_center": "PRIVATE",
+    "code_type_hemo": "",
+    "name_type_hemo": "",
+    "center_code": 9320102
+  }
+},
+{
+  "model": "centers.center",
+  "pk": 95,
+  "fields": {
+    "sub_domain": "hopital-de-jendouba",
+    "label": "HOPITAL DE JENDOUBA",
+    "tel": "",
+    "mail": "",
+    "adresse": "",
+    "governorate": 7,
+    "delegation": null,
+    "type_center": "REGIONAL",
+    "code_type_hemo": "MD2200",
+    "name_type_hemo": "SERVICE HEMODIALYSE",
+    "center_code": 30008
+  }
+},
+{
+  "model": "centers.center",
+  "pk": 96,
+  "fields": {
+    "sub_domain": "hopital-de-tabarka",
+    "label": "HOPITAL DE TABARKA",
+    "tel": "",
+    "mail": "",
+    "adresse": "",
+    "governorate": 7,
+    "delegation": null,
+    "type_center": "REGIONAL",
+    "code_type_hemo": "MD2200",
+    "name_type_hemo": "SERVICE HEMODIALYSE",
+    "center_code": 40018
+  }
+},
+{
+  "model": "centers.center",
+  "pk": 97,
+  "fields": {
+    "sub_domain": "hopital-mhamed-bourguiba-du-kef",
+    "label": "HOPITAL \"M''HAMED BOURGUIBA\" DU KEF",
+    "tel": "",
+    "mail": "",
+    "adresse": "",
+    "governorate": 11,
+    "delegation": null,
+    "type_center": "REGIONAL",
+    "code_type_hemo": "UNITE",
+    "name_type_hemo": "UNITE HEMODIALYSE",
+    "center_code": 30011
+  }
+},
+{
+  "model": "centers.center",
+  "pk": 98,
+  "fields": {
+    "sub_domain": "centre-essalama",
+    "label": "CENTRE ESSALAMA",
+    "tel": "",
+    "mail": "",
+    "adresse": "Rue Jugurtha 7100 Kef , LE KEF",
+    "governorate": 11,
+    "delegation": null,
+    "type_center": "PRIVATE",
+    "code_type_hemo": "",
+    "name_type_hemo": "",
+    "center_code": 9330011
+  }
+},
+{
+  "model": "centers.center",
+  "pk": 99,
+  "fields": {
+    "sub_domain": "centre-cite-el-ouns",
+    "label": "CENTRE CITE EL OUNS",
+    "tel": "",
+    "mail": "",
+    "adresse": "Cité El Ons 7100 Kef , LE KEF",
+    "governorate": 11,
+    "delegation": null,
+    "type_center": "PRIVATE",
+    "code_type_hemo": "",
+    "name_type_hemo": "",
+    "center_code": 9330012
+  }
+},
+{
+  "model": "centers.center",
+  "pk": 100,
+  "fields": {
+    "sub_domain": "tej-dial-tejerouine",
+    "label": "TEJ DIAL TEJEROUINE",
+    "tel": "",
+    "mail": "",
+    "adresse": "Tajerouine",
+    "governorate": 11,
+    "delegation": null,
+    "type_center": "PRIVATE",
+    "code_type_hemo": "",
+    "name_type_hemo": "",
+    "center_code": 9330131
+  }
+},
+{
+  "model": "centers.center",
+  "pk": 101,
+  "fields": {
+    "sub_domain": "hopital-de-makthar",
+    "label": "HOPITAL DE MAKTHAR",
+    "tel": "",
+    "mail": "",
+    "adresse": "",
+    "governorate": 19,
+    "delegation": null,
+    "type_center": "CIRCONSCRIPTION",
+    "code_type_hemo": "MD2200",
+    "name_type_hemo": "SERVICE HEMODIALYSE",
+    "center_code": 40031
+  }
+},
+{
+  "model": "centers.center",
+  "pk": 102,
+  "fields": {
+    "sub_domain": "hopital-de-siliana",
+    "label": "HOPITAL DE SILIANA",
+    "tel": "",
+    "mail": "",
+    "adresse": "",
+    "governorate": 19,
+    "delegation": null,
+    "type_center": "REGIONAL",
+    "code_type_hemo": "MD2200",
+    "name_type_hemo": "SERVICE HEMODIALYSE",
+    "center_code": 30012
+  }
+},
+{
+  "model": "centers.center",
+  "pk": 103,
+  "fields": {
+    "sub_domain": "centre-de-dialyse-siliana",
+    "label": "CENTRE DE DIALYSE SILIANA",
+    "tel": "",
+    "mail": "",
+    "adresse": "7 Rue de Bizerte 6100 Siliana - SILIANA",
+    "governorate": 19,
+    "delegation": null,
+    "type_center": "PRIVATE",
+    "code_type_hemo": "",
+    "name_type_hemo": "",
+    "center_code": 9340121
+  }
+},
+{
+  "model": "centers.center",
+  "pk": 104,
+  "fields": {
+    "sub_domain": "hopital-de-haffouz",
+    "label": "HOPITAL DE HAFFOUZ",
+    "tel": "",
+    "mail": "",
+    "adresse": "",
+    "governorate": 8,
+    "delegation": null,
+    "type_center": "CIRCONSCRIPTION",
+    "code_type_hemo": "MD2200",
+    "name_type_hemo": "SERVICE HEMODIALYSE",
+    "center_code": 40042
+  }
+},
+{
+  "model": "centers.center",
+  "pk": 105,
+  "fields": {
+    "sub_domain": "hopital-ibn-el-jazzar-de-kairoun",
+    "label": "HOPITAL \"IBN EL JAZZAR\" DE KAIROUN",
+    "tel": "",
+    "mail": "",
+    "adresse": "",
+    "governorate": 8,
+    "delegation": null,
+    "type_center": "UNIVERSITY",
+    "code_type_hemo": "MD2200",
+    "name_type_hemo": "SERVICE HEMODIALYSE",
+    "center_code": 30014
+  }
+},
+{
+  "model": "centers.center",
+  "pk": 106,
+  "fields": {
+    "sub_domain": "centre--hamda-el-aouani",
+    "label": "CENTRE  HAMDA EL AOUANI",
+    "tel": "",
+    "mail": "",
+    "adresse": "Rue ibn el aghleb centre ville. Kairouan Nord 3140 Kairouan",
+    "governorate": 8,
+    "delegation": null,
+    "type_center": "PRIVATE",
+    "code_type_hemo": "",
+    "name_type_hemo": "",
+    "center_code": 9410131
+  }
+},
+{
+  "model": "centers.center",
+  "pk": 107,
+  "fields": {
+    "sub_domain": "centre-clidiyak",
+    "label": "CENTRE CLIDIYAK",
+    "tel": "",
+    "mail": "",
+    "adresse": "kairouan nord, kairouan",
+    "governorate": 8,
+    "delegation": null,
+    "type_center": "PRIVATE",
+    "code_type_hemo": "",
+    "name_type_hemo": "",
+    "center_code": 9410132
+  }
+},
+{
+  "model": "centers.center",
+  "pk": 108,
+  "fields": {
+    "sub_domain": "centre-sidi-sahbi",
+    "label": "CENTRE SIDI SAHBI",
+    "tel": "",
+    "mail": "",
+    "adresse": "Cité Sahbi IV 3100 Kairouan, KAIROUAN",
+    "governorate": 8,
+    "delegation": null,
+    "type_center": "PRIVATE",
+    "code_type_hemo": "",
+    "name_type_hemo": "",
+    "center_code": 9410133
+  }
+},
+{
+  "model": "centers.center",
+  "pk": 109,
+  "fields": {
+    "sub_domain": "hopital-de-kasserine",
+    "label": "HOPITAL DE KASSERINE",
+    "tel": "",
+    "mail": "",
+    "adresse": "",
+    "governorate": 9,
+    "delegation": null,
+    "type_center": "REGIONAL",
+    "code_type_hemo": "MD2200",
+    "name_type_hemo": "SERVICE HEMODIALYSE",
+    "center_code": 30013
+  }
+},
+{
+  "model": "centers.center",
+  "pk": 110,
+  "fields": {
+    "sub_domain": "clinique-arbaoui-kasserine",
+    "label": "CLINIQUE ARBAOUI KASSERINE",
+    "tel": "",
+    "mail": "",
+    "adresse": " Nlle Médina 1200 Kasserine, KASSERINE",
+    "governorate": 9,
+    "delegation": null,
+    "type_center": "PRIVATE",
+    "code_type_hemo": "",
+    "name_type_hemo": "",
+    "center_code": 9420121
+  }
+},
+{
+  "model": "centers.center",
+  "pk": 111,
+  "fields": {
+    "sub_domain": "clinique-el-amen-kasserine",
+    "label": "CLINIQUE EL AMEN KASSERINE",
+    "tel": "",
+    "mail": "",
+    "adresse": "100 Avenue du 2 Mars Bassatine 31200 Kasserine, KASSERINE",
+    "governorate": 9,
+    "delegation": null,
+    "type_center": "PRIVATE",
+    "code_type_hemo": "",
+    "name_type_hemo": "",
+    "center_code": 9420122
+  }
+},
+{
+  "model": "centers.center",
+  "pk": 112,
+  "fields": {
+    "sub_domain": "clinique-balkiss-sbitla",
+    "label": "CLINIQUE BALKISS SBITLA",
+    "tel": "",
+    "mail": "",
+    "adresse": " Rue El Athar Cité de la Jeunesse 1250 Sbeitla, KASSERINE",
+    "governorate": 9,
+    "delegation": null,
+    "type_center": "PRIVATE",
+    "code_type_hemo": "",
+    "name_type_hemo": "",
+    "center_code": 9420161
+  }
+},
+{
+  "model": "centers.center",
+  "pk": 113,
+  "fields": {
+    "sub_domain": "hopital-de-thala",
+    "label": "HOPITAL DE THALA",
+    "tel": "",
+    "mail": "",
+    "adresse": "",
+    "governorate": 9,
+    "delegation": null,
+    "type_center": "CIRCONSCRIPTION",
+    "code_type_hemo": "MD2200",
+    "name_type_hemo": "SERVICE HEMODIALYSE",
+    "center_code": 40040
+  }
+},
+{
+  "model": "centers.center",
+  "pk": 114,
+  "fields": {
+    "sub_domain": "hopital-de-meknassy",
+    "label": "HOPITAL DE MEKNASSY",
+    "tel": "",
+    "mail": "",
+    "adresse": "",
+    "governorate": 18,
+    "delegation": null,
+    "type_center": "CIRCONSCRIPTION",
+    "code_type_hemo": "UNITE",
+    "name_type_hemo": "UNITE HEMODIALYSE",
+    "center_code": 40088
+  }
+},
+{
+  "model": "centers.center",
+  "pk": 115,
+  "fields": {
+    "sub_domain": "hopital-de-regueb",
+    "label": "HOPITAL DE REGUEB",
+    "tel": "",
+    "mail": "",
+    "adresse": "",
+    "governorate": 18,
+    "delegation": null,
+    "type_center": "CIRCONSCRIPTION",
+    "code_type_hemo": "MD2200",
+    "name_type_hemo": "SERVICE HEMODIALYSE",
+    "center_code": 40086
+  }
+},
+{
+  "model": "centers.center",
+  "pk": 116,
+  "fields": {
+    "sub_domain": "centre-imene-regueb",
+    "label": "CENTRE IMENE-REGUEB",
+    "tel": "",
+    "mail": "",
+    "adresse": " Rue Hannibal Cité Khadra 9170 Regueb - SIDI BOUZID",
+    "governorate": 18,
+    "delegation": null,
+    "type_center": "PRIVATE",
+    "code_type_hemo": "",
+    "name_type_hemo": "",
+    "center_code": 9430122
+  }
+},
+{
+  "model": "centers.center",
+  "pk": 117,
+  "fields": {
+    "sub_domain": "hopital-de-sidi-bouzid",
+    "label": "HOPITAL DE SIDI BOUZID",
+    "tel": "",
+    "mail": "",
+    "adresse": "",
+    "governorate": 18,
+    "delegation": null,
+    "type_center": "REGIONAL",
+    "code_type_hemo": "MD2200",
+    "name_type_hemo": "SERVICE HEMODIALYSE",
+    "center_code": 30023
+  }
+},
+{
+  "model": "centers.center",
+  "pk": 118,
+  "fields": {
+    "sub_domain": "clinique-de-dialyse-chefia",
+    "label": "CLINIQUE DE DIALYSE CHEFIA",
+    "tel": "",
+    "mail": "",
+    "adresse": "Route, Regueb,Sidi Bouzid",
+    "governorate": 18,
+    "delegation": null,
+    "type_center": "PRIVATE",
+    "code_type_hemo": "",
+    "name_type_hemo": "",
+    "center_code": 9430121
+  }
+},
+{
+  "model": "centers.center",
+  "pk": 119,
+  "fields": {
+    "sub_domain": "centre-alworoud",
+    "label": "CENTRE ALWOROUD",
+    "tel": "",
+    "mail": "",
+    "adresse": "Cité El Wouroud 1 ZAAFRIA SIDI BOUZID OUEST 9100 SIDI BOUZID",
+    "governorate": 18,
+    "delegation": null,
+    "type_center": "PRIVATE",
+    "code_type_hemo": "",
+    "name_type_hemo": "",
+    "center_code": 9430161
+  }
+},
+{
+  "model": "centers.center",
+  "pk": 120,
+  "fields": {
+    "sub_domain": "hopital-de-enfidha",
+    "label": "HOPITAL DE ENFIDHA",
+    "tel": "",
+    "mail": "",
+    "adresse": "",
+    "governorate": 20,
+    "delegation": null,
+    "type_center": "CIRCONSCRIPTION",
+    "code_type_hemo": "UNITE",
+    "name_type_hemo": "UNITE HEMODIALYSE",
+    "center_code": 40068
+  }
+},
+{
+  "model": "centers.center",
+  "pk": 121,
+  "fields": {
+    "sub_domain": "hopital-7-novembre-1987-de-msaken",
+    "label": "HOPITAL \"7 NOVEMBRE 1987\" DE MSAKEN",
+    "tel": "",
+    "mail": "",
+    "adresse": "",
+    "governorate": 20,
+    "delegation": null,
+    "type_center": "REGIONAL",
+    "code_type_hemo": "MD2200",
+    "name_type_hemo": "SERVICE HEMODIALYSE",
+    "center_code": 30015
+  }
+},
+{
+  "model": "centers.center",
+  "pk": 122,
+  "fields": {
+    "sub_domain": "centre-cleers-msaken",
+    "label": "CENTRE CLEERS MSAKEN",
+    "tel": "",
+    "mail": "",
+    "adresse": "rte de Sousse Km 1 | 54070 M'saken - SOUSSE.",
+    "governorate": 20,
+    "delegation": null,
+    "type_center": "PRIVATE",
+    "code_type_hemo": "",
+    "name_type_hemo": "",
+    "center_code": 9510141
+  }
+},
+{
+  "model": "centers.center",
+  "pk": 123,
+  "fields": {
+    "sub_domain": "centre-mediteranee-a-sidi-bou-ali",
+    "label": "CENTRE MEDITERANEE A SIDI BOU ALI",
+    "tel": "",
+    "mail": "",
+    "adresse": "Avenue de l'Indépendance 4040 Sidi Bou Ali, Sousse",
+    "governorate": 20,
+    "delegation": null,
+    "type_center": "PRIVATE",
+    "code_type_hemo": "",
+    "name_type_hemo": "",
+    "center_code": 9510151
+  }
+},
+{
+  "model": "centers.center",
+  "pk": 124,
+  "fields": {
+    "sub_domain": "hopital-sahloul-sousse",
+    "label": "HOPITAL SAHLOUL SOUSSE",
+    "tel": "",
+    "mail": "",
+    "adresse": "",
+    "governorate": 20,
+    "delegation": null,
+    "type_center": "UNIVERSITY",
+    "code_type_hemo": "UNITEP",
+    "name_type_hemo": "UNITE HEMODIALYSE PEDIATRIQUE",
+    "center_code": 10003
+  }
+},
+{
+  "model": "centers.center",
+  "pk": 125,
+  "fields": {
+    "sub_domain": "hopital-sahloul-sousse-1",
+    "label": "HOPITAL SAHLOUL SOUSSE",
+    "tel": "",
+    "mail": "",
+    "adresse": "",
+    "governorate": 20,
+    "delegation": null,
+    "type_center": "UNIVERSITY",
+    "code_type_hemo": "UNITE",
+    "name_type_hemo": "UNITE HEMODIALYSE",
+    "center_code": 10003
+  }
+},
+{
+  "model": "centers.center",
+  "pk": 126,
+  "fields": {
+    "sub_domain": "centre-cliad",
+    "label": "CENTRE CLIAD",
+    "tel": "",
+    "mail": "",
+    "adresse": "15 Rue Bouraoui Zaanouni  bouhsina, Sousse 4002,",
+    "governorate": 20,
+    "delegation": null,
+    "type_center": "PRIVATE",
+    "code_type_hemo": "",
+    "name_type_hemo": "",
+    "center_code": 9510171
+  }
+},
+{
+  "model": "centers.center",
+  "pk": 127,
+  "fields": {
+    "sub_domain": "centre-dial",
+    "label": "CENTRE DIAL",
+    "tel": "",
+    "mail": "",
+    "adresse": "Avenue de La Perle du Sahel 4051 Sousse",
+    "governorate": 20,
+    "delegation": null,
+    "type_center": "PRIVATE",
+    "code_type_hemo": "",
+    "name_type_hemo": "",
+    "center_code": 9510172
+  }
+},
+{
+  "model": "centers.center",
+  "pk": 128,
+  "fields": {
+    "sub_domain": "clinique-les-oliviers",
+    "label": "CLINIQUE LES OLIVIERS",
+    "tel": "",
+    "mail": "",
+    "adresse": "Boulevard du 14 Janvier Sousse 4051,",
+    "governorate": 20,
+    "delegation": null,
+    "type_center": "PRIVATE",
+    "code_type_hemo": "",
+    "name_type_hemo": "",
+    "center_code": 9510173
+  }
+},
+{
+  "model": "centers.center",
+  "pk": 129,
+  "fields": {
+    "sub_domain": "centre-el-amen-jemmal",
+    "label": "CENTRE EL AMEN JEMMAL",
+    "tel": "",
+    "mail": "",
+    "adresse": "Avenue de l'Environnement 5020 Jemmel ",
+    "governorate": 15,
+    "delegation": null,
+    "type_center": "PRIVATE",
+    "code_type_hemo": "",
+    "name_type_hemo": "",
+    "center_code": 9520111
+  }
+},
+{
+  "model": "centers.center",
+  "pk": 130,
+  "fields": {
+    "sub_domain": "hopital-de-ksar-hellal",
+    "label": "HOPITAL DE KSAR HELLAL",
+    "tel": "",
+    "mail": "",
+    "adresse": "",
+    "governorate": 15,
+    "delegation": null,
+    "type_center": "REGIONAL",
+    "code_type_hemo": "MD2200",
+    "name_type_hemo": "SERVICE HEMODIALYSE",
+    "center_code": 30017
+  }
+},
+{
+  "model": "centers.center",
+  "pk": 131,
+  "fields": {
+    "sub_domain": "centre-hemodialyse-espoir--moknine",
+    "label": "CENTRE HEMODIALYSE ESPOIR  MOKNINE",
+    "tel": "",
+    "mail": "",
+    "adresse": "Avenue Habib Bourguiba-Moknine",
+    "governorate": 15,
+    "delegation": null,
+    "type_center": "PRIVATE",
+    "code_type_hemo": "",
+    "name_type_hemo": "",
+    "center_code": 9520211
+  }
+},
+{
+  "model": "centers.center",
+  "pk": 132,
+  "fields": {
+    "sub_domain": "hopital-fattouma-bourquiba-de-monastir",
+    "label": "HOPITAL FATTOUMA BOURQUIBA DE MONASTIR",
+    "tel": "",
+    "mail": "",
+    "adresse": "",
+    "governorate": 15,
+    "delegation": null,
+    "type_center": "UNIVERSITY",
+    "code_type_hemo": "UNITE",
+    "name_type_hemo": "UNITE HEMODIALYSE",
+    "center_code": 10007
+  }
+},
+{
+  "model": "centers.center",
+  "pk": 133,
+  "fields": {
+    "sub_domain": "centre-excellence-monastir",
+    "label": "CENTRE EXCELLENCE MONASTIR",
+    "tel": "",
+    "mail": "",
+    "adresse": "Rue d'Alger 5070 Ksar Hellal ",
+    "governorate": 15,
+    "delegation": null,
+    "type_center": "PRIVATE",
+    "code_type_hemo": "",
+    "name_type_hemo": "",
+    "center_code": 9520131
+  }
+},
+{
+  "model": "centers.center",
+  "pk": 134,
+  "fields": {
+    "sub_domain": "centre-services-de-dialyse-monastir",
+    "label": "CENTRE SERVICES DE DIALYSE MONASTIR",
+    "tel": "",
+    "mail": "",
+    "adresse": "Avenue De La République  Cité R4-Monastir",
+    "governorate": 15,
+    "delegation": null,
+    "type_center": "PRIVATE",
+    "code_type_hemo": "",
+    "name_type_hemo": "",
+    "center_code": 9520221
+  }
+},
+{
+  "model": "centers.center",
+  "pk": 135,
+  "fields": {
+    "sub_domain": "centre-international-monastir",
+    "label": "CENTRE INTERNATIONAL MONASTIR",
+    "tel": "",
+    "mail": "",
+    "adresse": "16 Avenue Avicenne 5000 Monastir, ",
+    "governorate": 15,
+    "delegation": null,
+    "type_center": "PRIVATE",
+    "code_type_hemo": "",
+    "name_type_hemo": "",
+    "center_code": 9520222
+  }
+},
+{
+  "model": "centers.center",
+  "pk": 136,
+  "fields": {
+    "sub_domain": "societe-clinique-de-dialyse-la-chebba",
+    "label": "SOCIETE CLINIQUE DE DIALYSE LA CHEBBA",
+    "tel": "",
+    "mail": "",
+    "adresse": "Rue Borj Khadija 5170 Chebba, MAHDIA",
+    "governorate": 12,
+    "delegation": null,
+    "type_center": "PRIVATE",
+    "code_type_hemo": "",
+    "name_type_hemo": "",
+    "center_code": 9530031
+  }
+},
+{
+  "model": "centers.center",
+  "pk": 137,
+  "fields": {
+    "sub_domain": "hopital-dei-jem",
+    "label": "HOPITAL D'EI JEM",
+    "tel": "",
+    "mail": "",
+    "adresse": "",
+    "governorate": 12,
+    "delegation": null,
+    "type_center": "CIRCONSCRIPTION",
+    "code_type_hemo": "MD2200",
+    "name_type_hemo": "SERVICE HEMODIALYSE",
+    "center_code": 40070
+  }
+},
+{
+  "model": "centers.center",
+  "pk": 138,
+  "fields": {
+    "sub_domain": "clinique-mtar-hemodialyse",
+    "label": "CLINIQUE MTAR HEMODIALYSE",
+    "tel": "",
+    "mail": "",
+    "adresse": "7 av. Habib Bourguiba 5180 Ksour Essaf",
+    "governorate": 12,
+    "delegation": null,
+    "type_center": "PRIVATE",
+    "code_type_hemo": "",
+    "name_type_hemo": "",
+    "center_code": 9530091
+  }
+},
+{
+  "model": "centers.center",
+  "pk": 139,
+  "fields": {
+    "sub_domain": "hopital-tahar-sfar-de-mahdia",
+    "label": "HOPITAL \"TAHAR SFAR\" DE MAHDIA",
+    "tel": "",
+    "mail": "",
+    "adresse": "",
+    "governorate": 12,
+    "delegation": null,
+    "type_center": "UNIVERSITY",
+    "code_type_hemo": "MD2200",
+    "name_type_hemo": "SERVICE HEMODIALYSE",
+    "center_code": 30016
+  }
+},
+{
+  "model": "centers.center",
+  "pk": 140,
+  "fields": {
+    "sub_domain": "clinique-el-amine-hemodialyse",
+    "label": "CLINIQUE EL AMINE HEMODIALYSE",
+    "tel": "",
+    "mail": "",
+    "adresse": "Avenue de l'hôpital Tahar Sfar، mahdia 5100",
+    "governorate": 12,
+    "delegation": null,
+    "type_center": "PRIVATE",
+    "code_type_hemo": "",
+    "name_type_hemo": "",
+    "center_code": 9530101
+  }
+},
+{
+  "model": "centers.center",
+  "pk": 141,
+  "fields": {
+    "sub_domain": "clinique-les-fatimides-hemodialyse",
+    "label": "CLINIQUE LES FATIMIDES HEMODIALYSE",
+    "tel": "",
+    "mail": "",
+    "adresse": "Avenue Taieb M'hiri 5100 - MAHDIA",
+    "governorate": 12,
+    "delegation": null,
+    "type_center": "PRIVATE",
+    "code_type_hemo": "",
+    "name_type_hemo": "",
+    "center_code": 9530102
+  }
+},
+{
+  "model": "centers.center",
+  "pk": 142,
+  "fields": {
+    "sub_domain": "centre-hemodialyse-essalama-souassi",
+    "label": "CENTRE HEMODIALYSE ESSALAMA SOUASSI",
+    "tel": "",
+    "mail": "",
+    "adresse": "Avenue de la République 5140 Souassi, MAHDIA",
+    "governorate": 12,
+    "delegation": null,
+    "type_center": "PRIVATE",
+    "code_type_hemo": "",
+    "name_type_hemo": "",
+    "center_code": 9530161
+  }
+},
+{
+  "model": "centers.center",
+  "pk": 143,
+  "fields": {
+    "sub_domain": "hopital-de-bir-ali-ben-khalifa",
+    "label": "HOPITAL DE BIR ALI BEN KHALIFA",
+    "tel": "",
+    "mail": "",
+    "adresse": "",
+    "governorate": 17,
+    "delegation": null,
+    "type_center": "CIRCONSCRIPTION",
+    "code_type_hemo": "MD2200",
+    "name_type_hemo": "SERVICE HEMODIALYSE",
+    "center_code": 40073
+  }
+},
+{
+  "model": "centers.center",
+  "pk": 144,
+  "fields": {
+    "sub_domain": "hopital-de-mahres",
+    "label": "HOPITAL DE MAHRES",
+    "tel": "",
+    "mail": "",
+    "adresse": "",
+    "governorate": 17,
+    "delegation": null,
+    "type_center": "REGIONAL",
+    "code_type_hemo": "MD2200",
+    "name_type_hemo": "SERVICE HEMODIALYSE",
+    "center_code": 30019
+  }
+},
+{
+  "model": "centers.center",
+  "pk": 145,
+  "fields": {
+    "sub_domain": "hopital-de-jebeniana",
+    "label": "HOPITAL DE JEBENIANA",
+    "tel": "",
+    "mail": "",
+    "adresse": "",
+    "governorate": 17,
+    "delegation": null,
+    "type_center": "REGIONAL",
+    "code_type_hemo": "MD2200",
+    "name_type_hemo": "SERVICE HEMODIALYSE",
+    "center_code": 40072
+  }
+},
+{
+  "model": "centers.center",
+  "pk": 146,
+  "fields": {
+    "sub_domain": "hopital-de-kerkennah",
+    "label": "HOPITAL DE KERKENNAH",
+    "tel": "",
+    "mail": "",
+    "adresse": "",
+    "governorate": 17,
+    "delegation": null,
+    "type_center": "REGIONAL",
+    "code_type_hemo": "MD2200",
+    "name_type_hemo": "SERVICE HEMODIALYSE",
+    "center_code": 30018
+  }
+},
+{
+  "model": "centers.center",
+  "pk": 147,
+  "fields": {
+    "sub_domain": "ci-sakiet-eddair",
+    "label": "CI SAKIET EDDAIR",
+    "tel": "",
+    "mail": "",
+    "adresse": "",
+    "governorate": 17,
+    "delegation": null,
+    "type_center": "BASIC",
+    "code_type_hemo": "UNITE",
+    "name_type_hemo": "UNITE HEMODIALYSE",
+    "center_code": 1610197
+  }
+},
+{
+  "model": "centers.center",
+  "pk": 148,
+  "fields": {
+    "sub_domain": "centre-el-mouradi",
+    "label": "CENTRE EL MOURADI",
+    "tel": "",
+    "mail": "",
+    "adresse": " rte de Tunis Km 53021 Sakiet Ezzit, SFAX",
+    "governorate": 17,
+    "delegation": null,
+    "type_center": "PRIVATE",
+    "code_type_hemo": "",
+    "name_type_hemo": "",
+    "center_code": 9610201
+  }
+},
+{
+  "model": "centers.center",
+  "pk": 149,
+  "fields": {
+    "sub_domain": "clinique-chaabouni-de-nephrologie-et-dhemodialyse",
+    "label": "CLINIQUE CHAABOUNI DE NEPHROLOGIE ET D'HEMODIALYSE",
+    "tel": "",
+    "mail": "",
+    "adresse": "Route El Ain km 1. Sfax Ville 3000 ",
+    "governorate": 17,
+    "delegation": null,
+    "type_center": "PRIVATE",
+    "code_type_hemo": "",
+    "name_type_hemo": "",
+    "center_code": 9610211
+  }
+},
+{
+  "model": "centers.center",
+  "pk": 150,
+  "fields": {
+    "sub_domain": "centre-el-bassatine",
+    "label": "CENTRE EL BASSATINE",
+    "tel": "",
+    "mail": "",
+    "adresse": " Sfax ville; Sfax",
+    "governorate": 17,
+    "delegation": null,
+    "type_center": "PRIVATE",
+    "code_type_hemo": "",
+    "name_type_hemo": "",
+    "center_code": 9610212
+  }
+},
+{
+  "model": "centers.center",
+  "pk": 151,
+  "fields": {
+    "sub_domain": "centre-el-hana",
+    "label": "CENTRE EL HANA",
+    "tel": "",
+    "mail": "",
+    "adresse": "rte de Téniour Km 1,5 3002 , SFAX",
+    "governorate": 17,
+    "delegation": null,
+    "type_center": "PRIVATE",
+    "code_type_hemo": "",
+    "name_type_hemo": "",
+    "center_code": 9610215
+  }
+},
+{
+  "model": "centers.center",
+  "pk": 152,
+  "fields": {
+    "sub_domain": "centre-ibn-sina",
+    "label": "CENTRE IBN SINA",
+    "tel": "",
+    "mail": "",
+    "adresse": "Avenue des Martyrs Polyclinique Essalama 3000 , SFAX",
+    "governorate": 17,
+    "delegation": null,
+    "type_center": "PRIVATE",
+    "code_type_hemo": "",
+    "name_type_hemo": "",
+    "center_code": 9610217
+  }
+},
+{
+  "model": "centers.center",
+  "pk": 153,
+  "fields": {
+    "sub_domain": "centre-dr-bouaziz",
+    "label": "CENTRE DR BOUAZIZ",
+    "tel": "",
+    "mail": "",
+    "adresse": "rte de Mahdia Km 13000, SFAX",
+    "governorate": 17,
+    "delegation": null,
+    "type_center": "PRIVATE",
+    "code_type_hemo": "",
+    "name_type_hemo": "",
+    "center_code": 9610218
+  }
+},
+{
+  "model": "centers.center",
+  "pk": 154,
+  "fields": {
+    "sub_domain": "centre-zitouna",
+    "label": "CENTRE ZITOUNA",
+    "tel": "",
+    "mail": "",
+    "adresse": "",
+    "governorate": 17,
+    "delegation": null,
+    "type_center": "PRIVATE",
+    "code_type_hemo": "",
+    "name_type_hemo": "",
+    "center_code": 9610219
+  }
+},
+{
+  "model": "centers.center",
+  "pk": 155,
+  "fields": {
+    "sub_domain": "centre-el-wafa-chaabouni",
+    "label": "CENTRE EL WAFA CHAABOUNI",
+    "tel": "",
+    "mail": "",
+    "adresse": "RUE EL KARAMA RTE DE MEHDIA KM 1.5 , Sfax",
+    "governorate": 17,
+    "delegation": null,
+    "type_center": "PRIVATE",
+    "code_type_hemo": "",
+    "name_type_hemo": "",
+    "center_code": 96102110
+  }
+},
+{
+  "model": "centers.center",
+  "pk": 156,
+  "fields": {
+    "sub_domain": "hopital-hedi-chaker-de-sfax",
+    "label": "HOPITAL HEDI CHAKER DE SFAX",
+    "tel": "",
+    "mail": "",
+    "adresse": "",
+    "governorate": 17,
+    "delegation": null,
+    "type_center": "UNIVERSITY",
+    "code_type_hemo": "UNITE",
+    "name_type_hemo": "UNITE HEMODIALYSE",
+    "center_code": 10001
+  }
+},
+{
+  "model": "centers.center",
+  "pk": 157,
+  "fields": {
+    "sub_domain": "centre-el-habib",
+    "label": "CENTRE EL HABIB",
+    "tel": "",
+    "mail": "",
+    "adresse": " rte de la Soukra Km 43052 Cité Habib, SFAX",
+    "governorate": 17,
+    "delegation": null,
+    "type_center": "PRIVATE",
+    "code_type_hemo": "",
+    "name_type_hemo": "",
+    "center_code": 9610213
+  }
+},
+{
+  "model": "centers.center",
+  "pk": 158,
+  "fields": {
+    "sub_domain": "centre-echifa",
+    "label": "CENTRE ECHIFA",
+    "tel": "",
+    "mail": "",
+    "adresse": " rte de Menzel Chaker Km 13000 , SFAX",
+    "governorate": 17,
+    "delegation": null,
+    "type_center": "PRIVATE",
+    "code_type_hemo": "",
+    "name_type_hemo": "",
+    "center_code": 9610216
+  }
+},
+{
+  "model": "centers.center",
+  "pk": 159,
+  "fields": {
+    "sub_domain": "centre-soledial",
+    "label": "CENTRE SOLEDIAL",
+    "tel": "",
+    "mail": "",
+    "adresse": " rte de Gremda Km 33062 Sidi Abbes, SFAX",
+    "governorate": 17,
+    "delegation": null,
+    "type_center": "PRIVATE",
+    "code_type_hemo": "",
+    "name_type_hemo": "",
+    "center_code": 9610214
+  }
+},
+{
+  "model": "centers.center",
+  "pk": 160,
+  "fields": {
+    "sub_domain": "hopital-houcine-bouzaiene-de-gafsa",
+    "label": "HOPITAL HOUCINE BOUZAIENE DE GAFSA",
+    "tel": "",
+    "mail": "",
+    "adresse": "",
+    "governorate": 6,
+    "delegation": null,
+    "type_center": "REGIONAL",
+    "code_type_hemo": "MD2200",
+    "name_type_hemo": "SERVICE HEMODIALYSE",
+    "center_code": 30020
+  }
+},
+{
+  "model": "centers.center",
+  "pk": 161,
+  "fields": {
+    "sub_domain": "clinique-dhemodialyse-du-sud-ouest-lina-dial",
+    "label": "CLINIQUE D'HEMODIALYSE DU SUD OUEST LINA DIAL",
+    "tel": "",
+    "mail": "",
+    "adresse": "2112 Sidi Ahmed Zarrouk - GAFSA",
+    "governorate": 6,
+    "delegation": null,
+    "type_center": "PRIVATE",
+    "code_type_hemo": "",
+    "name_type_hemo": "",
+    "center_code": 9710041
+  }
+},
+{
+  "model": "centers.center",
+  "pk": 162,
+  "fields": {
+    "sub_domain": "centre-el-tarzi-zin-el-mehdi",
+    "label": "CENTRE EL TARZI ZIN EL MEHDI",
+    "tel": "",
+    "mail": "",
+    "adresse": "Rue du Caire 2100 Gafsa, Gafsa",
+    "governorate": 6,
+    "delegation": null,
+    "type_center": "PRIVATE",
+    "code_type_hemo": "",
+    "name_type_hemo": "",
+    "center_code": 9710042
+  }
+},
+{
+  "model": "centers.center",
+  "pk": 163,
+  "fields": {
+    "sub_domain": "hopital-de-moulares",
+    "label": "HOPITAL DE MOULARES",
+    "tel": "",
+    "mail": "",
+    "adresse": "",
+    "governorate": 6,
+    "delegation": null,
+    "type_center": "CIRCONSCRIPTION",
+    "code_type_hemo": "MD2200",
+    "name_type_hemo": "SERVICE HEMODIALYSE",
+    "center_code": 40078
+  }
+},
+{
+  "model": "centers.center",
+  "pk": 164,
+  "fields": {
+    "sub_domain": "centre-erraja-sned",
+    "label": "CENTRE ERRAJA SNED",
+    "tel": "",
+    "mail": "",
+    "adresse": "sned",
+    "governorate": 6,
+    "delegation": null,
+    "type_center": "PRIVATE",
+    "code_type_hemo": "",
+    "name_type_hemo": "",
+    "center_code": 9710101
+  }
+},
+{
+  "model": "centers.center",
+  "pk": 165,
+  "fields": {
+    "sub_domain": "hopital-de-tozeur",
+    "label": "HOPITAL DE TOZEUR",
+    "tel": "",
+    "mail": "",
+    "adresse": "",
+    "governorate": 22,
+    "delegation": null,
+    "type_center": "REGIONAL",
+    "code_type_hemo": "MD2200",
+    "name_type_hemo": "SERVICE HEMODIALYSE",
+    "center_code": 30022
+  }
+},
+{
+  "model": "centers.center",
+  "pk": 166,
+  "fields": {
+    "sub_domain": "hemodialyse-hedfi",
+    "label": "HEMODIALYSE HEDFI",
+    "tel": "",
+    "mail": "",
+    "adresse": "rte de Nefta Cité CNRPS 2200 Tozeur ",
+    "governorate": 22,
+    "delegation": null,
+    "type_center": "PRIVATE",
+    "code_type_hemo": "",
+    "name_type_hemo": "",
+    "center_code": 9720061
+  }
+},
+{
+  "model": "centers.center",
+  "pk": 167,
+  "fields": {
+    "sub_domain": "hopital-de-douz",
+    "label": "HOPITAL DE DOUZ",
+    "tel": "",
+    "mail": "",
+    "adresse": "",
+    "governorate": 10,
+    "delegation": null,
+    "type_center": "CIRCONSCRIPTION",
+    "code_type_hemo": "MD2200",
+    "name_type_hemo": "SERVICE HEMODIALYSE",
+    "center_code": 40095
+  }
+},
+{
+  "model": "centers.center",
+  "pk": 168,
+  "fields": {
+    "sub_domain": "hopital-de-kebili",
+    "label": "HOPITAL DE KEBILI",
+    "tel": "",
+    "mail": "",
+    "adresse": "",
+    "governorate": 10,
+    "delegation": null,
+    "type_center": "REGIONAL",
+    "code_type_hemo": "MD2200",
+    "name_type_hemo": "SERVICE HEMODIALYSE",
+    "center_code": 30025
+  }
+},
+{
+  "model": "centers.center",
+  "pk": 169,
+  "fields": {
+    "sub_domain": "clinique-nefzaoua-de-dialyse",
+    "label": "CLINIQUE NEFZAOUA DE DIALYSE",
+    "tel": "",
+    "mail": "",
+    "adresse": "Avenue Naloute. 4200 KEBILI ",
+    "governorate": 10,
+    "delegation": null,
+    "type_center": "PRIVATE",
+    "code_type_hemo": "",
+    "name_type_hemo": "",
+    "center_code": 9730061
+  }
+},
+{
+  "model": "centers.center",
+  "pk": 170,
+  "fields": {
+    "sub_domain": "hopital-dei-hamma",
+    "label": "HOPITAL D'EI HAMMA",
+    "tel": "",
+    "mail": "",
+    "adresse": "",
+    "governorate": 5,
+    "delegation": null,
+    "type_center": "CIRCONSCRIPTION",
+    "code_type_hemo": "UNITE",
+    "name_type_hemo": "UNITE HEMODIALYSE",
+    "center_code": 40091
+  }
+},
+{
+  "model": "centers.center",
+  "pk": 171,
+  "fields": {
+    "sub_domain": "centre-uvlir",
+    "label": "CENTRE UVLIR",
+    "tel": "",
+    "mail": "",
+    "adresse": "112, av. Mongi Slim 6000, Gabès, GABES ",
+    "governorate": 5,
+    "delegation": null,
+    "type_center": "PRIVATE",
+    "code_type_hemo": "",
+    "name_type_hemo": "",
+    "center_code": 9810051
+  }
+},
+{
+  "model": "centers.center",
+  "pk": 172,
+  "fields": {
+    "sub_domain": "centre-ibn-al-haythem",
+    "label": "CENTRE IBN AL HAYTHEM",
+    "tel": "",
+    "mail": "",
+    "adresse": "",
+    "governorate": 5,
+    "delegation": null,
+    "type_center": "PRIVATE",
+    "code_type_hemo": "",
+    "name_type_hemo": "",
+    "center_code": 9810052
+  }
+},
+{
+  "model": "centers.center",
+  "pk": 173,
+  "fields": {
+    "sub_domain": "hopital-docteur-mohamed-ben-sassi-de-gabes",
+    "label": "HOPITAL \"DOCTEUR MOHAMED BEN SASSI\" DE GABES",
+    "tel": "",
+    "mail": "",
+    "adresse": "",
+    "governorate": 5,
+    "delegation": null,
+    "type_center": "REGIONAL",
+    "code_type_hemo": "MD2200",
+    "name_type_hemo": "SERVICE HEMODIALYSE",
+    "center_code": 30024
+  }
+},
+{
+  "model": "centers.center",
+  "pk": 174,
+  "fields": {
+    "sub_domain": "clinique-slama-dhemodialyse",
+    "label": "CLINIQUE SLAMA D'HEMODIALYSE",
+    "tel": "",
+    "mail": "",
+    "adresse": " Cité des Juges 6032 Teboulbou - GABES",
+    "governorate": 5,
+    "delegation": null,
+    "type_center": "PRIVATE",
+    "code_type_hemo": "",
+    "name_type_hemo": "",
+    "center_code": 9810151
+  }
+},
+{
+  "model": "centers.center",
+  "pk": 175,
+  "fields": {
+    "sub_domain": "centre-ibn-nafiss",
+    "label": "CENTRE IBN NAFISS",
+    "tel": "",
+    "mail": "",
+    "adresse": "05 RUE MOUSSA IBN NSAYER 6080 Mareth Gabes ",
+    "governorate": 5,
+    "delegation": null,
+    "type_center": "PRIVATE",
+    "code_type_hemo": "",
+    "name_type_hemo": "",
+    "center_code": 9810101
+  }
+},
+{
+  "model": "centers.center",
+  "pk": 176,
+  "fields": {
+    "sub_domain": "hopital-ben-guerdene",
+    "label": "HOPITAL BEN GUERDENE",
+    "tel": "",
+    "mail": "",
+    "adresse": "",
+    "governorate": 14,
+    "delegation": null,
+    "type_center": "REGIONAL",
+    "code_type_hemo": "MD2200",
+    "name_type_hemo": "SERVICE HEMODIALYSE",
+    "center_code": 40097
+  }
+},
+{
+  "model": "centers.center",
+  "pk": 177,
+  "fields": {
+    "sub_domain": "sahara-dial-ben-guerden",
+    "label": "SAHARA DIAL, BEN GUERDEN",
+    "tel": "",
+    "mail": "",
+    "adresse": "ROUTE MOKNINE 4160 Ben Guerdane  Medenine ",
+    "governorate": 14,
+    "delegation": null,
+    "type_center": "PRIVATE",
+    "code_type_hemo": "",
+    "name_type_hemo": "",
+    "center_code": 9820011
+  }
+},
+{
+  "model": "centers.center",
+  "pk": 178,
+  "fields": {
+    "sub_domain": "hopital-de-beni-khedache",
+    "label": "HOPITAL DE BENI KHEDACHE",
+    "tel": "",
+    "mail": "",
+    "adresse": "",
+    "governorate": 14,
+    "delegation": null,
+    "type_center": "CIRCONSCRIPTION",
+    "code_type_hemo": "UNITE",
+    "name_type_hemo": "UNITE HEMODIALYSE",
+    "center_code": 40099
+  }
+},
+{
+  "model": "centers.center",
+  "pk": 179,
+  "fields": {
+    "sub_domain": "hopital-sadok-mokadem-de-djerba",
+    "label": "HOPITAL SADOK MOKADEM DE DJERBA",
+    "tel": "",
+    "mail": "",
+    "adresse": "",
+    "governorate": 14,
+    "delegation": null,
+    "type_center": "REGIONAL",
+    "code_type_hemo": "MD2200",
+    "name_type_hemo": "SERVICE HEMODIALYSE",
+    "center_code": 30027
+  }
+},
+{
+  "model": "centers.center",
+  "pk": 180,
+  "fields": {
+    "sub_domain": "centre-rein-artificiel-djerba",
+    "label": "CENTRE REIN ARTIFICIEL DJERBA",
+    "tel": "",
+    "mail": "",
+    "adresse": "djerba houmet essouk, MEDENINE",
+    "governorate": 14,
+    "delegation": null,
+    "type_center": "PRIVATE",
+    "code_type_hemo": "",
+    "name_type_hemo": "",
+    "center_code": 9820051
+  }
+},
+{
+  "model": "centers.center",
+  "pk": 181,
+  "fields": {
+    "sub_domain": "clinque-nour-chifaa-midoun-djerba",
+    "label": "CLINQUE NOUR CHIFAA MIDOUN DJERBA",
+    "tel": "",
+    "mail": "",
+    "adresse": " Avenue Farhat Hached 4116 Djerba Midoun  MEDENINE",
+    "governorate": 14,
+    "delegation": null,
+    "type_center": "PRIVATE",
+    "code_type_hemo": "",
+    "name_type_hemo": "",
+    "center_code": 9820061
+  }
+},
+{
+  "model": "centers.center",
+  "pk": 182,
+  "fields": {
+    "sub_domain": "centre-hemodialyse-sud-medenine",
+    "label": "CENTRE HEMODIALYSE SUD MEDENINE",
+    "tel": "",
+    "mail": "",
+    "adresse": "Avenue du 1er Mai 4100  MEDENINE",
+    "governorate": 14,
+    "delegation": null,
+    "type_center": "PRIVATE",
+    "code_type_hemo": "",
+    "name_type_hemo": "",
+    "center_code": 9820071
+  }
+},
+{
+  "model": "centers.center",
+  "pk": 183,
+  "fields": {
+    "sub_domain": "clinique-iris-medenine",
+    "label": "CLINIQUE IRIS MEDENINE",
+    "tel": "",
+    "mail": "",
+    "adresse": "rue ahram route gabes, 4100 Médenine,",
+    "governorate": 14,
+    "delegation": null,
+    "type_center": "PRIVATE",
+    "code_type_hemo": "",
+    "name_type_hemo": "",
+    "center_code": 9820072
+  }
+},
+{
+  "model": "centers.center",
+  "pk": 184,
+  "fields": {
+    "sub_domain": "hopitai-habib-bourguiba-de-medenine",
+    "label": "HOPITAI \"HABIB BOURGUIBA\" DE MEDENINE",
+    "tel": "",
+    "mail": "",
+    "adresse": "",
+    "governorate": 14,
+    "delegation": null,
+    "type_center": "UNIVERSITY",
+    "code_type_hemo": "MD2200",
+    "name_type_hemo": "SERVICE HEMODIALYSE",
+    "center_code": 30026
+  }
+},
+{
+  "model": "centers.center",
+  "pk": 185,
+  "fields": {
+    "sub_domain": "hopital-de-zarzis",
+    "label": "HOPITAL DE ZARZIS",
+    "tel": "",
+    "mail": "",
+    "adresse": "",
+    "governorate": 14,
+    "delegation": null,
+    "type_center": "REGIONAL",
+    "code_type_hemo": "MD2200",
+    "name_type_hemo": "SERVICE HEMODIALYSE",
+    "center_code": 30028
+  }
+},
+{
+  "model": "centers.center",
+  "pk": 186,
+  "fields": {
+    "sub_domain": "clinique-el-ghaya-zarzis",
+    "label": "CLINIQUE EL GHAYA ZARZIS",
+    "tel": "",
+    "mail": "",
+    "adresse": "rte de Souihel 4170 Zarzis , MEDENINE",
+    "governorate": 14,
+    "delegation": null,
+    "type_center": "PRIVATE",
+    "code_type_hemo": "",
+    "name_type_hemo": "",
+    "center_code": 9820091
+  }
+},
+{
+  "model": "centers.center",
+  "pk": 187,
+  "fields": {
+    "sub_domain": "hopital-de-tataouine",
+    "label": "HOPITAL DE TATAOUINE",
+    "tel": "",
+    "mail": "",
+    "adresse": "",
+    "governorate": 21,
+    "delegation": null,
+    "type_center": "REGIONAL",
+    "code_type_hemo": "MD2200",
+    "name_type_hemo": "SERVICE HEMODIALYSE",
+    "center_code": 30029
+  }
+},
+{
+  "model": "centers.center",
+  "pk": 188,
+  "fields": {
+    "sub_domain": "centre-prive-lazhar",
+    "label": "CENTRE PRIVE LAZHAR",
+    "tel": "",
+    "mail": "",
+    "adresse": "Cité Abbés 3200 Tataouine ",
+    "governorate": 21,
+    "delegation": null,
+    "type_center": "PRIVATE",
+    "code_type_hemo": "",
+    "name_type_hemo": "",
+    "center_code": 9830061
+  }
+},
+{
+  "model": "centers.center",
+  "pk": 189,
+  "fields": {
+    "sub_domain": "centre-de-dialyse-el-oula",
+    "label": "CENTRE DE DIALYSE El OULA",
+    "tel": "",
+    "mail": "",
+    "adresse": "",
+    "governorate": 21,
+    "delegation": null,
+    "type_center": "PRIVATE",
+    "code_type_hemo": "",
+    "name_type_hemo": "",
+    "center_code": 9830062
+  }
+},
+{
+  "model": "centers.center",
+  "pk": 190,
+  "fields": {
+    "sub_domain": "cilo9",
+    "label": "Kaboot",
+    "tel": "45454522",
+    "mail": "h@c.com",
+    "adresse": "susah",
+    "governorate": 17,
+    "delegation": null,
+    "type_center": "REGIONAL",
+    "code_type_hemo": "MD2200",
+    "name_type_hemo": "SERVICE HEMODIALYSE",
+    "center_code": 12563
+  }
+},
+{
+  "model": "centers.center",
+  "pk": 191,
+  "fields": {
+    "sub_domain": "chabouchibou",
+    "label": "chabouya",
+    "tel": "519736842",
+    "mail": "n@nigeria.nig",
+    "adresse": "onana",
+    "governorate": 3,
+    "delegation": 18,
+    "type_center": "BASIC",
+    "code_type_hemo": "UNITE",
+    "name_type_hemo": "UNITE HEMODIALYSE",
+    "center_code": 1689653
+  }
+},
+{
+  "model": "centers.governorate",
+  "pk": 1,
+  "fields": {
+    "name": "Ariana",
+    "code": 12
+  }
+},
+{
+  "model": "centers.governorate",
+  "pk": 2,
+  "fields": {
+    "name": "Béja",
+    "code": 31
+  }
+},
+{
+  "model": "centers.governorate",
+  "pk": 3,
+  "fields": {
+    "name": "Ben Arous",
+    "code": 13
+  }
+},
+{
+  "model": "centers.governorate",
+  "pk": 4,
+  "fields": {
+    "name": "Bizerte",
+    "code": 23
+  }
+},
+{
+  "model": "centers.governorate",
+  "pk": 5,
+  "fields": {
+    "name": "Gabès",
+    "code": 81
+  }
+},
+{
+  "model": "centers.governorate",
+  "pk": 6,
+  "fields": {
+    "name": "Gafsa",
+    "code": 71
+  }
+},
+{
+  "model": "centers.governorate",
+  "pk": 7,
+  "fields": {
+    "name": "Jendouba",
+    "code": 32
+  }
+},
+{
+  "model": "centers.governorate",
+  "pk": 8,
+  "fields": {
+    "name": "Kairouan",
+    "code": 41
+  }
+},
+{
+  "model": "centers.governorate",
+  "pk": 9,
+  "fields": {
+    "name": "Kassérine",
+    "code": 42
+  }
+},
+{
+  "model": "centers.governorate",
+  "pk": 10,
+  "fields": {
+    "name": "Kebili",
+    "code": 73
+  }
+},
+{
+  "model": "centers.governorate",
+  "pk": 11,
+  "fields": {
+    "name": "Le Kef",
+    "code": 33
+  }
+},
+{
+  "model": "centers.governorate",
+  "pk": 12,
+  "fields": {
+    "name": "Mahdia",
+    "code": 53
+  }
+},
+{
+  "model": "centers.governorate",
+  "pk": 13,
+  "fields": {
+    "name": "Manouba",
+    "code": 14
+  }
+},
+{
+  "model": "centers.governorate",
+  "pk": 14,
+  "fields": {
+    "name": "Médenine",
+    "code": 82
+  }
+},
+{
+  "model": "centers.governorate",
+  "pk": 15,
+  "fields": {
+    "name": "Monastir",
+    "code": 52
+  }
+},
+{
+  "model": "centers.governorate",
+  "pk": 16,
+  "fields": {
+    "name": "Nabeul",
+    "code": 21
+  }
+},
+{
+  "model": "centers.governorate",
+  "pk": 17,
+  "fields": {
+    "name": "Sfax",
+    "code": 61
+  }
+},
+{
+  "model": "centers.governorate",
+  "pk": 18,
+  "fields": {
+    "name": "Sidi Bouzid",
+    "code": 43
+  }
+},
+{
+  "model": "centers.governorate",
+  "pk": 19,
+  "fields": {
+    "name": "Siliana",
+    "code": 34
+  }
+},
+{
+  "model": "centers.governorate",
+  "pk": 20,
+  "fields": {
+    "name": "Sousse",
+    "code": 51
+  }
+},
+{
+  "model": "centers.governorate",
+  "pk": 21,
+  "fields": {
+    "name": "Tataouine",
+    "code": 83
+  }
+},
+{
+  "model": "centers.governorate",
+  "pk": 22,
+  "fields": {
+    "name": "Tozeur",
+    "code": 72
+  }
+},
+{
+  "model": "centers.governorate",
+  "pk": 23,
+  "fields": {
+    "name": "Tunis",
+    "code": 11
+  }
+},
+{
+  "model": "centers.governorate",
+  "pk": 24,
+  "fields": {
+    "name": "Zaghouan",
+    "code": 22
+  }
+},
+{
+  "model": "centers.delegation",
+  "pk": 1,
+  "fields": {
+    "name": "Ariana Medina",
+    "governorate": 1,
+    "code": 12001
+  }
+},
+{
+  "model": "centers.delegation",
+  "pk": 2,
+  "fields": {
+    "name": "Ettadhamen",
+    "governorate": 1,
+    "code": 12003
+  }
+},
+{
+  "model": "centers.delegation",
+  "pk": 3,
+  "fields": {
+    "name": "Kalaat el Andalous",
+    "governorate": 1,
+    "code": 0
+  }
+},
+{
+  "model": "centers.delegation",
+  "pk": 4,
+  "fields": {
+    "name": "Mnihla",
+    "governorate": 1,
+    "code": 12002
+  }
+},
+{
+  "model": "centers.delegation",
+  "pk": 5,
+  "fields": {
+    "name": "Raoued",
+    "governorate": 1,
+    "code": 12005
+  }
+},
+{
+  "model": "centers.delegation",
+  "pk": 6,
+  "fields": {
+    "name": "Sidi Thabet",
+    "governorate": 1,
+    "code": 0
+  }
+},
+{
+  "model": "centers.delegation",
+  "pk": 7,
+  "fields": {
+    "name": "Soukra",
+    "governorate": 1,
+    "code": 0
+  }
+},
+{
+  "model": "centers.delegation",
+  "pk": 8,
+  "fields": {
+    "name": "Amdoun",
+    "governorate": 2,
+    "code": 0
+  }
+},
+{
+  "model": "centers.delegation",
+  "pk": 9,
+  "fields": {
+    "name": "Béja Nord",
+    "governorate": 2,
+    "code": 31002
+  }
+},
+{
+  "model": "centers.delegation",
+  "pk": 10,
+  "fields": {
+    "name": "Béja Sud",
+    "governorate": 2,
+    "code": 0
+  }
+},
+{
+  "model": "centers.delegation",
+  "pk": 11,
+  "fields": {
+    "name": "Goubellat",
+    "governorate": 2,
+    "code": 0
+  }
+},
+{
+  "model": "centers.delegation",
+  "pk": 12,
+  "fields": {
+    "name": "Medjez El Bab",
+    "governorate": 2,
+    "code": 31005
+  }
+},
+{
+  "model": "centers.delegation",
+  "pk": 13,
+  "fields": {
+    "name": "Nefza",
+    "governorate": 2,
+    "code": 0
+  }
+},
+{
+  "model": "centers.delegation",
+  "pk": 14,
+  "fields": {
+    "name": "Teboursouk",
+    "governorate": 2,
+    "code": 0
+  }
+},
+{
+  "model": "centers.delegation",
+  "pk": 15,
+  "fields": {
+    "name": "Testour",
+    "governorate": 2,
+    "code": 0
+  }
+},
+{
+  "model": "centers.delegation",
+  "pk": 16,
+  "fields": {
+    "name": "Tibar",
+    "governorate": 2,
+    "code": 0
+  }
+},
+{
+  "model": "centers.delegation",
+  "pk": 17,
+  "fields": {
+    "name": "Ben Arous",
+    "governorate": 3,
+    "code": 13001
+  }
+},
+{
+  "model": "centers.delegation",
+  "pk": 18,
+  "fields": {
+    "name": "Bou Mhel El Bassatine",
+    "governorate": 3,
+    "code": 13002
+  }
+},
+{
+  "model": "centers.delegation",
+  "pk": 19,
+  "fields": {
+    "name": "El Mourouj",
+    "governorate": 3,
+    "code": 13003
+  }
+},
+{
+  "model": "centers.delegation",
+  "pk": 20,
+  "fields": {
+    "name": "Ezzahra",
+    "governorate": 3,
+    "code": 0
+  }
+},
+{
+  "model": "centers.delegation",
+  "pk": 21,
+  "fields": {
+    "name": "Fouchana",
+    "governorate": 3,
+    "code": 13005
+  }
+},
+{
+  "model": "centers.delegation",
+  "pk": 22,
+  "fields": {
+    "name": "Hammam Chôtt",
+    "governorate": 3,
+    "code": 0
+  }
+},
+{
+  "model": "centers.delegation",
+  "pk": 23,
+  "fields": {
+    "name": "Hammam Lif",
+    "governorate": 3,
+    "code": 13007
+  }
+},
+{
+  "model": "centers.delegation",
+  "pk": 24,
+  "fields": {
+    "name": "La Nouvelle Medina",
+    "governorate": 3,
+    "code": 13011
+  }
+},
+{
+  "model": "centers.delegation",
+  "pk": 25,
+  "fields": {
+    "name": "Megrine",
+    "governorate": 3,
+    "code": 13008
+  }
+},
+{
+  "model": "centers.delegation",
+  "pk": 26,
+  "fields": {
+    "name": "Mohamedia",
+    "governorate": 3,
+    "code": 0
+  }
+},
+{
+  "model": "centers.delegation",
+  "pk": 27,
+  "fields": {
+    "name": "Mornag",
+    "governorate": 3,
+    "code": 13010
+  }
+},
+{
+  "model": "centers.delegation",
+  "pk": 28,
+  "fields": {
+    "name": "Radès",
+    "governorate": 3,
+    "code": 0
+  }
+},
+{
+  "model": "centers.delegation",
+  "pk": 29,
+  "fields": {
+    "name": "Bizerte Nord",
+    "governorate": 4,
+    "code": 23001
+  }
+},
+{
+  "model": "centers.delegation",
+  "pk": 30,
+  "fields": {
+    "name": "Bizerte Sud",
+    "governorate": 4,
+    "code": 0
+  }
+},
+{
+  "model": "centers.delegation",
+  "pk": 31,
+  "fields": {
+    "name": "Djoumine",
+    "governorate": 4,
+    "code": 0
+  }
+},
+{
+  "model": "centers.delegation",
+  "pk": 32,
+  "fields": {
+    "name": "El Alia",
+    "governorate": 4,
+    "code": 23003
+  }
+},
+{
+  "model": "centers.delegation",
+  "pk": 33,
+  "fields": {
+    "name": "Ghar El Melh",
+    "governorate": 4,
+    "code": 23004
+  }
+},
+{
+  "model": "centers.delegation",
+  "pk": 34,
+  "fields": {
+    "name": "Ghezala",
+    "governorate": 4,
+    "code": 0
+  }
+},
+{
+  "model": "centers.delegation",
+  "pk": 35,
+  "fields": {
+    "name": "Mateur",
+    "governorate": 4,
+    "code": 23007
+  }
+},
+{
+  "model": "centers.delegation",
+  "pk": 36,
+  "fields": {
+    "name": "Menzel Bourguiba",
+    "governorate": 4,
+    "code": 23008
+  }
+},
+{
+  "model": "centers.delegation",
+  "pk": 37,
+  "fields": {
+    "name": "Menzel Jemil",
+    "governorate": 4,
+    "code": 0
+  }
+},
+{
+  "model": "centers.delegation",
+  "pk": 38,
+  "fields": {
+    "name": "Ras Jabel",
+    "governorate": 4,
+    "code": 23010
+  }
+},
+{
+  "model": "centers.delegation",
+  "pk": 39,
+  "fields": {
+    "name": "Sejenane",
+    "governorate": 4,
+    "code": 23012
+  }
+},
+{
+  "model": "centers.delegation",
+  "pk": 40,
+  "fields": {
+    "name": "Tinja",
+    "governorate": 4,
+    "code": 0
+  }
+},
+{
+  "model": "centers.delegation",
+  "pk": 41,
+  "fields": {
+    "name": "Utique",
+    "governorate": 4,
+    "code": 0
+  }
+},
+{
+  "model": "centers.delegation",
+  "pk": 42,
+  "fields": {
+    "name": "Zarzouna",
+    "governorate": 4,
+    "code": 0
+  }
+},
+{
+  "model": "centers.delegation",
+  "pk": 43,
+  "fields": {
+    "name": "El Hamma",
+    "governorate": 5,
+    "code": 0
+  }
+},
+{
+  "model": "centers.delegation",
+  "pk": 44,
+  "fields": {
+    "name": "El Metouia",
+    "governorate": 5,
+    "code": 0
+  }
+},
+{
+  "model": "centers.delegation",
+  "pk": 45,
+  "fields": {
+    "name": "Gabes Medina",
+    "governorate": 5,
+    "code": 0
+  }
+},
+{
+  "model": "centers.delegation",
+  "pk": 46,
+  "fields": {
+    "name": "Gabes Ouest",
+    "governorate": 5,
+    "code": 0
+  }
+},
+{
+  "model": "centers.delegation",
+  "pk": 47,
+  "fields": {
+    "name": "Gabes Sud",
+    "governorate": 5,
+    "code": 0
+  }
+},
+{
+  "model": "centers.delegation",
+  "pk": 48,
+  "fields": {
+    "name": "Ghannouch",
+    "governorate": 5,
+    "code": 0
+  }
+},
+{
+  "model": "centers.delegation",
+  "pk": 49,
+  "fields": {
+    "name": "Menzel El Habib",
+    "governorate": 5,
+    "code": 0
+  }
+},
+{
+  "model": "centers.delegation",
+  "pk": 50,
+  "fields": {
+    "name": "Mareth",
+    "governorate": 5,
+    "code": 0
+  }
+},
+{
+  "model": "centers.delegation",
+  "pk": 51,
+  "fields": {
+    "name": "Matmata",
+    "governorate": 5,
+    "code": 0
+  }
+},
+{
+  "model": "centers.delegation",
+  "pk": 52,
+  "fields": {
+    "name": "Nouvelle Matmata",
+    "governorate": 5,
+    "code": 0
+  }
+},
+{
+  "model": "centers.delegation",
+  "pk": 53,
+  "fields": {
+    "name": "Belkhir",
+    "governorate": 6,
+    "code": 0
+  }
+},
+{
+  "model": "centers.delegation",
+  "pk": 54,
+  "fields": {
+    "name": "El Guetar",
+    "governorate": 6,
+    "code": 0
+  }
+},
+{
+  "model": "centers.delegation",
+  "pk": 55,
+  "fields": {
+    "name": "El Ksar",
+    "governorate": 6,
+    "code": 0
+  }
+},
+{
+  "model": "centers.delegation",
+  "pk": 56,
+  "fields": {
+    "name": "Gafsa Nord",
+    "governorate": 6,
+    "code": 0
+  }
+},
+{
+  "model": "centers.delegation",
+  "pk": 57,
+  "fields": {
+    "name": "Gafsa Sud",
+    "governorate": 6,
+    "code": 0
+  }
+},
+{
+  "model": "centers.delegation",
+  "pk": 58,
+  "fields": {
+    "name": "Mdhilla",
+    "governorate": 6,
+    "code": 0
+  }
+},
+{
+  "model": "centers.delegation",
+  "pk": 59,
+  "fields": {
+    "name": "Metlaoui",
+    "governorate": 6,
+    "code": 0
+  }
+},
+{
+  "model": "centers.delegation",
+  "pk": 60,
+  "fields": {
+    "name": "Oum El Araies",
+    "governorate": 6,
+    "code": 0
+  }
+},
+{
+  "model": "centers.delegation",
+  "pk": 61,
+  "fields": {
+    "name": "Redeyef",
+    "governorate": 6,
+    "code": 0
+  }
+},
+{
+  "model": "centers.delegation",
+  "pk": 62,
+  "fields": {
+    "name": "Sidi Aïch",
+    "governorate": 6,
+    "code": 0
+  }
+},
+{
+  "model": "centers.delegation",
+  "pk": 63,
+  "fields": {
+    "name": "Sned",
+    "governorate": 6,
+    "code": 0
+  }
+},
+{
+  "model": "centers.delegation",
+  "pk": 64,
+  "fields": {
+    "name": "Aïn Draham",
+    "governorate": 7,
+    "code": 0
+  }
+},
+{
+  "model": "centers.delegation",
+  "pk": 65,
+  "fields": {
+    "name": "Balta-Bou Aouane",
+    "governorate": 7,
+    "code": 0
+  }
+},
+{
+  "model": "centers.delegation",
+  "pk": 66,
+  "fields": {
+    "name": "Bou Salem",
+    "governorate": 7,
+    "code": 32003
+  }
+},
+{
+  "model": "centers.delegation",
+  "pk": 67,
+  "fields": {
+    "name": "Fernana",
+    "governorate": 7,
+    "code": 0
+  }
+},
+{
+  "model": "centers.delegation",
+  "pk": 68,
+  "fields": {
+    "name": "Ghardimaou",
+    "governorate": 7,
+    "code": 32005
+  }
+},
+{
+  "model": "centers.delegation",
+  "pk": 69,
+  "fields": {
+    "name": "Jendouba Sud",
+    "governorate": 7,
+    "code": 0
+  }
+},
+{
+  "model": "centers.delegation",
+  "pk": 70,
+  "fields": {
+    "name": "Jendouba Nord",
+    "governorate": 7,
+    "code": 0
+  }
+},
+{
+  "model": "centers.delegation",
+  "pk": 71,
+  "fields": {
+    "name": "Oued Meliz",
+    "governorate": 7,
+    "code": 0
+  }
+},
+{
+  "model": "centers.delegation",
+  "pk": 72,
+  "fields": {
+    "name": "Tabarka",
+    "governorate": 7,
+    "code": 0
+  }
+},
+{
+  "model": "centers.delegation",
+  "pk": 73,
+  "fields": {
+    "name": "Alaâ",
+    "governorate": 8,
+    "code": 0
+  }
+},
+{
+  "model": "centers.delegation",
+  "pk": 74,
+  "fields": {
+    "name": "Bou Hajla",
+    "governorate": 8,
+    "code": 0
+  }
+},
+{
+  "model": "centers.delegation",
+  "pk": 75,
+  "fields": {
+    "name": "Chebika",
+    "governorate": 8,
+    "code": 0
+  }
+},
+{
+  "model": "centers.delegation",
+  "pk": 76,
+  "fields": {
+    "name": "Echrarda",
+    "governorate": 8,
+    "code": 0
+  }
+},
+{
+  "model": "centers.delegation",
+  "pk": 77,
+  "fields": {
+    "name": "Haffouz",
+    "governorate": 8,
+    "code": 0
+  }
+},
+{
+  "model": "centers.delegation",
+  "pk": 78,
+  "fields": {
+    "name": "Hajeb El Ayoun",
+    "governorate": 8,
+    "code": 0
+  }
+},
+{
+  "model": "centers.delegation",
+  "pk": 79,
+  "fields": {
+    "name": "Kairouan Nord",
+    "governorate": 8,
+    "code": 0
+  }
+},
+{
+  "model": "centers.delegation",
+  "pk": 80,
+  "fields": {
+    "name": "Kairouan Sud",
+    "governorate": 8,
+    "code": 0
+  }
+},
+{
+  "model": "centers.delegation",
+  "pk": 81,
+  "fields": {
+    "name": "Nasrallah",
+    "governorate": 8,
+    "code": 0
+  }
+},
+{
+  "model": "centers.delegation",
+  "pk": 82,
+  "fields": {
+    "name": "Oueslatia",
+    "governorate": 8,
+    "code": 0
+  }
+},
+{
+  "model": "centers.delegation",
+  "pk": 83,
+  "fields": {
+    "name": "Sbikha",
+    "governorate": 8,
+    "code": 0
+  }
+},
+{
+  "model": "centers.delegation",
+  "pk": 84,
+  "fields": {
+    "name": "El Ayoun",
+    "governorate": 9,
+    "code": 0
+  }
+},
+{
+  "model": "centers.delegation",
+  "pk": 85,
+  "fields": {
+    "name": "Ezzouhour",
+    "governorate": 9,
+    "code": 0
+  }
+},
+{
+  "model": "centers.delegation",
+  "pk": 86,
+  "fields": {
+    "name": "Fériana",
+    "governorate": 9,
+    "code": 0
+  }
+},
+{
+  "model": "centers.delegation",
+  "pk": 87,
+  "fields": {
+    "name": "Foussana",
+    "governorate": 9,
+    "code": 0
+  }
+},
+{
+  "model": "centers.delegation",
+  "pk": 88,
+  "fields": {
+    "name": "Haïdra",
+    "governorate": 9,
+    "code": 0
+  }
+},
+{
+  "model": "centers.delegation",
+  "pk": 89,
+  "fields": {
+    "name": "Hassi El Ferid",
+    "governorate": 9,
+    "code": 0
+  }
+},
+{
+  "model": "centers.delegation",
+  "pk": 90,
+  "fields": {
+    "name": "Jedelienne",
+    "governorate": 9,
+    "code": 0
+  }
+},
+{
+  "model": "centers.delegation",
+  "pk": 91,
+  "fields": {
+    "name": "Kasserine Nord",
+    "governorate": 9,
+    "code": 0
+  }
+},
+{
+  "model": "centers.delegation",
+  "pk": 92,
+  "fields": {
+    "name": "Kasserine Sud",
+    "governorate": 9,
+    "code": 0
+  }
+},
+{
+  "model": "centers.delegation",
+  "pk": 93,
+  "fields": {
+    "name": "Majel Bel Abbès",
+    "governorate": 9,
+    "code": 0
+  }
+},
+{
+  "model": "centers.delegation",
+  "pk": 94,
+  "fields": {
+    "name": "Sbeïtla",
+    "governorate": 9,
+    "code": 0
+  }
+},
+{
+  "model": "centers.delegation",
+  "pk": 95,
+  "fields": {
+    "name": "Sbiba",
+    "governorate": 9,
+    "code": 0
+  }
+},
+{
+  "model": "centers.delegation",
+  "pk": 96,
+  "fields": {
+    "name": "Thala",
+    "governorate": 9,
+    "code": 0
+  }
+},
+{
+  "model": "centers.delegation",
+  "pk": 97,
+  "fields": {
+    "name": "Douz North",
+    "governorate": 10,
+    "code": 0
+  }
+},
+{
+  "model": "centers.delegation",
+  "pk": 98,
+  "fields": {
+    "name": "Douz South",
+    "governorate": 10,
+    "code": 0
+  }
+},
+{
+  "model": "centers.delegation",
+  "pk": 99,
+  "fields": {
+    "name": "Faouar",
+    "governorate": 10,
+    "code": 0
+  }
+},
+{
+  "model": "centers.delegation",
+  "pk": 100,
+  "fields": {
+    "name": "Kebili North",
+    "governorate": 10,
+    "code": 0
+  }
+},
+{
+  "model": "centers.delegation",
+  "pk": 101,
+  "fields": {
+    "name": "Kebili South",
+    "governorate": 10,
+    "code": 0
+  }
+},
+{
+  "model": "centers.delegation",
+  "pk": 102,
+  "fields": {
+    "name": "Souk El Ahed",
+    "governorate": 10,
+    "code": 0
+  }
+},
+{
+  "model": "centers.delegation",
+  "pk": 103,
+  "fields": {
+    "name": "Dahmani",
+    "governorate": 11,
+    "code": 0
+  }
+},
+{
+  "model": "centers.delegation",
+  "pk": 104,
+  "fields": {
+    "name": "Jérissa",
+    "governorate": 11,
+    "code": 0
+  }
+},
+{
+  "model": "centers.delegation",
+  "pk": 105,
+  "fields": {
+    "name": "El Ksour",
+    "governorate": 11,
+    "code": 0
+  }
+},
+{
+  "model": "centers.delegation",
+  "pk": 106,
+  "fields": {
+    "name": "Sers",
+    "governorate": 11,
+    "code": 0
+  }
+},
+{
+  "model": "centers.delegation",
+  "pk": 107,
+  "fields": {
+    "name": "Kalâat Khasba",
+    "governorate": 11,
+    "code": 0
+  }
+},
+{
+  "model": "centers.delegation",
+  "pk": 108,
+  "fields": {
+    "name": "Kalaat Senan",
+    "governorate": 11,
+    "code": 0
+  }
+},
+{
+  "model": "centers.delegation",
+  "pk": 109,
+  "fields": {
+    "name": "Kef Est",
+    "governorate": 11,
+    "code": 0
+  }
+},
+{
+  "model": "centers.delegation",
+  "pk": 110,
+  "fields": {
+    "name": "Kef Ouest",
+    "governorate": 11,
+    "code": 0
+  }
+},
+{
+  "model": "centers.delegation",
+  "pk": 111,
+  "fields": {
+    "name": "Nebeur",
+    "governorate": 11,
+    "code": 0
+  }
+},
+{
+  "model": "centers.delegation",
+  "pk": 112,
+  "fields": {
+    "name": "Sakiet Sidi Youssef",
+    "governorate": 11,
+    "code": 0
+  }
+},
+{
+  "model": "centers.delegation",
+  "pk": 113,
+  "fields": {
+    "name": "Tajerouine",
+    "governorate": 11,
+    "code": 0
+  }
+},
+{
+  "model": "centers.delegation",
+  "pk": 114,
+  "fields": {
+    "name": "Bou Merdès",
+    "governorate": 12,
+    "code": 0
+  }
+},
+{
+  "model": "centers.delegation",
+  "pk": 115,
+  "fields": {
+    "name": "Chebba",
+    "governorate": 12,
+    "code": 0
+  }
+},
+{
+  "model": "centers.delegation",
+  "pk": 116,
+  "fields": {
+    "name": "Chorbane",
+    "governorate": 12,
+    "code": 0
+  }
+},
+{
+  "model": "centers.delegation",
+  "pk": 117,
+  "fields": {
+    "name": "El Djem",
+    "governorate": 12,
+    "code": 0
+  }
+},
+{
+  "model": "centers.delegation",
+  "pk": 118,
+  "fields": {
+    "name": "Essouassi",
+    "governorate": 12,
+    "code": 0
+  }
+},
+{
+  "model": "centers.delegation",
+  "pk": 119,
+  "fields": {
+    "name": "Hebira",
+    "governorate": 12,
+    "code": 0
+  }
+},
+{
+  "model": "centers.delegation",
+  "pk": 120,
+  "fields": {
+    "name": "Ksour Essef",
+    "governorate": 12,
+    "code": 0
+  }
+},
+{
+  "model": "centers.delegation",
+  "pk": 121,
+  "fields": {
+    "name": "Mahdia",
+    "governorate": 12,
+    "code": 0
+  }
+},
+{
+  "model": "centers.delegation",
+  "pk": 122,
+  "fields": {
+    "name": "Melloulèche",
+    "governorate": 12,
+    "code": 0
+  }
+},
+{
+  "model": "centers.delegation",
+  "pk": 123,
+  "fields": {
+    "name": "Ouled Chamekh",
+    "governorate": 12,
+    "code": 0
+  }
+},
+{
+  "model": "centers.delegation",
+  "pk": 124,
+  "fields": {
+    "name": "Sidi Alouane",
+    "governorate": 12,
+    "code": 0
+  }
+},
+{
+  "model": "centers.delegation",
+  "pk": 125,
+  "fields": {
+    "name": "Borj El Amri",
+    "governorate": 13,
+    "code": 0
+  }
+},
+{
+  "model": "centers.delegation",
+  "pk": 126,
+  "fields": {
+    "name": "Djedeida",
+    "governorate": 13,
+    "code": 0
+  }
+},
+{
+  "model": "centers.delegation",
+  "pk": 127,
+  "fields": {
+    "name": "Douar Hicher",
+    "governorate": 13,
+    "code": 14002
+  }
+},
+{
+  "model": "centers.delegation",
+  "pk": 128,
+  "fields": {
+    "name": "El Battan",
+    "governorate": 13,
+    "code": 0
+  }
+},
+{
+  "model": "centers.delegation",
+  "pk": 129,
+  "fields": {
+    "name": "Manouba",
+    "governorate": 13,
+    "code": 14005
+  }
+},
+{
+  "model": "centers.delegation",
+  "pk": 130,
+  "fields": {
+    "name": "Mornaguia",
+    "governorate": 13,
+    "code": 0
+  }
+},
+{
+  "model": "centers.delegation",
+  "pk": 131,
+  "fields": {
+    "name": "Oued Ellil",
+    "governorate": 13,
+    "code": 0
+  }
+},
+{
+  "model": "centers.delegation",
+  "pk": 132,
+  "fields": {
+    "name": "Tebourba",
+    "governorate": 13,
+    "code": 14008
+  }
+},
+{
+  "model": "centers.delegation",
+  "pk": 133,
+  "fields": {
+    "name": "Médenine Nord",
+    "governorate": 14,
+    "code": 0
+  }
+},
+{
+  "model": "centers.delegation",
+  "pk": 134,
+  "fields": {
+    "name": "Médenine Sur",
+    "governorate": 14,
+    "code": 0
+  }
+},
+{
+  "model": "centers.delegation",
+  "pk": 135,
+  "fields": {
+    "name": "Beni Khedech",
+    "governorate": 14,
+    "code": 0
+  }
+},
+{
+  "model": "centers.delegation",
+  "pk": 136,
+  "fields": {
+    "name": "Ben Guerdane",
+    "governorate": 14,
+    "code": 0
+  }
+},
+{
+  "model": "centers.delegation",
+  "pk": 137,
+  "fields": {
+    "name": "Zarzis",
+    "governorate": 14,
+    "code": 0
+  }
+},
+{
+  "model": "centers.delegation",
+  "pk": 138,
+  "fields": {
+    "name": "Djerba Houmet Souk",
+    "governorate": 14,
+    "code": 0
+  }
+},
+{
+  "model": "centers.delegation",
+  "pk": 139,
+  "fields": {
+    "name": "Djerba Midoun",
+    "governorate": 14,
+    "code": 0
+  }
+},
+{
+  "model": "centers.delegation",
+  "pk": 140,
+  "fields": {
+    "name": "Djerba Ajim",
+    "governorate": 14,
+    "code": 0
+  }
+},
+{
+  "model": "centers.delegation",
+  "pk": 141,
+  "fields": {
+    "name": "Sidi Makhloulf",
+    "governorate": 14,
+    "code": 0
+  }
+},
+{
+  "model": "centers.delegation",
+  "pk": 142,
+  "fields": {
+    "name": "Bekalta",
+    "governorate": 15,
+    "code": 0
+  }
+},
+{
+  "model": "centers.delegation",
+  "pk": 143,
+  "fields": {
+    "name": "Bembla",
+    "governorate": 15,
+    "code": 0
+  }
+},
+{
+  "model": "centers.delegation",
+  "pk": 144,
+  "fields": {
+    "name": "Beni Hassen",
+    "governorate": 15,
+    "code": 0
+  }
+},
+{
+  "model": "centers.delegation",
+  "pk": 145,
+  "fields": {
+    "name": "Jemmal",
+    "governorate": 15,
+    "code": 0
+  }
+},
+{
+  "model": "centers.delegation",
+  "pk": 146,
+  "fields": {
+    "name": "Ksar Hellal",
+    "governorate": 15,
+    "code": 0
+  }
+},
+{
+  "model": "centers.delegation",
+  "pk": 147,
+  "fields": {
+    "name": "Ksibet el-Médiouni",
+    "governorate": 15,
+    "code": 0
+  }
+},
+{
+  "model": "centers.delegation",
+  "pk": 148,
+  "fields": {
+    "name": "Moknine",
+    "governorate": 15,
+    "code": 0
+  }
+},
+{
+  "model": "centers.delegation",
+  "pk": 149,
+  "fields": {
+    "name": "Monastir",
+    "governorate": 15,
+    "code": 0
+  }
+},
+{
+  "model": "centers.delegation",
+  "pk": 150,
+  "fields": {
+    "name": "Ouerdanine",
+    "governorate": 15,
+    "code": 0
+  }
+},
+{
+  "model": "centers.delegation",
+  "pk": 151,
+  "fields": {
+    "name": "Sahline",
+    "governorate": 15,
+    "code": 0
+  }
+},
+{
+  "model": "centers.delegation",
+  "pk": 152,
+  "fields": {
+    "name": "Sayada-Lamta-Bou Hajar",
+    "governorate": 15,
+    "code": 0
+  }
+},
+{
+  "model": "centers.delegation",
+  "pk": 153,
+  "fields": {
+    "name": "Téboulba",
+    "governorate": 15,
+    "code": 0
+  }
+},
+{
+  "model": "centers.delegation",
+  "pk": 154,
+  "fields": {
+    "name": "Zéramdine",
+    "governorate": 15,
+    "code": 0
+  }
+},
+{
+  "model": "centers.delegation",
+  "pk": 155,
+  "fields": {
+    "name": "Béni Khalled",
+    "governorate": 16,
+    "code": 0
+  }
+},
+{
+  "model": "centers.delegation",
+  "pk": 156,
+  "fields": {
+    "name": "Béni Khiar",
+    "governorate": 16,
+    "code": 0
+  }
+},
+{
+  "model": "centers.delegation",
+  "pk": 157,
+  "fields": {
+    "name": "Bou Argoub",
+    "governorate": 16,
+    "code": 0
+  }
+},
+{
+  "model": "centers.delegation",
+  "pk": 158,
+  "fields": {
+    "name": "Dar Châabane El Fehri",
+    "governorate": 16,
+    "code": 0
+  }
+},
+{
+  "model": "centers.delegation",
+  "pk": 159,
+  "fields": {
+    "name": "El Haouaria",
+    "governorate": 16,
+    "code": 0
+  }
+},
+{
+  "model": "centers.delegation",
+  "pk": 160,
+  "fields": {
+    "name": "El Mida",
+    "governorate": 16,
+    "code": 0
+  }
+},
+{
+  "model": "centers.delegation",
+  "pk": 161,
+  "fields": {
+    "name": "Grombalia",
+    "governorate": 16,
+    "code": 21007
+  }
+},
+{
+  "model": "centers.delegation",
+  "pk": 162,
+  "fields": {
+    "name": "Hammamet",
+    "governorate": 16,
+    "code": 21009
+  }
+},
+{
+  "model": "centers.delegation",
+  "pk": 163,
+  "fields": {
+    "name": "Hammam El Guezaz",
+    "governorate": 16,
+    "code": 0
+  }
+},
+{
+  "model": "centers.delegation",
+  "pk": 164,
+  "fields": {
+    "name": "Kélibia",
+    "governorate": 16,
+    "code": 21010
+  }
+},
+{
+  "model": "centers.delegation",
+  "pk": 165,
+  "fields": {
+    "name": "Korba",
+    "governorate": 16,
+    "code": 21011
+  }
+},
+{
+  "model": "centers.delegation",
+  "pk": 166,
+  "fields": {
+    "name": "Menzel Bouzelfa",
+    "governorate": 16,
+    "code": 21012
+  }
+},
+{
+  "model": "centers.delegation",
+  "pk": 167,
+  "fields": {
+    "name": "Menzel Temime",
+    "governorate": 16,
+    "code": 21013
+  }
+},
+{
+  "model": "centers.delegation",
+  "pk": 168,
+  "fields": {
+    "name": "Nabeul",
+    "governorate": 16,
+    "code": 21014
+  }
+},
+{
+  "model": "centers.delegation",
+  "pk": 169,
+  "fields": {
+    "name": "Soliman",
+    "governorate": 16,
+    "code": 21015
+  }
+},
+{
+  "model": "centers.delegation",
+  "pk": 170,
+  "fields": {
+    "name": "Takelsa",
+    "governorate": 16,
+    "code": 0
+  }
+},
+{
+  "model": "centers.delegation",
+  "pk": 171,
+  "fields": {
+    "name": "Agareb",
+    "governorate": 17,
+    "code": 0
+  }
+},
+{
+  "model": "centers.delegation",
+  "pk": 172,
+  "fields": {
+    "name": "Bir Ali Ben Khalifa",
+    "governorate": 17,
+    "code": 0
+  }
+},
+{
+  "model": "centers.delegation",
+  "pk": 173,
+  "fields": {
+    "name": "El Amra",
+    "governorate": 17,
+    "code": 0
+  }
+},
+{
+  "model": "centers.delegation",
+  "pk": 174,
+  "fields": {
+    "name": "El Hencha",
+    "governorate": 17,
+    "code": 0
+  }
+},
+{
+  "model": "centers.delegation",
+  "pk": 175,
+  "fields": {
+    "name": "Graïba",
+    "governorate": 17,
+    "code": 0
+  }
+},
+{
+  "model": "centers.delegation",
+  "pk": 176,
+  "fields": {
+    "name": "Jebiniana",
+    "governorate": 17,
+    "code": 0
+  }
+},
+{
+  "model": "centers.delegation",
+  "pk": 177,
+  "fields": {
+    "name": "Kerkennah",
+    "governorate": 17,
+    "code": 0
+  }
+},
+{
+  "model": "centers.delegation",
+  "pk": 178,
+  "fields": {
+    "name": "Mahrès",
+    "governorate": 17,
+    "code": 0
+  }
+},
+{
+  "model": "centers.delegation",
+  "pk": 179,
+  "fields": {
+    "name": "Menzel Chaker",
+    "governorate": 17,
+    "code": 0
+  }
+},
+{
+  "model": "centers.delegation",
+  "pk": 180,
+  "fields": {
+    "name": "Sakiet Eddaïer",
+    "governorate": 17,
+    "code": 0
+  }
+},
+{
+  "model": "centers.delegation",
+  "pk": 181,
+  "fields": {
+    "name": "Sakiet Ezzit",
+    "governorate": 17,
+    "code": 0
+  }
+},
+{
+  "model": "centers.delegation",
+  "pk": 182,
+  "fields": {
+    "name": "Sfax Ouest",
+    "governorate": 17,
+    "code": 0
+  }
+},
+{
+  "model": "centers.delegation",
+  "pk": 183,
+  "fields": {
+    "name": "Sfax Sud",
+    "governorate": 17,
+    "code": 0
+  }
+},
+{
+  "model": "centers.delegation",
+  "pk": 184,
+  "fields": {
+    "name": "Sfax Ville",
+    "governorate": 17,
+    "code": 0
+  }
+},
+{
+  "model": "centers.delegation",
+  "pk": 185,
+  "fields": {
+    "name": "Skhira",
+    "governorate": 17,
+    "code": 0
+  }
+},
+{
+  "model": "centers.delegation",
+  "pk": 186,
+  "fields": {
+    "name": "Thyna",
+    "governorate": 17,
+    "code": 0
+  }
+},
+{
+  "model": "centers.delegation",
+  "pk": 187,
+  "fields": {
+    "name": "Bir El Hafey",
+    "governorate": 18,
+    "code": 0
+  }
+},
+{
+  "model": "centers.delegation",
+  "pk": 188,
+  "fields": {
+    "name": "Cebbala Ouled Asker",
+    "governorate": 18,
+    "code": 0
+  }
+},
+{
+  "model": "centers.delegation",
+  "pk": 189,
+  "fields": {
+    "name": "Jilma",
+    "governorate": 18,
+    "code": 0
+  }
+},
+{
+  "model": "centers.delegation",
+  "pk": 190,
+  "fields": {
+    "name": "Meknassy",
+    "governorate": 18,
+    "code": 0
+  }
+},
+{
+  "model": "centers.delegation",
+  "pk": 191,
+  "fields": {
+    "name": "Menzel Bouzaiane",
+    "governorate": 18,
+    "code": 0
+  }
+},
+{
+  "model": "centers.delegation",
+  "pk": 192,
+  "fields": {
+    "name": "Mezzouna",
+    "governorate": 18,
+    "code": 0
+  }
+},
+{
+  "model": "centers.delegation",
+  "pk": 193,
+  "fields": {
+    "name": "Ouled Haffouz",
+    "governorate": 18,
+    "code": 0
+  }
+},
+{
+  "model": "centers.delegation",
+  "pk": 194,
+  "fields": {
+    "name": "Regueb",
+    "governorate": 18,
+    "code": 0
+  }
+},
+{
+  "model": "centers.delegation",
+  "pk": 195,
+  "fields": {
+    "name": "Sidi Ali Ben Aoun",
+    "governorate": 18,
+    "code": 0
+  }
+},
+{
+  "model": "centers.delegation",
+  "pk": 196,
+  "fields": {
+    "name": "Sidi Bouzid Est",
+    "governorate": 18,
+    "code": 0
+  }
+},
+{
+  "model": "centers.delegation",
+  "pk": 197,
+  "fields": {
+    "name": "Sidi Bouzid Ouest",
+    "governorate": 18,
+    "code": 0
+  }
+},
+{
+  "model": "centers.delegation",
+  "pk": 198,
+  "fields": {
+    "name": "Souk Jedid",
+    "governorate": 18,
+    "code": 0
+  }
+},
+{
+  "model": "centers.delegation",
+  "pk": 199,
+  "fields": {
+    "name": "Bargou",
+    "governorate": 19,
+    "code": 0
+  }
+},
+{
+  "model": "centers.delegation",
+  "pk": 200,
+  "fields": {
+    "name": "Bou Arada",
+    "governorate": 19,
+    "code": 0
+  }
+},
+{
+  "model": "centers.delegation",
+  "pk": 201,
+  "fields": {
+    "name": "El Aroussa",
+    "governorate": 19,
+    "code": 0
+  }
+},
+{
+  "model": "centers.delegation",
+  "pk": 202,
+  "fields": {
+    "name": "El Krib",
+    "governorate": 19,
+    "code": 0
+  }
+},
+{
+  "model": "centers.delegation",
+  "pk": 203,
+  "fields": {
+    "name": "Gaâfour",
+    "governorate": 19,
+    "code": 0
+  }
+},
+{
+  "model": "centers.delegation",
+  "pk": 204,
+  "fields": {
+    "name": "Kesra",
+    "governorate": 19,
+    "code": 0
+  }
+},
+{
+  "model": "centers.delegation",
+  "pk": 205,
+  "fields": {
+    "name": "Makthar",
+    "governorate": 19,
+    "code": 0
+  }
+},
+{
+  "model": "centers.delegation",
+  "pk": 206,
+  "fields": {
+    "name": "Rouhia",
+    "governorate": 19,
+    "code": 0
+  }
+},
+{
+  "model": "centers.delegation",
+  "pk": 207,
+  "fields": {
+    "name": "Sidi Bou Rouis",
+    "governorate": 19,
+    "code": 0
+  }
+},
+{
+  "model": "centers.delegation",
+  "pk": 208,
+  "fields": {
+    "name": "Siliana Nord",
+    "governorate": 19,
+    "code": 0
+  }
+},
+{
+  "model": "centers.delegation",
+  "pk": 209,
+  "fields": {
+    "name": "Siliana Sud",
+    "governorate": 19,
+    "code": 0
+  }
+},
+{
+  "model": "centers.delegation",
+  "pk": 210,
+  "fields": {
+    "name": "Akouda",
+    "governorate": 20,
+    "code": 0
+  }
+},
+{
+  "model": "centers.delegation",
+  "pk": 211,
+  "fields": {
+    "name": "Bouficha",
+    "governorate": 20,
+    "code": 0
+  }
+},
+{
+  "model": "centers.delegation",
+  "pk": 212,
+  "fields": {
+    "name": "Enfida",
+    "governorate": 20,
+    "code": 0
+  }
+},
+{
+  "model": "centers.delegation",
+  "pk": 213,
+  "fields": {
+    "name": "Hammam Sousse",
+    "governorate": 20,
+    "code": 0
+  }
+},
+{
+  "model": "centers.delegation",
+  "pk": 214,
+  "fields": {
+    "name": "Hergla",
+    "governorate": 20,
+    "code": 0
+  }
+},
+{
+  "model": "centers.delegation",
+  "pk": 215,
+  "fields": {
+    "name": "Kalâa Kebira",
+    "governorate": 20,
+    "code": 0
+  }
+},
+{
+  "model": "centers.delegation",
+  "pk": 216,
+  "fields": {
+    "name": "Kalâa Seghira",
+    "governorate": 20,
+    "code": 0
+  }
+},
+{
+  "model": "centers.delegation",
+  "pk": 217,
+  "fields": {
+    "name": "Kondar",
+    "governorate": 20,
+    "code": 0
+  }
+},
+{
+  "model": "centers.delegation",
+  "pk": 218,
+  "fields": {
+    "name": "M'saken",
+    "governorate": 20,
+    "code": 0
+  }
+},
+{
+  "model": "centers.delegation",
+  "pk": 219,
+  "fields": {
+    "name": "Sidi Bou Ali",
+    "governorate": 20,
+    "code": 0
+  }
+},
+{
+  "model": "centers.delegation",
+  "pk": 220,
+  "fields": {
+    "name": "Sidi El Hani",
+    "governorate": 20,
+    "code": 0
+  }
+},
+{
+  "model": "centers.delegation",
+  "pk": 221,
+  "fields": {
+    "name": "Sousse Jawhara",
+    "governorate": 20,
+    "code": 0
+  }
+},
+{
+  "model": "centers.delegation",
+  "pk": 222,
+  "fields": {
+    "name": "Sousse Médina",
+    "governorate": 20,
+    "code": 0
+  }
+},
+{
+  "model": "centers.delegation",
+  "pk": 223,
+  "fields": {
+    "name": "Sousse Riadh",
+    "governorate": 20,
+    "code": 0
+  }
+},
+{
+  "model": "centers.delegation",
+  "pk": 224,
+  "fields": {
+    "name": "Sousse Sidi Abdelhamid",
+    "governorate": 20,
+    "code": 0
+  }
+},
+{
+  "model": "centers.delegation",
+  "pk": 225,
+  "fields": {
+    "name": "Bir Lahmar",
+    "governorate": 21,
+    "code": 0
+  }
+},
+{
+  "model": "centers.delegation",
+  "pk": 226,
+  "fields": {
+    "name": "Dehiba",
+    "governorate": 21,
+    "code": 0
+  }
+},
+{
+  "model": "centers.delegation",
+  "pk": 227,
+  "fields": {
+    "name": "Ghomrassen",
+    "governorate": 21,
+    "code": 0
+  }
+},
+{
+  "model": "centers.delegation",
+  "pk": 228,
+  "fields": {
+    "name": "Remada",
+    "governorate": 21,
+    "code": 0
+  }
+},
+{
+  "model": "centers.delegation",
+  "pk": 229,
+  "fields": {
+    "name": "Smâr",
+    "governorate": 21,
+    "code": 0
+  }
+},
+{
+  "model": "centers.delegation",
+  "pk": 230,
+  "fields": {
+    "name": "Tataouine Nord",
+    "governorate": 21,
+    "code": 0
+  }
+},
+{
+  "model": "centers.delegation",
+  "pk": 231,
+  "fields": {
+    "name": "Tataouine Sud",
+    "governorate": 21,
+    "code": 0
+  }
+},
+{
+  "model": "centers.delegation",
+  "pk": 232,
+  "fields": {
+    "name": "Degache",
+    "governorate": 22,
+    "code": 0
+  }
+},
+{
+  "model": "centers.delegation",
+  "pk": 233,
+  "fields": {
+    "name": "Hazoua",
+    "governorate": 22,
+    "code": 0
+  }
+},
+{
+  "model": "centers.delegation",
+  "pk": 234,
+  "fields": {
+    "name": "Nefta",
+    "governorate": 22,
+    "code": 0
+  }
+},
+{
+  "model": "centers.delegation",
+  "pk": 235,
+  "fields": {
+    "name": "Tameghza",
+    "governorate": 22,
+    "code": 0
+  }
+},
+{
+  "model": "centers.delegation",
+  "pk": 236,
+  "fields": {
+    "name": "Tozeur",
+    "governorate": 22,
+    "code": 0
+  }
+},
+{
+  "model": "centers.delegation",
+  "pk": 237,
+  "fields": {
+    "name": "Bab El Bhar",
+    "governorate": 23,
+    "code": 0
+  }
+},
+{
+  "model": "centers.delegation",
+  "pk": 238,
+  "fields": {
+    "name": "Bab Souika",
+    "governorate": 23,
+    "code": 0
+  }
+},
+{
+  "model": "centers.delegation",
+  "pk": 239,
+  "fields": {
+    "name": "Carthage",
+    "governorate": 23,
+    "code": 0
+  }
+},
+{
+  "model": "centers.delegation",
+  "pk": 240,
+  "fields": {
+    "name": "Cité El Khadra",
+    "governorate": 23,
+    "code": 0
+  }
+},
+{
+  "model": "centers.delegation",
+  "pk": 241,
+  "fields": {
+    "name": "Djebel Jelloud",
+    "governorate": 23,
+    "code": 0
+  }
+},
+{
+  "model": "centers.delegation",
+  "pk": 242,
+  "fields": {
+    "name": "El Kabaria",
+    "governorate": 23,
+    "code": 0
+  }
+},
+{
+  "model": "centers.delegation",
+  "pk": 243,
+  "fields": {
+    "name": "El Menzah",
+    "governorate": 23,
+    "code": 0
+  }
+},
+{
+  "model": "centers.delegation",
+  "pk": 244,
+  "fields": {
+    "name": "El Omrane",
+    "governorate": 23,
+    "code": 0
+  }
+},
+{
+  "model": "centers.delegation",
+  "pk": 245,
+  "fields": {
+    "name": "El Omrane supérieur",
+    "governorate": 23,
+    "code": 0
+  }
+},
+{
+  "model": "centers.delegation",
+  "pk": 246,
+  "fields": {
+    "name": "El Ouardia",
+    "governorate": 23,
+    "code": 0
+  }
+},
+{
+  "model": "centers.delegation",
+  "pk": 247,
+  "fields": {
+    "name": "Ettahrir",
+    "governorate": 23,
+    "code": 0
+  }
+},
+{
+  "model": "centers.delegation",
+  "pk": 248,
+  "fields": {
+    "name": "Ezzouhour",
+    "governorate": 23,
+    "code": 0
+  }
+},
+{
+  "model": "centers.delegation",
+  "pk": 249,
+  "fields": {
+    "name": "Hraïria",
+    "governorate": 23,
+    "code": 0
+  }
+},
+{
+  "model": "centers.delegation",
+  "pk": 250,
+  "fields": {
+    "name": "La Goulette",
+    "governorate": 23,
+    "code": 0
+  }
+},
+{
+  "model": "centers.delegation",
+  "pk": 251,
+  "fields": {
+    "name": "La Marsa",
+    "governorate": 23,
+    "code": 0
+  }
+},
+{
+  "model": "centers.delegation",
+  "pk": 252,
+  "fields": {
+    "name": "Le Bardo",
+    "governorate": 23,
+    "code": 0
+  }
+},
+{
+  "model": "centers.delegation",
+  "pk": 253,
+  "fields": {
+    "name": "Le Kram",
+    "governorate": 23,
+    "code": 0
+  }
+},
+{
+  "model": "centers.delegation",
+  "pk": 254,
+  "fields": {
+    "name": "Médina",
+    "governorate": 23,
+    "code": 0
+  }
+},
+{
+  "model": "centers.delegation",
+  "pk": 255,
+  "fields": {
+    "name": "Séjoumi",
+    "governorate": 23,
+    "code": 0
+  }
+},
+{
+  "model": "centers.delegation",
+  "pk": 256,
+  "fields": {
+    "name": "Sidi El Béchir",
+    "governorate": 23,
+    "code": 0
+  }
+},
+{
+  "model": "centers.delegation",
+  "pk": 257,
+  "fields": {
+    "name": "Sidi Hassine",
+    "governorate": 23,
+    "code": 0
+  }
+},
+{
+  "model": "centers.delegation",
+  "pk": 258,
+  "fields": {
+    "name": "Bir Mcherga",
+    "governorate": 24,
+    "code": 0
+  }
+},
+{
+  "model": "centers.delegation",
+  "pk": 259,
+  "fields": {
+    "name": "El Fahs",
+    "governorate": 24,
+    "code": 22002
+  }
+},
+{
+  "model": "centers.delegation",
+  "pk": 260,
+  "fields": {
+    "name": "Nadhour",
+    "governorate": 24,
+    "code": 0
+  }
+},
+{
+  "model": "centers.delegation",
+  "pk": 261,
+  "fields": {
+    "name": "Saouaf",
+    "governorate": 24,
+    "code": 0
+  }
+},
+{
+  "model": "centers.delegation",
+  "pk": 262,
+  "fields": {
+    "name": "Zaghouan",
+    "governorate": 24,
+    "code": 22005
+  }
+},
+{
+  "model": "centers.delegation",
+  "pk": 263,
+  "fields": {
+    "name": "Zriba",
+    "governorate": 24,
+    "code": 0
+  }
+},
+{
+  "model": "centers.administrativestaff",
+  "pk": 13,
+  "fields": {
+    "user": 14,
+    "nom": "Chan",
+    "prenom": "Jolda",
+    "cin": "1596842",
+    "center": 13,
+    "role": "LOCAL_ADMIN",
+    "job_title": "batal"
+  }
+},
+{
+  "model": "centers.administrativestaff",
+  "pk": 14,
+  "fields": {
+    "user": 19,
+    "nom": "paraa",
+    "prenom": "paraaa",
+    "cin": "89657422",
+    "center": 13,
+    "role": "MEDICAL_PARA_STAFF",
+    "job_title": "okooo"
+  }
+},
+{
+  "model": "centers.administrativestaff",
+  "pk": 15,
+  "fields": {
+    "user": 25,
+    "nom": "poastmanuser",
+    "prenom": "Doe",
+    "cin": "15645677",
+    "center": 13,
+    "role": "SUBMITTER",
+    "job_title": "Manager"
+  }
+},
+{
+  "model": "centers.medicalstaff",
+  "pk": 4,
+  "fields": {
+    "user": 16,
+    "nom": "Med",
+    "prenom": "Med",
+    "cin": "1236545",
+    "center": 13,
+    "role": "VIEWER",
+    "cnom": "1596543"
+  }
+},
+{
+  "model": "centers.technicalstaff",
+  "pk": 1,
+  "fields": {
+    "user": 17,
+    "nom": "tech",
+    "prenom": "tech",
+    "cin": "985617",
+    "center": 13,
+    "role": "MEDICAL_PARA_STAFF",
+    "qualification": "batal"
+  }
+},
+{
+  "model": "centers.workerstaff",
+  "pk": 1,
+  "fields": {
+    "user": 18,
+    "nom": "worker",
+    "prenom": "worker",
+    "cin": "256843",
+    "center": 13,
+    "role": "VIEWER",
+    "job_title": "janitor"
+  }
+},
+{
+  "model": "centers.cnam",
+  "pk": 1,
+  "fields": {
+    "number": "KABOOT DINERI"
+  }
+},
+{
+  "model": "centers.cnam",
+  "pk": 2,
+  "fields": {
+    "number": "KABOOT TREFLE"
+  }
+},
+{
+  "model": "centers.cnam",
+  "pk": 3,
+  "fields": {
+    "number": "pass"
+  }
+},
+{
+  "model": "centers.cnam",
+  "pk": 4,
+  "fields": {
+    "number": "135698"
+  }
+},
+{
+  "model": "centers.cnam",
+  "pk": 5,
+  "fields": {
+    "number": "1326"
+  }
+},
+{
+  "model": "centers.patient",
+  "pk": 2,
+  "fields": {
+    "nom": "Contréé",
+    "prenom": "120",
+    "cin": "65439876",
+    "center": 36,
+    "weight": null,
+    "age": null,
+    "cnam": 1,
+    "status": "Active",
+    "decease_note": null,
+    "entry_date": "2000-02-02",
+    "previously_dialysed": false,
+    "date_first_dia": null,
+    "blood_type": "A+",
+    "gender": ""
+  }
+},
+{
+  "model": "centers.patient",
+  "pk": 3,
+  "fields": {
+    "nom": "Contréé",
+    "prenom": "120",
+    "cin": "654395",
+    "center": 36,
+    "weight": null,
+    "age": null,
+    "cnam": 1,
+    "status": "Active",
+    "decease_note": null,
+    "entry_date": "2000-02-02",
+    "previously_dialysed": false,
+    "date_first_dia": null,
+    "blood_type": "A+",
+    "gender": ""
+  }
+},
+{
+  "model": "centers.patient",
+  "pk": 4,
+  "fields": {
+    "nom": "Contréé",
+    "prenom": "120",
+    "cin": "124578",
+    "center": 36,
+    "weight": null,
+    "age": null,
+    "cnam": 1,
+    "status": "Active",
+    "decease_note": null,
+    "entry_date": "2000-02-02",
+    "previously_dialysed": false,
+    "date_first_dia": null,
+    "blood_type": "A+",
+    "gender": ""
+  }
+},
+{
+  "model": "centers.patient",
+  "pk": 5,
+  "fields": {
+    "nom": "Contréé",
+    "prenom": "120",
+    "cin": "124571",
+    "center": 36,
+    "weight": null,
+    "age": null,
+    "cnam": 1,
+    "status": "Active",
+    "decease_note": null,
+    "entry_date": "2000-02-02",
+    "previously_dialysed": false,
+    "date_first_dia": null,
+    "blood_type": "A+",
+    "gender": ""
+  }
+},
+{
+  "model": "centers.patient",
+  "pk": 6,
+  "fields": {
+    "nom": "samir",
+    "prenom": "péceron",
+    "cin": "56784236",
+    "center": 106,
+    "weight": null,
+    "age": null,
+    "cnam": 2,
+    "status": "Active",
+    "decease_note": null,
+    "entry_date": "1999-04-04",
+    "previously_dialysed": false,
+    "date_first_dia": null,
+    "blood_type": "A+",
+    "gender": ""
+  }
+},
+{
+  "model": "centers.patient",
+  "pk": 7,
+  "fields": {
+    "nom": "ffffffff",
+    "prenom": "5588",
+    "cin": "12345679",
+    "center": 34,
+    "weight": null,
+    "age": null,
+    "cnam": 3,
+    "status": "Active",
+    "decease_note": null,
+    "entry_date": "1800-12-12",
+    "previously_dialysed": false,
+    "date_first_dia": null,
+    "blood_type": "A+",
+    "gender": ""
+  }
+},
+{
+  "model": "centers.patient",
+  "pk": 8,
+  "fields": {
+    "nom": "JOKEDA",
+    "prenom": "ikea",
+    "cin": "98564723",
+    "center": 13,
+    "weight": null,
+    "age": null,
+    "cnam": 4,
+    "status": "Active",
+    "decease_note": null,
+    "entry_date": "1999-04-04",
+    "previously_dialysed": true,
+    "date_first_dia": "2008-10-10",
+    "blood_type": "O+",
+    "gender": ""
+  }
+},
+{
+  "model": "centers.patient",
+  "pk": 9,
+  "fields": {
+    "nom": "ooooo",
+    "prenom": "oooo",
+    "cin": "56987423",
+    "center": 13,
+    "weight": null,
+    "age": null,
+    "cnam": 5,
+    "status": "Active",
+    "decease_note": null,
+    "entry_date": "2000-12-12",
+    "previously_dialysed": false,
+    "date_first_dia": null,
+    "blood_type": "O+",
+    "gender": ""
+  }
+},
+{
+  "model": "centers.patient",
+  "pk": 10,
+  "fields": {
+    "nom": "Chan",
+    "prenom": "Jolda",
+    "cin": "552359898",
+    "center": 13,
+    "weight": null,
+    "age": null,
+    "cnam": 2,
+    "status": "Active",
+    "decease_note": null,
+    "entry_date": "2025-05-09",
+    "previously_dialysed": true,
+    "date_first_dia": "2025-05-14",
+    "blood_type": "AB+",
+    "gender": "M"
+  }
+},
+{
+  "model": "centers.patient",
+  "pk": 11,
+  "fields": {
+    "nom": "panaaa",
+    "prenom": "pola",
+    "cin": "55888855",
+    "center": 13,
+    "weight": 26.0,
+    "age": 12,
+    "cnam": 4,
+    "status": "DECEASED",
+    "decease_note": "Functional death",
+    "entry_date": "2000-12-12",
+    "previously_dialysed": false,
+    "date_first_dia": null,
+    "blood_type": "A+",
+    "gender": "M"
+  }
+},
+{
+  "model": "centers.medicalactivity",
+  "pk": 1,
+  "fields": {
+    "patient": 5,
+    "created_at": "2000-02-02"
+  }
+},
+{
+  "model": "centers.medicalactivity",
+  "pk": 2,
+  "fields": {
+    "patient": 6,
+    "created_at": "1999-04-04"
+  }
+},
+{
+  "model": "centers.medicalactivity",
+  "pk": 3,
+  "fields": {
+    "patient": 7,
+    "created_at": "1800-12-12"
+  }
+},
+{
+  "model": "centers.medicalactivity",
+  "pk": 4,
+  "fields": {
+    "patient": 8,
+    "created_at": "1999-04-04"
+  }
+},
+{
+  "model": "centers.medicalactivity",
+  "pk": 5,
+  "fields": {
+    "patient": 9,
+    "created_at": "2000-12-12"
+  }
+},
+{
+  "model": "centers.medicalactivity",
+  "pk": 6,
+  "fields": {
+    "patient": 10,
+    "created_at": "2025-05-09"
+  }
+},
+{
+  "model": "centers.medicalactivity",
+  "pk": 7,
+  "fields": {
+    "patient": 11,
+    "created_at": "2000-12-12"
+  }
+},
+{
+  "model": "centers.membrane",
+  "pk": 1,
+  "fields": {
+    "type": "15"
+  }
+},
+{
+  "model": "centers.filtre",
+  "pk": 1,
+  "fields": {
+    "type": "15",
+    "sterilisation": "WATER_STEAM"
+  }
+},
+{
+  "model": "centers.machine",
+  "pk": 1,
+  "fields": {
+    "center": 13,
+    "brand": "Frese",
+    "functional": true,
+    "reserve": false,
+    "refurbished": false,
+    "nbre_hrs": 1568325,
+    "membrane": 1,
+    "filtre": 1
+  }
+},
+{
+  "model": "centers.typehemo",
+  "pk": 1,
+  "fields": {
+    "name": "Hemodialysis"
+  }
+},
+{
+  "model": "centers.typehemo",
+  "pk": 2,
+  "fields": {
+    "name": "Peritoneal Dialysis"
+  }
+},
+{
+  "model": "centers.methodhemo",
+  "pk": 1,
+  "fields": {
+    "type_hemo": 1,
+    "name": "Hemodialysis"
+  }
+},
+{
+  "model": "centers.methodhemo",
+  "pk": 2,
+  "fields": {
+    "type_hemo": 1,
+    "name": "Bicarbonate"
+  }
+},
+{
+  "model": "centers.methodhemo",
+  "pk": 3,
+  "fields": {
+    "type_hemo": 1,
+    "name": "Erythropoietin"
+  }
+},
+{
+  "model": "centers.methodhemo",
+  "pk": 4,
+  "fields": {
+    "type_hemo": 1,
+    "name": "Hemodiafiltration"
+  }
+},
+{
+  "model": "centers.methodhemo",
+  "pk": 5,
+  "fields": {
+    "type_hemo": 1,
+    "name": "Filtration 84%"
+  }
+},
+{
+  "model": "centers.methodhemo",
+  "pk": 6,
+  "fields": {
+    "type_hemo": 2,
+    "name": "DPCA"
+  }
+},
+{
+  "model": "centers.methodhemo",
+  "pk": 7,
+  "fields": {
+    "type_hemo": 2,
+    "name": "DPA"
+  }
+},
+{
+  "model": "centers.transmittablediseaseref",
+  "pk": 1,
+  "fields": {
+    "label_disease": "HIV",
+    "type_of_transmission": "nosocomiale"
+  }
+},
+{
+  "model": "centers.transmittablediseaseref",
+  "pk": 2,
+  "fields": {
+    "label_disease": "hepathite",
+    "type_of_transmission": "nosocomiale"
+  }
+},
+{
+  "model": "centers.transmittabledisease",
+  "pk": 1,
+  "fields": {
+    "medical_activity": 1,
+    "disease": 1,
+    "date_of_contraction": "2000-12-03"
+  }
+},
+{
+  "model": "centers.transmittabledisease",
+  "pk": 2,
+  "fields": {
+    "medical_activity": 6,
+    "disease": 2,
+    "date_of_contraction": "2025-05-21"
+  }
+},
+{
+  "model": "centers.complicationsref",
+  "pk": 1,
+  "fields": {
+    "label_complication": "Vadim"
+  }
+},
+{
+  "model": "centers.complications",
+  "pk": 1,
+  "fields": {
+    "medical_activity": 2,
+    "complication": 1,
+    "notes": "OPHAFOIMurbjezg",
+    "date_of_contraction": "2000-12-31"
+  }
+},
+{
+  "model": "centers.complications",
+  "pk": 2,
+  "fields": {
+    "medical_activity": 6,
+    "complication": 1,
+    "notes": "ghghgd",
+    "date_of_contraction": "2025-05-21"
+  }
+},
+{
+  "model": "centers.transplantationref",
+  "pk": 1,
+  "fields": {
+    "label_transplantation": "gfndngfndf"
+  }
+},
+{
+  "model": "centers.transplantation",
+  "pk": 1,
+  "fields": {
+    "medical_activity": 6,
+    "transplantation": 1,
+    "date_operation": "2025-05-05",
+    "notes": "gbxb"
+  }
+},
+{
+  "model": "centers.userprofile",
+  "pk": 7,
+  "fields": {
+    "user": 14,
+    "verification_code": null,
+    "is_verified": true
+  }
+},
+{
+  "model": "centers.userprofile",
+  "pk": 8,
+  "fields": {
+    "user": 16,
+    "verification_code": null,
+    "is_verified": true
+  }
+},
+{
+  "model": "centers.userprofile",
+  "pk": 9,
+  "fields": {
+    "user": 17,
+    "verification_code": null,
+    "is_verified": true
+  }
+},
+{
+  "model": "centers.userprofile",
+  "pk": 10,
+  "fields": {
+    "user": 18,
+    "verification_code": null,
+    "is_verified": true
+  }
+},
+{
+  "model": "centers.userprofile",
+  "pk": 11,
+  "fields": {
+    "user": 19,
+    "verification_code": null,
+    "is_verified": true
+  }
+},
+{
+  "model": "centers.userprofile",
+  "pk": 13,
+  "fields": {
+    "user": 1,
+    "verification_code": null,
+    "is_verified": false
+  }
+},
+{
+  "model": "centers.userprofile",
+  "pk": 14,
+  "fields": {
+    "user": 25,
+    "verification_code": "956605",
+    "is_verified": false
+  }
+},
+{
+  "model": "centers.hemodialysissession",
+  "pk": 2,
+  "fields": {
+    "medical_activity": 6,
+    "type": 1,
+    "method": 2,
+    "date_of_session": "2025-05-19",
+    "responsible_doc": 4
+  }
+}
+]

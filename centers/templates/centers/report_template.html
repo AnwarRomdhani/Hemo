@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>{{ center.label }} - Activity Report</title>
+</head>
+<body>
+    <h1 style="text-align: center; font-size: 16pt; font-weight: bold;">{{ center.label }} - Activity Report</h1>
+    <p style="font-size: 10pt;">Date: {{ report_date }}</p>
+
+    <h2 style="text-align: center; font-size: 16pt; font-weight: bold;">Center Information</h2>
+    <table border="1" style="width: 100%; font-size: 10pt;">
+        <tr style="background-color: #e0e0e0;">
+            <td style="padding: 6px;">Name</td>
+            <td style="padding: 6px;">{{ center.label }}</td>
+        </tr>
+        <tr>
+            <td style="padding: 6px;">Address</td>
+            <td style="padding: 6px;">{{ center.adresse }}</td>
+        </tr>
+        <tr style="background-color: #e0e0e0;">
+            <td style="padding: 6px;">Delegation</td>
+            <td style="padding: 6px;">{{ center.delegation.name|default:"N/A" }}</td>
+        </tr>
+        <tr>
+            <td style="padding: 6px;">Telephone</td>
+            <td style="padding: 6px;">{{ center.tel|default:"N/A" }}</td>
+        </tr>
+        <tr style="background-color: #e0e0e0;">
+            <td style="padding: 6px;">Email</td>
+            <td style="padding: 6px;">{{ center.mail|default:"N/A" }}</td>
+        </tr>
+    </table>
+
+    <h2 style="text-align: center; font-size: 16pt; font-weight: bold;">Staff Members</h2>
+    <h3 style="font-size: 12pt; color: blue; text-decoration: underline;">Administrative Staff</h3>
+    {% if administrative_staff or technical_staff %}
+    <table border="1" style="width: 100%; font-size: 10pt;">
+        <tr style="background-color: #b3d9ff;">
+            <th style="padding: 6px;">Name</th>
+            <th style="padding: 6px;">CIN</th>
+            <th style="padding: 6px;">Details</th>
+        </tr>
+        {% for staff in administrative_staff %}
+        <tr style="background-color: {% cycle '#f5f5f5' '#ffffff' %}">
+            <td style="padding: 6px;">{{ staff.nom }} {{ staff.prenom }}</td>
+            <td style="padding: 6px;">{{ staff.cin }}</td>
+            <td style="padding: 6px;">Job Title: {{ staff.job_title }}</td>
+        </tr>
+        {% endfor %}
+        {% for staff in technical_staff %}
+        <tr style="background-color: {% cycle '#f5f5f5' '#ffffff' %}">
+            <td style="padding: 6px;">{{ staff.nom }} {{ staff.prenom }}</td>
+            <td style="padding: 6px;">{{ staff.cin }}</td>
+            <td style="padding: 6px;">Qualification: {{ staff.qualification }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+    {% else %}
+    <p style="font-size: 10pt;">No Administrative Staff recorded.</p>
+    {% endif %}
+
+    <h3 style="font-size: 12pt; color: blue; text-decoration: underline;">Para & Medical Staff</h3>
+    {% if medical_staff or paramedical_staff %}
+    <table border="1" style="width: 100%; font-size: 10pt;">
+        <tr style="background-color: #b3d9ff;">
+            <th style="padding: 6px;">Name</th>
+            <th style="padding: 6px;">CIN</th>
+            <th style="padding: 6px;">Details</th>
+        </tr>
+        {% for staff in medical_staff %}
+        <tr style="background-color: {% cycle '#f5f5f5' '#ffffff' %}">
+            <td style="padding: 6px;">{{ staff.nom }} {{ staff.prenom }}</td>
+            <td style="padding: 6px;">{{ staff.cin }}</td>
+            <td style="padding: 6px;">CNOM: {{ staff.cnom }}</td>
+        </tr>
+        {% endfor %}
+        {% for staff in paramedical_staff %}
+        <tr style="background-color: {% cycle '#f5f5f5' '#ffffff' %}">
+            <td style="padding: 6px;">{{ staff.nom }} {{ staff.prenom }}</td>
+            <td style="padding: 6px;">{{ staff.cin }}</td>
+            <td style="padding: 6px;">Qualification: {{ staff.qualification }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+    {% else %}
+    <p style="font-size: 10pt;">No Para & Medical Staff recorded.</p>
+    {% endif %}
+
+    <h3 style="font-size: 12pt; color: blue; text-decoration: underline;">Workers Staff</h3>
+    {% if worker_staff %}
+    <table border="1" style="width: 100%; font-size: 10pt;">
+        <tr style="background-color: #b3d9ff;">
+            <th style="padding: 6px;">Name</th>
+            <th style="padding: 6px;">CIN</th>
+            <th style="padding: 6px;">Details</th>
+        </tr>
+        {% for staff in worker_staff %}
+        <tr style="background-color: {% cycle '#f5f5f5' '#ffffff' %}">
+            <td style="padding: 6px;">{{ staff.nom }} {{ staff.prenom }}</td>
+            <td style="padding: 6px;">{{ staff.cin }}</td>
+            <td style="padding: 6px;">Job Title: {{ staff.job_title }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+    {% else %}
+    <p style="font-size: 10pt;">No Workers Staff recorded.</p>
+    {% endif %}
+
+    <h2 style="text-align: center; font-size: 16pt; font-weight: bold;">Equipment</h2>
+    {% if machines %}
+    <table border="1" style="width: 100%; font-size: 10pt;">
+        <tr style="background-color: #b3d9ff;">
+            <th style="padding: 6px;">Brand</th>
+            <th style="padding: 6px;">Functional</th>
+            <th style="padding: 6px;">Reserve</th>
+            <th style="padding: 6px;">Refurbished</th>
+            <th style="padding: 6px;">Hours</th>
+            <th style="padding: 6px;">Membrane</th>
+            <th style="padding: 6px;">Filtre</th>
+        </tr>
+        {% for machine in machines %}
+        <tr style="background-color: {% cycle '#f5f5f5' '#ffffff' %}">
+            <td style="padding: 6px;">{{ machine.brand }}</td>
+            <td style="padding: 6px;">{% if machine.functional %}Yes{% else %}No{% endif %}</td>
+            <td style="padding: 6px;">{% if machine.reserve %}Yes{% else %}No{% endif %}</td>
+            <td style="padding: 6px;">{% if machine.refurbished %}Yes{% else %}No{% endif %}</td>
+            <td style="padding: 6px;">{{ machine.nbre_hrs }}</td>
+            <td style="padding: 6px;">{{ machine.membrane.type }}</td>
+            <td style="padding: 6px;">
+                {{ machine.filtre.type }}
+                {% if machine.filtre.sterilisation %}
+                    ({{ machine.filtre.sterilisation }})
+                {% endif %}
+            </td>
+        </tr>
+        {% endfor %}
+    </table>
+    {% else %}
+    <p style="font-size: 10pt;">No machines recorded.</p>
+    {% endif %}
+
+    <h2 style="text-align: center; font-size: 16pt; font-weight: bold;">Activity</h2>
+    <h3 style="font-size: 12pt; color: blue; text-decoration: underline;">Hemodialysis Sessions</h3>
+    {% if sessions %}
+    <table border="1" style="width: 100%; font-size: 10pt;">
+        <tr style="background-color: #b3d9ff;">
+            <th style="padding: 6px;">Type</th>
+            <th style="padding: 6px;">Method</th>
+            <th style="padding: 6px;">Date</th>
+            <th style="padding: 6px;">Responsible Doctor</th>
+        </tr>
+        {% for session in sessions %}
+        <tr style="background-color: {% cycle '#f5f5f5' '#ffffff' %}">
+            <td style="padding: 6px;">{{ session.type.name }}</td>
+            <td style="padding: 6px;">{{ session.method.name }}</td>
+            <td style="padding: 6px;">{{ session.date_of_session|date:"Y-m-d" }}</td>
+            <td style="padding: 6px;">{{ session.responsible_doc.nom }} {{ session.responsible_doc.prenom }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+    {% else %}
+    <p style="font-size: 10pt;">No hemodialysis sessions recorded.</p>
+    {% endif %}
+
+    <h3 style="font-size: 12pt; color: blue; text-decoration: underline;">Transplantations</h3>
+    {% if transplantations %}
+    <table border="1" style="width: 100%; font-size: 10pt;">
+        <tr style="background-color: #b3d9ff;">
+            <th style="padding: 6px;">Type</th>
+            <th style="padding: 6px;">Date of Operation</th>
+            <th style="padding: 6px;">Notes</th>
+        </tr>
+        {% for transplantation in transplantations %}
+        <tr style="background-color: {% cycle '#f5f5f5' '#ffffff' %}">
+            <td style="padding: 6px;">{{ transplantation.transplantation.label_transplantation }}</td>
+            <td style="padding: 6px;">{{ transplantation.date_operation|date:"Y-m-d" }}</td>
+            <td style="padding: 6px;">{{ transplantation.notes|default:"No notes" }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+    {% else %}
+    <p style="font-size: 10pt;">No transplantations recorded.</p>
+    {% endif %}
+
+    <h2 style="text-align: center; font-size: 16pt; font-weight: bold;">Morbidity</h2>
+    <h3 style="font-size: 12pt; color: blue; text-decoration: underline;">Transmittable Diseases</h3>
+    {% if diseases %}
+    <table border="1" style="width: 100%; font-size: 10pt;">
+        <tr style="background-color: #b3d9ff;">
+            <th style="padding: 6px;">Disease</th>
+            <th style="padding: 6px;">Transmission Type</th>
+            <th style="padding: 6px;">Date of Contraction</th>
+        </tr>
+        {% for disease in diseases %}
+        <tr style="background-color: {% cycle '#f5f5f5' '#ffffff' %}">
+            <td style="padding: 6px;">{{ disease.disease.label_disease }}</td>
+            <td style="padding: 6px;">{{ disease.disease.type_of_transmission }}</td>
+            <td style="padding: 6px;">{{ disease.date_of_contraction|date:"Y-m-d" }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+    <p style="font-size: 10pt;">Total Incidents: {{ total_diseases }}</p>
+    {% else %}
+    <p style="font-size: 10pt;">No transmittable diseases recorded.</p>
+    {% endif %}
+
+    <h3 style="font-size: 12pt; color: blue; text-decoration: underline;">Complications</h3>
+    {% if complications %}
+    <table border="1" style="width: 100%; font-size: 10pt;">
+        <tr style="background-color: #b3d9ff;">
+            <th style="padding: 6px;">Complication</th>
+            <th style="padding: 6px;">Notes</th>
+            <th style="padding: 6px;">Date of Contraction</th>
+        </tr>
+        {% for complication in complications %}
+        <tr style="background-color: {% cycle '#f5f5f5' '#ffffff' %}">
+            <td style="padding: 6px;">{{ complication.complication.label_complication }}</td>
+            <td style="padding: 6px;">{{ complication.notes|default:"No notes" }}</td>
+            <td style="padding: 6px;">{{ complication.date_of_contraction|date:"Y-m-d" }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+    <p style="font-size: 10pt;">Total Incidents: {{ total_complications }}</p>
+    {% else %}
+    <p style="font-size: 10pt;">No complications recorded.</p>
+    {% endif %}
+
+    <h2 style="text-align: center; font-size: 16pt; font-weight: bold;">Mortality</h2>
+    <h3 style="font-size: 12pt; color: blue; text-decoration: underline;">Deceased Patients</h3>
+    {% if deceased_patients %}
+    <table border="1" style="width: 100%; font-size: 10pt;">
+        <tr style="background-color: #b3d9ff;">
+            <th style="padding: 6px;">Name</th>
+            <th style="padding: 6px;">CIN</th>
+            <th style="padding: 6px;">Decease Note</th>
+        </tr>
+        {% for patient in deceased_patients %}
+        <tr style="background-color: {% cycle '#f5f5f5' '#ffffff' %}">
+            <td style="padding: 6px;">{{ patient.nom }} {{ patient.prenom }}</td>
+            <td style="padding: 6px;">{{ patient.cin }}</td>
+            <td style="padding: 6px;">{{ patient.decease_note|default:"No note provided" }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+    {% else %}
+    <p style="font-size: 10pt;">No deaths recorded.</p>
+    {% endif %}
+
+    <h3 style="font-size: 12pt; color: blue; text-decoration: underline;">Mortality Totals</h3>
+    <p style="font-size: 10pt;">Total Deaths: {{ total_deaths }}</p>
+</body>
+</html>

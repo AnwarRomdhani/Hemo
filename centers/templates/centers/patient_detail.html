@@ -18,15 +18,13 @@
             border-radius: 8px;
             box-shadow: 0 0 10px rgba(0,0,0,0.1);
         }
-        h1 {
+        h1, h2 {
             color: #2c3e50;
             text-align: center;
             margin-bottom: 20px;
         }
         h2 {
-            color: #34495e;
             margin-top: 20px;
-            margin-bottom: 10px;
             border-bottom: 2px solid #3498db;
             padding-bottom: 5px;
         }
@@ -139,12 +137,32 @@
         .form-group input[type="submit"]:hover {
             background: #2980b9;
         }
+        .form-group .cancel-button {
+            display: inline-block;
+            background: #6c757d;
+            color: white;
+            padding: 8px 15px;
+            text-decoration: none;
+            border-radius: 4px;
+            margin-left: 10px;
+        }
+        .form-group .cancel-button:hover {
+            background: #5a6268;
+        }
         .errorlist {
             color: #dc3545;
             font-size: 0.9em;
             margin-left: 150px;
             list-style: none;
             padding: 0;
+        }
+        .decease-note {
+            background: #ffe5e5;
+            border: 1px solid #e74c3c;
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            color: #c0392b;
         }
     </style>
 </head>
@@ -154,45 +172,43 @@
 
         <h2>Patient Information</h2>
         <div class="detail-group">
-            <label>Name:</label>
-            <span>{{ patient.nom }} {{ patient.prenom }}</span>
+            <label>Name:</label><span>{{ patient.nom }} {{ patient.prenom }}</span>
         </div>
         <div class="detail-group">
-            <label>CIN:</label>
-            <span>{{ patient.cin }}</span>
+            <label>CIN:</label><span>{{ patient.cin }}</span>
         </div>
         <div class="detail-group">
-            <label>CNAM:</label>
-            <span>{{ patient.cnam.number }}</span>
+            <label>CNAM:</label><span>{{ patient.cnam.number }}</span>
         </div>
         <div class="detail-group">
-            <label>Entry Date:</label>
-            <span>{{ patient.entry_date|date:"Y-m-d" }}</span>
+            <label>Status:</label><span>{{ patient.get_status_display }}</span>
         </div>
         <div class="detail-group">
-            <label>Blood Type:</label>
-            <span>{{ patient.blood_type }}</span>
+            <label>Entry Date:</label><span>{{ patient.entry_date|date:"Y-m-d" }}</span>
         </div>
         <div class="detail-group">
-            <label>Previously Dialysed:</label>
-            <span>{{ patient.previously_dialysed|yesno:"Yes,No" }}</span>
+            <label>Blood Type:</label><span>{{ patient.blood_type }}</span>
+        </div>
+        <div class="detail-group">
+            <label>Previously Dialysed:</label><span>{{ patient.previously_dialysed|yesno:"Yes,No" }}</span>
         </div>
         <div class="detail-group">
             <label>First Dialysis:</label>
-            <span>
-                {% if patient.previously_dialysed %}
-                    {{ patient.date_first_dia|date:"Y-m-d" }}
-                {% else %}
-                    N/A
-                {% endif %}
-            </span>
+            <span>{% if patient.previously_dialysed %}{{ patient.date_first_dia|date:"Y-m-d" }}{% else %}N/A{% endif %}</span>
         </div>
+
+        {% if patient.status == 'ALIVE' %}
+            <a href="#" class="add-button" onclick="toggleForm('decease-form')">Declare Deceased</a>
+        {% else %}
+            <div class="decease-note">
+                <strong>Deceased:</strong> {{ patient.decease_note }}
+            </div>
+        {% endif %}
 
         <h2>Medical Activity</h2>
         {% if patient.medical_activity %}
             <div class="detail-group">
-                <label>Created At:</label>
-                <span>{{ patient.medical_activity.created_at|date:"Y-m-d" }}</span>
+                <label>Created At:</label><span>{{ patient.medical_activity.created_at|date:"Y-m-d" }}</span>
             </div>
         {% else %}
             <p class="no-data">No medical activity recorded.</p>
@@ -272,44 +288,101 @@
             <p class="no-data">No complications recorded.</p>
         {% endif %}
 
-        <a href="#" class="add-button" onclick="toggleForm('session-form')">Add Hemodialysis Session</a>
-        <a href="#" class="add-button" onclick="toggleForm('disease-form')">Add Transmittable Disease</a>
-        <a href="#" class="add-button" onclick="toggleForm('complication-form')">Add Complication</a>
-        <a href="{% url 'add_disease_ref' %}" class="add-button">Add New Disease Reference</a>
-        <a href="{% url 'add_complication_ref' %}" class="add-button">Add New Complication Reference</a>
+        <h2>Transplantations</h2>
+        {% if patient.medical_activity.transplantations.exists %}
+            <table>
+                <thead>
+                    <tr>
+                        <th>Transplantation Type</th>
+                        <th>Date of Operation</th>
+                        <th>Notes</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for transplantation in patient.medical_activity.transplantations.all %}
+                        <tr>
+                            <td>{{ transplantation.transplantation.label_transplantation }}</td>
+                            <td>{{ transplantation.date_operation|date:"Y-m-d" }}</td>
+                            <td>{{ transplantation.notes|default:"No notes" }}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% else %}
+            <p class="no-data">No transplantations recorded.</p>
+        {% endif %}
 
-        <div class="form-container" id="session-form">
-            <form method="post" id="session_form">
-                {% csrf_token %}
-                <input type="hidden" name="session_submit" value="1">
-                {{ session_form.as_p }}
-                <div class="form-group">
-                    <input type="submit" value="Save Session">
-                </div>
-            </form>
-        </div>
+        {% if patient.status == 'ALIVE' %}
+            <!-- Decease Form -->
+            <div class="form-container" id="decease-form">
+                <form method="post" id="decease_form" action="{% url 'declare_deceased' patient.pk %}">
+                    {% csrf_token %}
+                    <div class="form-group">
+                        <label for="id_decease_note">Decease Note:</label>
+                        <textarea name="decease_note" id="id_decease_note" required></textarea>
+                        {% if decease_form.decease_note.errors %}
+                            <ul class="errorlist">
+                                {% for error in decease_form.decease_note.errors %}
+                                    <li>{{ error }}</li>
+                                {% endfor %}
+                            </ul>
+                        {% endif %}
+                    </div>
+                    <div class="form-group">
+                        <input type="submit" value="Submit">
+                        <a href="#" class="cancel-button" onclick="toggleForm('decease-form')">Cancel</a>
+                    </div>
+                </form>
+            </div>
 
-        <div class="form-container" id="disease-form">
-            <form method="post" id="disease_form">
-                {% csrf_token %}
-                <input type="hidden" name="disease_submit" value="1">
-                {{ disease_form.as_p }}
-                <div class="form-group">
-                    <input type="submit" value="Save Disease">
-                </div>
-            </form>
-        </div>
+            <!-- Add Buttons -->
+            <a href="#" class="add-button" onclick="toggleForm('session-form')">Add Hemodialysis Session</a>
+            <a href="#" class="add-button" onclick="toggleForm('disease-form')">Add Transmittable Disease</a>
+            <a href="#" class="add-button" onclick="toggleForm('complication-form')">Add Complication</a>
+            <a href="#" class="add-button" onclick="toggleForm('transplantation-form')">Add Transplantation</a>
+            <a href="{% url 'add_disease_ref' %}" class="add-button">Add New Disease Reference</a>
+            <a href="{% url 'add_complication_ref' %}" class="add-button">Add New Complication Reference</a>
 
-        <div class="form-container" id="complication-form">
-            <form method="post" id="complication_form">
-                {% csrf_token %}
-                <input type="hidden" name="complication_submit" value="1">
-                {{ complication_form.as_p }}
-                <div class="form-group">
-                    <input type="submit" value="Save Complication">
-                </div>
-            </form>
-        </div>
+            <!-- Forms -->
+            <div class="form-container" id="session-form">
+                <form method="post">
+                    {% csrf_token %}
+                    <input type="hidden" name="session_submit" value="1">
+                    {{ session_form.as_p }}
+                    <div class="form-group"><input type="submit" value="Save Session"></div>
+                </form>
+            </div>
+
+            <div class="form-container" id="disease-form">
+                <form method="post">
+                    {% csrf_token %}
+                    <input type="hidden" name="disease_submit" value="1">
+                    {{ disease_form.as_p }}
+                    <div class="form-group"><input type="submit" value="Save Disease"></div>
+                </form>
+            </div>
+
+            <div class="form-container" id="complication-form">
+                <form method="post">
+                    {% csrf_token %}
+                    <input type="hidden" name="complication_submit" value="1">
+                    {{ complication_form.as_p }}
+                    <div class="form-group"><input type="submit" value="Save Complication"></div>
+                </form>
+            </div>
+
+            <div class="form-container" id="transplantation-form">
+                <form method="post">
+                    {% csrf_token %}
+                    <input type="hidden" name="transplantation_submit" value="1">
+                    {{ transplantation_form.as_p }}
+                    <div class="form-group">
+                        <input type="submit" value="Save Transplantation">
+                        <a href="{% url 'add_transplantation_ref' %}" class="add-button">Add Transplantation Reference</a>
+                    </div>
+                </form>
+            </div>
+        {% endif %}
 
         <div class="action-links">
             <a href="{% url 'list_patients' %}">Back to Patient List</a>

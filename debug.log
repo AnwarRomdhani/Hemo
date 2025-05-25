@@ -171,3 +171,589 @@ Found AdministrativeStaff for user ok in center cils
 User ok logged in for center cils as AdministrativeStaff
 Patients fetched for center cils: [{'nom': 'JOKEDA', 'prenom': 'ikea'}]
 Patient fetched: JOKEDA ikea (98564723) for center cils
+Patients fetched for center cils: [{'nom': 'JOKEDA', 'prenom': 'ikea'}]
+Administrative staff form is invalid: <ul class="errorlist"><li>job_title<ul class="errorlist"><li>This field is required.</li><li>Job_title is required.</li><li>Job_title is required.</li></ul></li><li>username<ul class="errorlist"><li>This username is already taken.</li><li>Username is required.</li></ul></li></ul>
+Administrative staff form is invalid: <ul class="errorlist"><li>job_title<ul class="errorlist"><li>This field is required.</li><li>Job_title is required.</li><li>Job_title is required.</li></ul></li></ul>
+Administrative staff form is invalid: <ul class="errorlist"><li>job_title<ul class="errorlist"><li>This field is required.</li><li>Job_title is required.</li><li>Job_title is required.</li></ul></li></ul>
+Administrative staff form is invalid: <ul class="errorlist"><li>username<ul class="errorlist"><li>This username is already taken.</li><li>Username is required.</li></ul></li><li>email<ul class="errorlist"><li>This email is already taken.</li><li>Email is required.</li></ul></li></ul>
+No AdministrativeStaff found for user joldaa in center cils
+No ParamedicalStaff found for user joldaa in center cils
+No TechnicalStaff found for user joldaa in center cils
+No MedicalStaff found for user joldaa in center cils
+No WorkerStaff found for user joldaa in center cils
+User joldaa not authorized for center cils
+Administrative staff form is invalid: <ul class="errorlist"><li>username<ul class="errorlist"><li>This username is already taken.</li><li>Username is required.</li></ul></li><li>email<ul class="errorlist"><li>This email is already taken.</li><li>Email is required.</li></ul></li></ul>
+Administrative staff saved: Jolda jo (15478963)
+Administrative staff saved: chadona chadona (56234512)
+Found AdministrativeStaff for user chad in center cils
+User chad requires email verification
+User chad logged in after verification
+Found AdministrativeStaff for user chad in center cils
+User chad logged in for center cils as AdministrativeStaff
+Found AdministrativeStaff for user joldaa in center cils
+User joldaa requires email verification
+Found AdministrativeStaff for user ok in center cils
+User ok requires email verification
+User ok logged in after verification
+POST data for add_paramedical_staff: {'csrfmiddlewaretoken': ['MSSYDCUB0TFfeMRQ9kwfinVGu84lilOdLftSxwAnl9PcYXG7oRm8Z2JTzNRINKWu'], 'nom': ['para'], 'prenom': ['medical'], 'cin': ['78965478'], 'qualification': ['Major'], 'role': ['MEDICAL_PARA_STAFF'], 'username': ['para'], 'email': ['para@para.com'], 'password': ['azerty123']}
+Paramedical staff saved: para medical (78965478) for center cils
+No AdministrativeStaff found for user para in center cils
+Found ParamedicalStaff for user para in center cils
+No verification profile for user para
+Medical staff form is invalid: <ul class="errorlist"><li>speciality<ul class="errorlist"><li>This field is required.</li><li>Speciality is required.</li><li>Speciality is required.</li></ul></li></ul>
+Medical staff saved: Med Med (1236545)
+No AdministrativeStaff found for user med in center cils
+No ParamedicalStaff found for user med in center cils
+No TechnicalStaff found for user med in center cils
+Found MedicalStaff for user med in center cils
+User med requires email verification
+User med logged in after verification
+POST data for add_paramedical_staff: {'csrfmiddlewaretoken': ['XTRiMFIr1r6sDQl2hGsVrExa8BC1FKAsWgscGzodmHgpn1ajwdiO8jlndgpoa9IJ'], 'nom': ['para'], 'prenom': ['para'], 'cin': ['956348'], 'qualification': ['major'], 'role': ['MEDICAL_PARA_STAFF'], 'username': ['para'], 'email': ['para@para.com'], 'password': ['azerty123']}
+Paramedical staff form is invalid: <ul class="errorlist"><li>job_title<ul class="errorlist"><li>This field is required.</li><li>Job_title is required.</li><li>Job_title is required.</li></ul></li></ul>
+Worker staff form is invalid: <ul class="errorlist"><li>job_title<ul class="errorlist"><li>This field is required.</li><li>Job_title is required.</li><li>Job_title is required.</li></ul></li></ul>
+Technical staff saved: tech tech (985617)
+No AdministrativeStaff found for user tech in center cils
+No ParamedicalStaff found for user tech in center cils
+Found TechnicalStaff for user tech in center cils
+User tech requires email verification
+User tech logged in after verification
+Worker staff form is invalid: <ul class="errorlist"><li>job_title<ul class="errorlist"><li>This field is required.</li><li>Job_title is required.</li><li>Job_title is required.</li></ul></li></ul>
+Worker staff saved: worker worker (256843)
+No AdministrativeStaff found for user worker in center cils
+No ParamedicalStaff found for user worker in center cils
+No TechnicalStaff found for user worker in center cils
+No MedicalStaff found for user worker in center cils
+Found WorkerStaff for user worker in center cils
+User worker requires email verification
+No AdministrativeStaff found for user worker in center ARIANA
+No ParamedicalStaff found for user worker in center ARIANA
+No TechnicalStaff found for user worker in center ARIANA
+No MedicalStaff found for user worker in center ARIANA
+No WorkerStaff found for user worker in center ARIANA
+User worker not authorized for center ARIANA
+No AdministrativeStaff found for user med in center ARIANA
+No ParamedicalStaff found for user med in center ARIANA
+No TechnicalStaff found for user med in center ARIANA
+No MedicalStaff found for user med in center ARIANA
+No WorkerStaff found for user med in center ARIANA
+User med not authorized for center ARIANA
+Failed verification attempt for user worker
+User worker logged in after verification
+No AdministrativeStaff found for user med in center ARIANA
+No ParamedicalStaff found for user med in center ARIANA
+No TechnicalStaff found for user med in center ARIANA
+No MedicalStaff found for user med in center ARIANA
+No WorkerStaff found for user med in center ARIANA
+User med not authorized for center ARIANA
+HEMO: User worker accessed staff list for center cils. Staff count: 4
+Found AdministrativeStaff for user ok in center cils
+User ok logged in for center cils as AdministrativeStaff
+HEMO: User ok accessed staff list for center cils. Staff count: 4
+HEMO: User ok accessed staff list for center cils. Staff count: 4
+HEMO: PDF report generated for center cils by user ok
+Found AdministrativeStaff for user ok in center cils
+User ok logged in for center cils as AdministrativeStaff
+Patients fetched for center cils: [{'nom': 'JOKEDA', 'prenom': 'ikea'}, {'nom': 'ooooo', 'prenom': 'oooo'}]
+Patient fetched: ooooo oooo (56987423) for center cils
+Patient fetched: ooooo oooo (56987423) for center cils
+Patient fetched: ooooo oooo (56987423) for center cils
+Patient fetched: ooooo oooo (56987423) for center cils
+Patient fetched: ooooo oooo (56987423) for center cils
+Patient fetched: ooooo oooo (56987423) for center cils
+Patients fetched for center cils: [{'nom': 'JOKEDA', 'prenom': 'ikea'}, {'nom': 'ooooo', 'prenom': 'oooo'}]
+HEMO: PDF report generated for center cils by user ok
+HEMO: PDF report generated for center cils by user ok
+Patients fetched for center cils: [{'nom': 'JOKEDA', 'prenom': 'ikea'}, {'nom': 'ooooo', 'prenom': 'oooo'}, {'nom': 'Chan', 'prenom': 'Jolda'}]
+Patient fetched: Chan Jolda (552359898) for center cils
+Patient fetched: Chan Jolda (552359898) for center cils
+Transmittable disease saved for patient Chan Jolda (552359898): hepathite for Chan Jolda (552359898) on 2025-05-21
+Patient fetched: Chan Jolda (552359898) for center cils
+Loading methods for type_hemo_id: 1
+Methods found: [{'id': 2, 'name': 'Bicarbonate'}, {'id': 3, 'name': 'Erythropoietin'}, {'id': 5, 'name': 'Filtration 84%'}, {'id': 4, 'name': 'Hemodiafiltration'}, {'id': 1, 'name': 'Hemodialysis'}]
+Patient fetched: Chan Jolda (552359898) for center cils
+Hemodialysis session saved for patient Chan Jolda (552359898): Hemodialysis Session for Chan Jolda (552359898) on 2025-05-19
+Patient fetched: Chan Jolda (552359898) for center cils
+Patient fetched: Chan Jolda (552359898) for center cils
+Complication saved for patient Chan Jolda (552359898): Vadim for Chan Jolda (552359898) on 2025-05-21
+Patient fetched: Chan Jolda (552359898) for center cils
+TransplantationRef saved: gfndngfndf
+Patient fetched: Chan Jolda (552359898) for center cils
+Patient fetched: Chan Jolda (552359898) for center cils
+Transplantation saved for patient Chan Jolda (552359898): gfndngfndf for Chan Jolda (552359898) on 2025-05-05
+Patient fetched: Chan Jolda (552359898) for center cils
+Found AdministrativeStaff for user ok in center cils
+User ok logged in for center cils as AdministrativeStaff
+Administrative staff saved: paraa paraaa (89657422)
+Found AdministrativeStaff for user paraa in center cils
+User paraa requires email verification
+User paraa logged in after verification
+Found AdministrativeStaff for user ok in center cils
+User ok logged in for center cils as AdministrativeStaff
+HEMO: PDF report generated for center cils by user ok
+No tenant found for login request
+No tenant found for login request
+No tenant found for login request
+No tenant found for login request
+No tenant found for login request
+Patients fetched for center cils: [{'nom': 'JOKEDA', 'prenom': 'ikea'}, {'nom': 'ooooo', 'prenom': 'oooo'}, {'nom': 'Chan', 'prenom': 'Jolda'}]
+Patient fetched: Chan Jolda (552359898) for center cils
+Patients fetched for center cils: [{'nom': 'JOKEDA', 'prenom': 'ikea'}, {'nom': 'ooooo', 'prenom': 'oooo'}, {'nom': 'Chan', 'prenom': 'Jolda'}]
+HEMO: PDF report generated for center cils by user ok
+Found AdministrativeStaff for user ok in center cils
+User ok logged in for center cils as AdministrativeStaff
+HEMO: PDF report generated for center cils by user ok
+HEMO: PDF report generated for center cils by user ok
+HEMO: PDF report generated for center cils by user ok
+Patients fetched for center cils: [{'nom': 'JOKEDA', 'prenom': 'ikea'}, {'nom': 'ooooo', 'prenom': 'oooo'}, {'nom': 'Chan', 'prenom': 'Jolda'}]
+Patients fetched for center cils: [{'nom': 'JOKEDA', 'prenom': 'ikea'}, {'nom': 'ooooo', 'prenom': 'oooo'}, {'nom': 'Chan', 'prenom': 'Jolda'}]
+Patient fetched: Chan Jolda (552359898) for center cils
+Patients fetched for center cils: [{'nom': 'JOKEDA', 'prenom': 'ikea'}, {'nom': 'ooooo', 'prenom': 'oooo'}, {'nom': 'Chan', 'prenom': 'Jolda'}]
+Patient fetched: JOKEDA ikea (98564723) for center cils
+Patient fetched: JOKEDA ikea (98564723) for center cils
+Patients fetched for center cils: [{'nom': 'JOKEDA', 'prenom': 'ikea'}, {'nom': 'ooooo', 'prenom': 'oooo'}, {'nom': 'Chan', 'prenom': 'Jolda'}]
+Patient fetched: ooooo oooo (56987423) for center cils
+Patient fetched: JOKEDA ikea (98564723) for center cils
+Patient fetched: ooooo oooo (56987423) for center cils
+Patient fetched: ooooo oooo (56987423) for center cils
+Patient fetched: JOKEDA ikea (98564723) for center cils
+Patients fetched for center cils: [{'nom': 'JOKEDA', 'prenom': 'ikea'}, {'nom': 'ooooo', 'prenom': 'oooo'}, {'nom': 'Chan', 'prenom': 'Jolda'}, {'nom': 'panaaa', 'prenom': 'pola'}]
+Patient fetched: panaaa pola (55888855) for center cils
+Patient fetched: panaaa pola (55888855) for center cils
+Patient fetched: panaaa pola (55888855) for center cils
+Patient fetched: panaaa pola (55888855) for center cils
+Patient panaaa pola (55888855) declared deceased by user ok in center cils
+Patient fetched: panaaa pola (55888855) for center cils
+Patient fetched: panaaa pola (55888855) for center cils
+Patient fetched: panaaa pola (55888855) for center cils
+Patient fetched: panaaa pola (55888855) for center cils
+Patients fetched for center cils: [{'nom': 'JOKEDA', 'prenom': 'ikea'}, {'nom': 'ooooo', 'prenom': 'oooo'}, {'nom': 'Chan', 'prenom': 'Jolda'}, {'nom': 'panaaa', 'prenom': 'pola'}]
+No tenant found for login request
+No tenant found for login request
+Superadmin jolda attempted login at center cils
+Superadmin jolda logging in to center cils
+No verification profile for superadmin jolda
+Superadmin jolda logging in to center cils
+No verification profile for superadmin jolda
+Superadmin jolda logging in to center cils
+No verification profile for superadmin jolda
+Superadmin jolda logging in to center cils
+No verification profile for superadmin jolda
+Superadmin jolda logging in to center cils
+Superadmin jolda logged in for center cils (verification bypassed)
+Failed login attempt for username: para at center cils
+Found AdministrativeStaff for user paraa in center cils
+User paraa logged in for center cils as AdministrativeStaff
+Failed login attempt for username: None at center cils
+Found AdministrativeStaff for user ok in center cils
+User ok logged in for center cils as AdministrativeStaff
+Failed login attempt for username: None at center cils
+Failed login attempt for username: None at center cils
+Received POST request to CenterLoginAPIView. CSRF exempt: True
+Found AdministrativeStaff for user ok in center cils
+User ok logged in for center cils as AdministrativeStaff
+Received POST request to CenterLoginAPIView. CSRF exempt: True
+No AdministrativeStaff found for user ok in center ARIANA
+No ParamedicalStaff found for user ok in center ARIANA
+No TechnicalStaff found for user ok in center ARIANA
+No MedicalStaff found for user ok in center ARIANA
+No WorkerStaff found for user ok in center ARIANA
+User ok not authorized for center ARIANA
+Received POST request to CenterLoginAPIView. CSRF exempt: True
+Found AdministrativeStaff for user ok in center cils
+User ok logged in for center cils as AdministrativeStaff
+Received POST request to AddAdministrativeStaffAPIView. User: ok
+Created new user johndoe for administrative staff
+Administrative staff form invalid: <ul class="errorlist"><li>username<ul class="errorlist"><li>This username is already taken.</li><li>Username is required.</li></ul></li><li>email<ul class="errorlist"><li>This email is already taken.</li><li>Email is required.</li></ul></li></ul>
+Received POST request to AddAdministrativeStaffAPIView. User: ok
+Failed to create user johndoe: (1062, "Duplicate entry 'johndoe' for key 'username'")
+Received POST request to AddAdministrativeStaffAPIView. User: ok
+Created new user jo for administrative staff
+Administrative staff form invalid: <ul class="errorlist"><li>username<ul class="errorlist"><li>This username is already taken.</li><li>Username is required.</li></ul></li><li>email<ul class="errorlist"><li>This email is already taken.</li><li>Email is required.</li></ul></li></ul>
+Received POST request to AddAdministrativeStaffAPIView. User: ok
+Failed to create user jo: (1062, "Duplicate entry 'jo' for key 'username'")
+Received POST request to AddAdministrativeStaffAPIView. User: ok
+Created new user jo for administrative staff
+Administrative staff form invalid: <ul class="errorlist"><li>username<ul class="errorlist"><li>This username is already taken.</li><li>Username is required.</li></ul></li><li>email<ul class="errorlist"><li>This email is already taken.</li><li>Email is required.</li></ul></li></ul>
+Received POST request to AddAdministrativeStaffAPIView. User: ok
+Administrative staff form invalid: <ul class="errorlist"><li>username<ul class="errorlist"><li>This username is already taken.</li><li>Username is required.</li></ul></li><li>email<ul class="errorlist"><li>This email is already taken.</li><li>Email is required.</li></ul></li></ul>
+Received POST request to AddAdministrativeStaffAPIView. User: ok
+Error saving administrative staff: name 'transaction' is not defined
+Received POST request to AddAdministrativeStaffAPIView. User: ok
+Administrative staff poastmanuser Doe (ID: 15) added by ok in center cils
+Found AdministrativeStaff for user ok in center cils
+User ok logged in for center cils as AdministrativeStaff
+Received POST request to CenterLoginAPIView. CSRF exempt: True
+Found AdministrativeStaff for user ok in center cils
+User ok logged in for center cils as AdministrativeStaff
+Received POST request to AddParamedicalStaffAPIView. User: ok
+Paramedical staff para api (ID: 1) added by ok in center cils
+Received POST request to AddPatientAPIView. User: ok
+Patient Emma Wilson (ID: 12) added by ok in center cils
+Received POST request to DeclareDeceasedAPIView for patient ID: 12. User: ok
+Patient Emma Wilson (ID: 12) declared deceased by ok in center cils
+Received POST request to AddPatientAPIView. User: ok
+Patient Emma Wilson (ID: 13) added by ok in center cils
+Received POST request to AddHemodialysisSessionAPIView for patient ID: 13. User: ok
+Hemodialysis session form invalid: <ul class="errorlist"><li>responsible_doc<ul class="errorlist"><li>Select a valid choice. That choice is not one of the available choices.</li></ul></li></ul>
+Patients fetched for center cils: [{'nom': 'JOKEDA', 'prenom': 'ikea'}, {'nom': 'ooooo', 'prenom': 'oooo'}, {'nom': 'Chan', 'prenom': 'Jolda'}, {'nom': 'panaaa', 'prenom': 'pola'}, {'nom': 'Emma', 'prenom': 'Wilson'}, {'nom': 'Emma', 'prenom': 'Wilson'}]
+Patient fetched: Emma Wilson (33345566) for center cils
+Loading methods for type_hemo_id: 1
+Methods found: [{'id': 2, 'name': 'Bicarbonate'}, {'id': 3, 'name': 'Erythropoietin'}, {'id': 5, 'name': 'Filtration 84%'}, {'id': 4, 'name': 'Hemodiafiltration'}, {'id': 1, 'name': 'Hemodialysis'}]
+Received POST request to AddHemodialysisSessionAPIView for patient ID: 13. User: ok
+Received POST request to AddHemodialysisSessionAPIView for patient ID: 13. User: ok
+Error saving hemodialysis session: null value in column "medical_activity_id" of relation "centers_hemodialysissession" violates not-null constraint
+DETAIL:  Failing row contains (3, 2025-05-23, null, 1, 4, 1).
+Received POST request to AddHemodialysisSessionAPIView for patient ID: 13. User: ok
+Hemodialysis session form invalid: <ul class="errorlist"><li>responsible_doc<ul class="errorlist"><li>Select a valid choice. That choice is not one of the available choices.</li></ul></li></ul>
+Received POST request to AddHemodialysisSessionAPIView for patient ID: 13. User: ok
+Error saving hemodialysis session: null value in column "medical_activity_id" of relation "centers_hemodialysissession" violates not-null constraint
+DETAIL:  Failing row contains (4, 2025-05-23, null, 1, 4, 1).
+Received POST request to AddHemodialysisSessionAPIView for patient ID: 13. User: ok
+Error saving hemodialysis session: null value in column "medical_activity_id" of relation "centers_hemodialysissession" violates not-null constraint
+DETAIL:  Failing row contains (5, 2025-05-23, null, 1, 4, 1).
+Received POST request to AddHemodialysisSessionAPIView for patient ID: 13. User: ok
+Error saving hemodialysis session: null value in column "medical_activity_id" of relation "centers_hemodialysissession" violates not-null constraint
+DETAIL:  Failing row contains (6, 2025-05-23, null, 1, 4, 1).
+Received POST request to AddHemodialysisSessionAPIView for patient ID: 13. User: ok
+Error saving hemodialysis session: null value in column "medical_activity_id" of relation "centers_hemodialysissession" violates not-null constraint
+DETAIL:  Failing row contains (7, 2025-05-23, null, 1, 4, 1).
+Received POST request to AddHemodialysisSessionAPIView for patient ID: 13. User: ok
+Received POST request to AddHemodialysisSessionAPIView for patient ID: 13. User: ok
+Received POST request to AddHemodialysisSessionAPIView for patient ID: 13. User: ok
+Error saving hemodialysis session: null value in column "medical_activity_id" of relation "centers_hemodialysissession" violates not-null constraint
+DETAIL:  Failing row contains (8, 2025-05-23, null, 1, 4, 1).
+Received POST request to AddHemodialysisSessionAPIView for patient ID: 13. User: ok
+Received POST request to AddHemodialysisSessionAPIView for patient ID: 13. User: ok
+Received POST request to AddHemodialysisSessionAPIView for patient ID: 13. User: ok
+Hemodialysis session (ID: 9) added for patient Emma Wilson by ok in center cils
+Received POST request to AddTransmittableDiseaseAPIView for patient ID: 13. User: ok
+Error saving transmittable disease: null value in column "medical_activity_id" of relation "centers_transmittabledisease" violates not-null constraint
+DETAIL:  Failing row contains (3, 2025-01-01, 1, null).
+Received POST request to AddTransmittableDiseaseAPIView for patient ID: 13. User: ok
+Transmittable disease (ID: 4) added for patient Emma Wilson by ok in center cils
+Received POST request to AddComplicationsAPIView for patient ID: 13. User: ok
+Complication (ID: 3) added for patient Emma Wilson by ok in center cils
+COMP_REF: Received POST request to AddComplicationsRefAPIView. User: ok, Data: {'label_complication': 'Infection'}
+COMP_REF: Complication ref (ID: 2, Label: Infection) added by ok in center cils
+Received POST request to CenterLoginAPIView. CSRF exempt: True
+Found AdministrativeStaff for user ok in center cils
+User ok logged in for center cils as AdministrativeStaff
+MACHINE: Received POST request to AddMachineAPIView. User: ok, Data: {'brand': 'Fresenius 4008S', 'functional': True, 'reserve': False, 'refurbished': False, 'nbre_hrs': 100, 'new_membrane_type': 'Polysulfone', 'new_filtre_type': 'High-Flux', 'sterilisation': ['WATER_STEAM', 'GAMMA_RAYS']}
+MACHINE: Machine before save: brand=Fresenius 4008S, center=13, membrane=2, filtre=2
+MACHINE: Machine (ID: 2, Brand: Fresenius 4008S) added by ok in center cils
+Received POST request to CenterLoginAPIView. CSRF exempt: True
+Superadmin Jolda logging in to center cils
+Superadmin Jolda logged in for center cils (verification bypassed)
+Received POST request to CenterLoginAPIView. CSRF exempt: True
+Found AdministrativeStaff for user ok in center cils
+User ok logged in for center cils as AdministrativeStaff
+Received POST request to CenterLoginAPIView. CSRF exempt: True
+Found AdministrativeStaff for user ok in center cils
+User ok logged in for center cils as AdministrativeStaff
+Received POST request to CenterLoginAPIView. CSRF exempt: True
+Superadmin Jolda logging in to center cils
+Superadmin Jolda logged in for center cils (verification bypassed)
+Patient fetched: JOKEDA ikea (98564723) for center cils
+Patient fetched: JOKEDA ikea (98564723) for center cils
+Received POST request to CenterLoginAPIView. CSRF exempt: True
+Found AdministrativeStaff for user ok in center cils
+User ok logged in for center cils as AdministrativeStaff
+Patient fetched: JOKEDA ikea (98564723) for center cils
+Patient fetched: JOKEDA ikea (98564723) for center cils
+Patient fetched: JOKEDA ikea (98564723) for center cils
+Patient fetched: JOKEDA ikea (98564723) for center cils
+Found AdministrativeStaff for user ok in center cils
+User ok logged in for center cils as AdministrativeStaff
+Patients fetched for center cils: [{'nom': 'JOKEDA', 'prenom': 'ikea'}, {'nom': 'ooooo', 'prenom': 'oooo'}, {'nom': 'Chan', 'prenom': 'Jolda'}, {'nom': 'panaaa', 'prenom': 'pola'}, {'nom': 'Emma', 'prenom': 'Wilson'}, {'nom': 'Emma', 'prenom': 'Wilson'}]
+Patient fetched: ooooo oooo (56987423) for center cils
+Patient fetched: JOKEDA ikea (98564723) for center cils
+Patient fetched: panaaa pola (55888855) for center cils
+Patient fetched: Emma Wilson (33345566) for center cils
+Patient fetched: JOKEDA ikea (98564723) for center cils
+Patient fetched: Emma Wilson (33345566) for center cils
+Patient fetched: JOKEDA ikea (98564723) for center cils
+Patient fetched: JOKEDA ikea (98564723) for center cils
+Patient fetched: JOKEDA ikea (98564723) for center cils
+Patient fetched: JOKEDA ikea (98564723) for center cils
+Patient fetched: JOKEDA ikea (98564723) for center cils
+Patient fetched: JOKEDA ikea (98564723) for center cils
+Patient fetched: Chan Jolda (552359898) for center cils
+Patient fetched: Chan Jolda (552359898) for center cils
+Patient fetched: Emma Wilson (33445566) for center cils
+Patient fetched: Emma Wilson (33445566) for center cils
+Patient fetched: Chan Jolda (552359898) for center cils
+Patient fetched: panaaa pola (55888855) for center cils
+Patient fetched: Chan Jolda (552359898) for center cils
+Patient fetched: Chan Jolda (552359898) for center cils
+Patient fetched: panaaa pola (55888855) for center cils
+Patient fetched: panaaa pola (55888855) for center cils
+Patient fetched: JOKEDA ikea (98564723) for center cils
+Patient fetched: JOKEDA ikea (98564723) for center cils
+Patient fetched: JOKEDA ikea (98564723) for center cils
+Patient fetched: JOKEDA ikea (98564723) for center cils
+Patient fetched: JOKEDA ikea (98564723) for center cils
+Patient fetched: JOKEDA ikea (98564723) for center cils
+Patient fetched: JOKEDA ikea (98564723) for center cils
+Received POST request to AddHemodialysisSessionAPIView for patient ID: 8. User: ok
+Hemodialysis session form invalid: <ul class="errorlist"><li>medical_activity<ul class="errorlist"><li>This field is required.</li><li>Medical Activity is required.</li></ul></li></ul>
+Patients fetched for center cils: [{'nom': 'JOKEDA', 'prenom': 'ikea'}, {'nom': 'ooooo', 'prenom': 'oooo'}, {'nom': 'Chan', 'prenom': 'Jolda'}, {'nom': 'panaaa', 'prenom': 'pola'}, {'nom': 'Emma', 'prenom': 'Wilson'}, {'nom': 'Emma', 'prenom': 'Wilson'}]
+Patient fetched: ooooo oooo (56987423) for center cils
+Patient fetched: JOKEDA ikea (98564723) for center cils
+Patient fetched: panaaa pola (55888855) for center cils
+Patient fetched: Emma Wilson (33345566) for center cils
+Loading methods for type_hemo_id: 1
+Methods found: [{'id': 2, 'name': 'Bicarbonate'}, {'id': 3, 'name': 'Erythropoietin'}, {'id': 5, 'name': 'Filtration 84%'}, {'id': 4, 'name': 'Hemodiafiltration'}, {'id': 1, 'name': 'Hemodialysis'}]
+Patient fetched: JOKEDA ikea (98564723) for center cils
+Patient fetched: JOKEDA ikea (98564723) for center cils
+Received POST request to AddHemodialysisSessionAPIView for patient ID: 8. User: ok
+Hemodialysis session (ID: 10) added for patient JOKEDA ikea by ok in center cils
+Patient fetched: JOKEDA ikea (98564723) for center cils
+Patient fetched: JOKEDA ikea (98564723) for center cils
+Patient fetched: JOKEDA ikea (98564723) for center cils
+Received POST request to CenterLoginAPIView. CSRF exempt: True
+Found AdministrativeStaff for user ok in center cils
+User ok logged in for center cils as AdministrativeStaff
+Patient fetched: JOKEDA ikea (98564723) for center cils
+Patient fetched: JOKEDA ikea (98564723) for center cils
+Received POST request to AddTransmittableDiseaseAPIView for patient ID: 8. User: ok
+Transmittable disease form invalid: <ul class="errorlist"><li>medical_activity<ul class="errorlist"><li>This field is required.</li><li>Medical Activity is required.</li></ul></li></ul>
+Patient fetched: JOKEDA ikea (98564723) for center cils
+Patient fetched: JOKEDA ikea (98564723) for center cils
+Received POST request to AddTransmittableDiseaseAPIView for patient ID: 8. User: ok
+Transmittable disease (ID: 5) added for patient JOKEDA ikea by ok in center cils
+Patient fetched: JOKEDA ikea (98564723) for center cils
+Patient fetched: JOKEDA ikea (98564723) for center cils
+Patient fetched: JOKEDA ikea (98564723) for center cils
+Received POST request to AddComplicationsAPIView for patient ID: 8. User: ok
+Complication (ID: 4) added for patient JOKEDA ikea by ok in center cils
+Patient fetched: JOKEDA ikea (98564723) for center cils
+Received POST request to AddTransplantationAPIView for patient ID: 8. User: ok
+Transplantation form invalid: <ul class="errorlist"><li>date_operation<ul class="errorlist"><li>This field is required.</li><li>Date Operation is required.</li></ul></li><li>medical_activity<ul class="errorlist"><li>This field is required.</li><li>Medical Activity is required.</li></ul></li></ul>
+Patient fetched: JOKEDA ikea (98564723) for center cils
+Patient fetched: JOKEDA ikea (98564723) for center cils
+Received POST request to AddTransplantationAPIView for patient ID: 8. User: ok
+Transplantation form invalid: <ul class="errorlist"><li>medical_activity<ul class="errorlist"><li>This field is required.</li><li>Medical Activity is required.</li></ul></li></ul>
+Patient fetched: JOKEDA ikea (98564723) for center cils
+Patient fetched: JOKEDA ikea (98564723) for center cils
+Received POST request to AddTransplantationAPIView for patient ID: 8. User: ok
+Transplantation form invalid: <ul class="errorlist"><li>date_operation<ul class="errorlist"><li>This field is required.</li><li>Date Operation is required.</li></ul></li></ul>
+Patient fetched: JOKEDA ikea (98564723) for center cils
+Patient fetched: JOKEDA ikea (98564723) for center cils
+Received POST request to AddTransplantationAPIView for patient ID: 8. User: ok
+Transplantation form invalid: <ul class="errorlist"><li>transplantation<ul class="errorlist"><li>This field is required.</li><li>Transplantation is required.</li></ul></li></ul>
+Patient fetched: JOKEDA ikea (98564723) for center cils
+Patient fetched: JOKEDA ikea (98564723) for center cils
+Patient fetched: JOKEDA ikea (98564723) for center cils
+Received POST request to AddTransplantationAPIView for patient ID: 8. User: ok
+Transplantation (ID: 2) added for patient JOKEDA ikea by ok in center cils
+Patient fetched: JOKEDA ikea (98564723) for center cils
+Received POST request to CenterLoginAPIView. CSRF exempt: True
+Failed login attempt for username: ok at center cils
+Received POST request to CenterLoginAPIView. CSRF exempt: True
+Found AdministrativeStaff for user ok in center cils
+User ok logged in for center cils as AdministrativeStaff
+Patient fetched: ooooo oooo (56987423) for center cils
+Patient fetched: ooooo oooo (56987423) for center cils
+Received POST request to DeclareDeceasedAPIView for patient ID: 13. User: ok
+Patient Emma Wilson (ID: 13) declared deceased by ok in center cils
+Patient fetched: Emma Wilson (33345566) for center cils
+Patient fetched: Emma Wilson (33345566) for center cils
+Received POST request to CenterLoginAPIView. CSRF exempt: True
+Found AdministrativeStaff for user ok in center cils
+User ok logged in for center cils as AdministrativeStaff
+Patient fetched: JOKEDA ikea (98564723) for center cils
+Patient fetched: JOKEDA ikea (98564723) for center cils
+Patient fetched: JOKEDA ikea (98564723) for center cils
+Patient fetched: JOKEDA ikea (98564723) for center cils
+TRANS_REF: Received POST request to AddTransmittableDiseaseRefAPIView. User: ok, Data: {'label_disease': 'coreneal'}
+TRANS_REF: Transmittable disease ref form invalid: <ul class="errorlist"><li>type_of_transmission<ul class="errorlist"><li>This field is required.</li></ul></li></ul>
+TRANSPLANT_REF: Received POST request to AddTransplantationRefAPIView. User: ok, Data: {'label_transplantation': 'coreneal'}
+TRANSPLANT_REF: Transplantation ref (ID: 2, Label: coreneal) added by ok in center cils
+Received POST request to AddTransplantationAPIView for patient ID: 8. User: ok
+Patient fetched: JOKEDA ikea (98564723) for center cils
+Transplantation form invalid: <ul class="errorlist"><li>transplantation<ul class="errorlist"><li>Either select a transplantation or enter a new transplantation name.</li></ul></li><li>new_transplantation_name<ul class="errorlist"><li>Either enter a new transplantation name or select a transplantation.</li></ul></li></ul>
+COMP_REF: Received POST request to AddComplicationsRefAPIView. User: ok, Data: {'label_complication': 'porta'}
+COMP_REF: Complication ref (ID: 3, Label: porta) added by ok in center cils
+Received POST request to AddComplicationsAPIView for patient ID: 8. User: ok
+Complications form invalid: <ul class="errorlist"><li>complication<ul class="errorlist"><li>Either select a complication or enter a new complication name.</li></ul></li><li>new_complication_name<ul class="errorlist"><li>Either enter a new complication name or select a complication.</li></ul></li></ul>
+Patient fetched: JOKEDA ikea (98564723) for center cils
+Patient fetched: JOKEDA ikea (98564723) for center cils
+Patient fetched: JOKEDA ikea (98564723) for center cils
+COMP_REF: Received POST request to AddComplicationsRefAPIView. User: ok, Data: {'label_complication': 'coreneal'}
+COMP_REF: Complication ref (ID: 4, Label: coreneal) added by ok in center cils
+Received POST request to AddComplicationsAPIView for patient ID: 8. User: ok
+Complications form invalid: <ul class="errorlist"><li>complication<ul class="errorlist"><li>Either select a complication or enter a new complication name.</li></ul></li><li>new_complication_name<ul class="errorlist"><li>Either enter a new complication name or select a complication.</li></ul></li></ul>
+Patient fetched: JOKEDA ikea (98564723) for center cils
+Received POST request to CenterLoginAPIView. CSRF exempt: True
+Found AdministrativeStaff for user ok in center cils
+User ok logged in for center cils as AdministrativeStaff
+Patient fetched: JOKEDA ikea (98564723) for center cils
+Patient fetched: JOKEDA ikea (98564723) for center cils
+COMP_REF: Received POST request to AddComplicationsRefAPIView. User: ok, Data: {'label_complication': 'coreneal'}
+COMP_REF: Complication ref form invalid: <ul class="errorlist"><li>label_complication<ul class="errorlist"><li>Complications ref with this Label complication already exists.</li></ul></li></ul>
+Patient fetched: JOKEDA ikea (98564723) for center cils
+Patient fetched: JOKEDA ikea (98564723) for center cils
+Received POST request to AddComplicationsAPIView for patient ID: 8. User: ok, Data: {'date_of_contraction': '2000-02-22', 'notes': 'PP', 'new_complication_name': 'Corns'}
+Complication (ID: 5) added for patient JOKEDA ikea by ok in center cils
+Patient fetched: JOKEDA ikea (98564723) for center cils
+Patient fetched: JOKEDA ikea (98564723) for center cils
+Patient fetched: JOKEDA ikea (98564723) for center cils
+Received POST request to AddTransplantationAPIView for patient ID: 8. User: ok, Data: {'date_operation': '2025-05-14', 'notes': 'pana', 'new_transplantation_name': 'Liver'}
+Transplantation (ID: 3) added for patient JOKEDA ikea by ok in center cils
+Patient fetched: JOKEDA ikea (98564723) for center cils
+Received POST request to AddTransmittableDiseaseAPIView for patient ID: 8. User: ok, Data: {'date_of_contraction': '2025-05-29', 'new_disease_name': 'corona', 'type_of_transmission': 'Airborne'}
+Patient fetched: JOKEDA ikea (98564723) for center cils
+Transmittable disease (ID: 6) added for patient JOKEDA ikea by ok in center cils
+Received GET request to CNAMListAPIView. User: ok
+Received GET request to CNAMListAPIView. User: ok
+Received POST request to CenterLoginAPIView. CSRF exempt: True
+Found AdministrativeStaff for user ok in center cils
+User ok logged in for center cils as AdministrativeStaff
+Received GET request to CNAMListAPIView. User: ok
+Received GET request to CNAMListAPIView. User: ok
+Received POST request to AddPatientAPIView. User: ok
+Patient rata toutille (ID: 14) added by ok in center cils
+Received GET request to AdministrativeStaffListAPIView. User: ok
+Fetched 3 administrative staff for center cils
+Received GET request to AdministrativeStaffListAPIView. User: ok
+Fetched 3 administrative staff for center cils
+Received GET request to ParamedicalStaffListAPIView. User: ok
+Fetched 1 paramedical staff for center cils
+Received GET request to ParamedicalStaffListAPIView. User: ok
+Fetched 1 paramedical staff for center cils
+Received GET request to TechnicalStaffListAPIView. User: ok
+Fetched 1 technical staff for center cils
+Received GET request to TechnicalStaffListAPIView. User: ok
+Fetched 1 technical staff for center cils
+Received GET request to WorkerStaffListAPIView. User: ok
+Fetched 1 worker staff for center cils
+Received GET request to WorkerStaffListAPIView. User: ok
+Fetched 1 worker staff for center cils
+Received GET request to WorkerStaffListAPIView. User: ok
+Fetched 1 worker staff for center cils
+Received GET request to WorkerStaffListAPIView. User: ok
+Fetched 1 worker staff for center cils
+Received GET request to WorkerStaffListAPIView. User: ok
+Fetched 1 worker staff for center cils
+Received GET request to WorkerStaffListAPIView. User: ok
+Fetched 1 worker staff for center cils
+Received GET request to CNAMListAPIView. User: ok
+Received GET request to CNAMListAPIView. User: ok
+Received GET request to WorkerStaffListAPIView. User: ok
+Fetched 1 worker staff for center cils
+Received GET request to WorkerStaffListAPIView. User: ok
+Fetched 1 worker staff for center cils
+Received GET request to CNAMListAPIView. User: ok
+Received GET request to CNAMListAPIView. User: ok
+Received GET request to AdministrativeStaffListAPIView. User: ok
+Fetched 3 administrative staff for center cils
+Received GET request to AdministrativeStaffListAPIView. User: ok
+Fetched 3 administrative staff for center cils
+Received GET request to ParamedicalStaffListAPIView. User: ok
+Fetched 1 paramedical staff for center cils
+Received GET request to ParamedicalStaffListAPIView. User: ok
+Fetched 1 paramedical staff for center cils
+Received GET request to TechnicalStaffListAPIView. User: ok
+Fetched 1 technical staff for center cils
+Received GET request to TechnicalStaffListAPIView. User: ok
+Fetched 1 technical staff for center cils
+Received GET request to AdministrativeStaffListAPIView. User: ok
+Fetched 3 administrative staff for center cils
+Received GET request to AdministrativeStaffListAPIView. User: ok
+Fetched 3 administrative staff for center cils
+Received GET request to ParamedicalStaffListAPIView. User: ok
+Fetched 1 paramedical staff for center cils
+Received GET request to ParamedicalStaffListAPIView. User: ok
+Fetched 1 paramedical staff for center cils
+Received GET request to TechnicalStaffListAPIView. User: ok
+Fetched 1 technical staff for center cils
+Received GET request to TechnicalStaffListAPIView. User: ok
+Fetched 1 technical staff for center cils
+Received GET request to WorkerStaffListAPIView. User: ok
+Fetched 1 worker staff for center cils
+Received GET request to WorkerStaffListAPIView. User: ok
+Fetched 1 worker staff for center cils
+Received GET request to TechnicalStaffListAPIView. User: ok
+Fetched 1 technical staff for center cils
+Received GET request to TechnicalStaffListAPIView. User: ok
+Fetched 1 technical staff for center cils
+Received GET request to ParamedicalStaffListAPIView. User: ok
+Fetched 1 paramedical staff for center cils
+Received GET request to ParamedicalStaffListAPIView. User: ok
+Fetched 1 paramedical staff for center cils
+Received GET request to AdministrativeStaffListAPIView. User: ok
+Fetched 3 administrative staff for center cils
+Received GET request to AdministrativeStaffListAPIView. User: ok
+Fetched 3 administrative staff for center cils
+Received GET request to AdministrativeStaffListAPIView. User: ok
+Fetched 3 administrative staff for center cils
+Received GET request to AdministrativeStaffListAPIView. User: ok
+Fetched 3 administrative staff for center cils
+Received GET request to ParamedicalStaffListAPIView. User: ok
+Fetched 1 paramedical staff for center cils
+Received GET request to ParamedicalStaffListAPIView. User: ok
+Fetched 1 paramedical staff for center cils
+Found AdministrativeStaff for user ok in center cils
+User ok logged in for center cils as AdministrativeStaff
+Received POST request to CenterLoginAPIView. CSRF exempt: True
+Found AdministrativeStaff for user ok in center cils
+User ok logged in for center cils as AdministrativeStaff
+Received POST request to AddMedicalStaffAPIView. User: ok
+Medical staff another med (ID: 5) added by ok in center cils
+Received GET request to AdministrativeStaffListAPIView. User: ok
+Fetched 3 administrative staff for center cils
+Received GET request to AdministrativeStaffListAPIView. User: ok
+Fetched 3 administrative staff for center cils
+Received POST request to AddAdministrativeStaffAPIView. User: ok
+Administrative staff another one (ID: 16) added by ok in center cils
+Received GET request to AdministrativeStaffListAPIView. User: ok
+Fetched 4 administrative staff for center cils
+Received GET request to AdministrativeStaffListAPIView. User: ok
+Fetched 4 administrative staff for center cils
+Received POST request to CenterLoginAPIView. CSRF exempt: True
+Found AdministrativeStaff for user ok in center cils
+User ok logged in for center cils as AdministrativeStaff
+Received GET request to AdministrativeStaffListAPIView. User: ok
+Fetched 4 administrative staff for center cils
+Received GET request to AdministrativeStaffListAPIView. User: ok
+Fetched 4 administrative staff for center cils
+Received GET request to TechnicalStaffListAPIView. User: ok
+Fetched 1 technical staff for center cils
+Received GET request to TechnicalStaffListAPIView. User: ok
+Fetched 1 technical staff for center cils
+Received GET request to ParamedicalStaffListAPIView. User: ok
+Fetched 1 paramedical staff for center cils
+Received GET request to ParamedicalStaffListAPIView. User: ok
+Fetched 1 paramedical staff for center cils
+Received GET request to WorkerStaffListAPIView. User: ok
+Fetched 1 worker staff for center cils
+Received GET request to WorkerStaffListAPIView. User: ok
+Fetched 1 worker staff for center cils
+Received GET request to CNAMListAPIView. User: ok
+Received GET request to CNAMListAPIView. User: ok
+Received GET request to AdministrativeStaffListAPIView. User: ok
+Fetched 4 administrative staff for center cils
+Received GET request to AdministrativeStaffListAPIView. User: ok
+Fetched 4 administrative staff for center cils
+Received GET request to ParamedicalStaffListAPIView. User: ok
+Fetched 1 paramedical staff for center cils
+Received GET request to ParamedicalStaffListAPIView. User: ok
+Fetched 1 paramedical staff for center cils
+Received GET request to ParamedicalStaffListAPIView. User: ok
+Fetched 1 paramedical staff for center cils
+Received GET request to ParamedicalStaffListAPIView. User: ok
+Fetched 1 paramedical staff for center cils
+Received GET request to TechnicalStaffListAPIView. User: ok
+Fetched 1 technical staff for center cils
+Received GET request to TechnicalStaffListAPIView. User: ok
+Fetched 1 technical staff for center cils
+Received GET request to TechnicalStaffListAPIView. User: ok
+Fetched 1 technical staff for center cils
+Received GET request to TechnicalStaffListAPIView. User: ok
+Fetched 1 technical staff for center cils
+Received GET request to CNAMListAPIView. User: ok
+Received GET request to CNAMListAPIView. User: ok
+Received GET request to CNAMListAPIView. User: ok
+Received GET request to CNAMListAPIView. User: ok
+Received GET request to CNAMListAPIView. User: ok
+Received GET request to CNAMListAPIView. User: ok

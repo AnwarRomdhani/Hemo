@@ -1,0 +1,239 @@
+<script type="text/javascript">
+        var gk_isXlsx = false;
+        var gk_xlsxFileLookup = {};
+        var gk_fileData = {};
+        function filledCell(cell) {
+          return cell !== '' && cell != null;
+        }
+        function loadFileData(filename) {
+        if (gk_isXlsx && gk_xlsxFileLookup[filename]) {
+            try {
+                var workbook = XLSX.read(gk_fileData[filename], { type: 'base64' });
+                var firstSheetName = workbook.SheetNames[0];
+                var worksheet = workbook.Sheets[firstSheetName];
+
+                // Convert sheet to JSON to filter blank rows
+                var jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1, blankrows: false, defval: '' });
+                // Filter out blank rows (rows where all cells are empty, null, or undefined)
+                var filteredData = jsonData.filter(row => row.some(filledCell));
+
+                // Heuristic to find the header row by ignoring rows with fewer filled cells than the next row
+                var headerRowIndex = filteredData.findIndex((row, index) =>
+                  row.filter(filledCell).length >= filteredData[index + 1]?.filter(filledCell).length
+                );
+                // Fallback
+                if (headerRowIndex === -1 || headerRowIndex > 25) {
+                  headerRowIndex = 0;
+                }
+
+                // Convert filtered JSON back to CSV
+                var csv = XLSX.utils.aoa_to_sheet(filteredData.slice(headerRowIndex)); // Create a new sheet from filtered array of arrays
+                csv = XLSX.utils.sheet_to_csv(csv, { header: 1 });
+                return csv;
+            } catch (e) {
+                console.error(e);
+                return "";
+            }
+        }
+        return gk_fileData[filename] || "";
+        }
+        </script><!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Rapport d'Activité Médicale des Centres d'Hémodialyse</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            font-size: 12pt;
+            line-height: 1.5;
+            margin: 40px;
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .header h1 {
+            font-size: 16pt;
+            margin: 10px 0;
+        }
+        .section-title {
+            font-weight: bold;
+            font-size: 14pt;
+            margin-top: 20px;
+            margin-bottom: 10px;
+            text-decoration: underline;
+        }
+        .subsection {
+            margin-left: 20px;
+            margin-bottom: 15px;
+        }
+        .field-label {
+            display: inline-block;
+            width: 300px;
+            font-weight: bold;
+        }
+        .field-value {
+            display: inline-block;
+            width: 400px;
+        }
+        .field-value input, .field-value span {
+            border-bottom: 1px solid #000;
+            width: 100%;
+        }
+        .table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+        .table th, .table td {
+            border: 1px solid #000;
+            padding: 8px;
+            text-align: left;
+        }
+        .footer {
+            margin-top: 50px;
+            display: flex;
+            justify-content: space-between;
+        }
+        .footer div {
+            width: 45%;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>République Tunisienne</h1>
+        <p>***____*____*_____***</p>
+        <h1>Ministère de la Santé</h1>
+        <p>***____*____*_____***</p>
+        <h1>Direction de la Réglementation et du Contrôle des Professions de Santé</h1>
+        <h1>RAPPORT D'ACTIVITE MEDICALE DES CENTRES D'HEMODIALYSE</h1>
+        <p>deuxième Semestre, Année {{ year }}</p>
+    </div>
+
+    <div class="section-title">I – CARACTERISTIQUES DU CENTRE</div>
+    <div class="subsection">
+        <h2>1 – Coordonnées</h2>
+        <p><span class="field-label">Dénomination :</span> <span class="field-value">{{ center.label }}</span></p>
+        <p><span class="field-label">Code du Centre :</span> <span class="field-value">{{ center.center_code }}</span></p>
+        <p><span class="field-label">Type de Centre :</span> <span class="field-value">{{ center.get_type_center_display }}</span></p>
+        <p><span class="field-label">Type d'Hémodialyse :</span> <span class="field-value">{{ center.get_name_type_hemo_display }}</span></p>
+        <p><span class="field-label">Code Type d'Hémodialyse :</span> <span class="field-value">{{ center.get_code_type_hemo_display }}</span></p>
+        <p><span class="field-label">Adresse :</span> <span class="field-value">{{ center.adresse }}</span></p>
+        <p><span class="field-label">Gouvernorat :</span> <span class="field-value">{{ center.governorate.name }}</span></p>
+        <p><span class="field-label">Délégation :</span> <span class="field-value">{{ center.delegation.name }}</span></p>
+        <p><span class="field-label">Tél :</span> <span class="field-value">{{ center.tel }}</span></p>
+        <p><span class="field-label">E-mail :</span> <span class="field-value">{{ center.mail }}</span></p>
+        <p><span class="field-label">Sous-domaine :</span> <span class="field-value">{{ center.sub_domain }}</span></p>
+    </div>
+
+    <div class="section-title">II – RESSOURCES HUMAINES</div>
+    <div class="subsection">
+        <h2>1 – Personnel Médical</h2>
+        <p>{{ medical_staff_count }} employés</p>
+        <h2>2 – Personnel Paramédical</h2>
+        <p>{{ paramedical_staff_count }} employés</p>
+        <h2>3 – Personnel Administratif</h2>
+        <p>Nombre : {{ administrative_staff_count }}</p>
+        <h2>4 – Personnel Ouvrier</h2>
+        <p>{{ worker_staff_count }} employés</p>
+        <h2>5 – Personnel Technique de Maintenance ou Contrat de Maintenance</h2>
+        <p>{{ maintenance_info }}</p>
+    </div>
+
+    <div class="section-title">III – EQUIPEMENTS</div>
+    <div class="subsection">
+        <h2>1 – Machines d'Hémodialyse (*)</h2>
+        <p>{{ functional_machines_count }} machines fonctionnelles</p>
+        <h2>2 – Filtres et Membranes Utilisés</h2>
+        <p>{{ filters_and_membranes }}</p>
+    </div>
+
+    <div class="section-title">IV – ACTIVITE</div>
+    <div class="subsection">
+        <p>(**) : Ne concerne que les malades dialysés pour la première fois de leur vie au sein de votre unité ou centre et pas les malades qui ont débuté leur 1ère dialyse ailleurs.</p>
+        <h2>1 – Répartition des Patients Par Couverture Sociale, Tranche d'Âges et Genre</h2>
+        <table class="table">
+            <tr><th>Couverture Sociale</th><th>Âge</th><th>Hommes</th><th>Femmes</th></tr>
+            {% for row in patient_distribution %}
+                <tr>
+                    <td>{{ row.social_coverage }}</td>
+                    <td>{{ row.age_range }}</td>
+                    <td>{{ row.male_count }}</td>
+                    <td>{{ row.female_count }}</td>
+                </tr>
+            {% endfor %}
+        </table>
+        <h2>2 – Répartition des Patients Par Méthodes de Dialyse</h2>
+        <p>{{ dialysis_methods_distribution }}</p>
+        <h2>3 – Répartition des Etrangers Passagers dans votre Centre</h2>
+        <p>{{ foreign_patients_count }} patients</p>
+        <h2>4 – Fréquence des Séances de Dialyse Par Patient</h2>
+        <p>Les Séances Hebdomadaires : {{ weekly_sessions }}</p>
+        <p>Nombre Total des Séances de Dialyse au cours du semestre : {{ total_sessions }} (dont {{ emergency_sessions }} en urgence)</p>
+        <h2>5 – Autres Particularités Notifiées Chez les patients Au Cours du Semestre</h2>
+        <p>Nombre de Patients ayant eu une Reprise de la Fonction Rénale : {{ renal_function_recovery_count }}</p>
+        <p>Nombre de Patients ayant Gardé une Activité Professionnelle :</p>
+        <p>Chez les Hommes : {{ professional_men_count }} et Chez les Femmes : {{ professional_women_count }}</p>
+        <p>Nombre de Patients ayant Arrêté la Dialyse : {{ stopped_dialysis_count }}</p>
+        <h2>6 – Les Transferts</h2>
+        <p>{{ transfers_info }}</p>
+    </div>
+
+    <div class="section-title">V – ACTIVITE DE TRANSPLANTATION ET DE PREPARATION A LA GREFFE</div>
+    <div class="subsection">
+        <h2>Transplantation Rénale</h2>
+        <p>Nombre de Patients de Votre Centre Transplantés au Cours du Semestre : {{ semester_transplants_count }}</p>
+        <p>Nombre Total des Patients de Votre Centre Transplantés depuis son Ouverture : {{ total_transplants_count }}</p>
+        <h2>Bilans en Vue de Transplantation</h2>
+        <p>Nombre de Nouveaux Bilans Réalisés au Cours du Semestre : {{ new_transplant_assessments_count }}</p>
+        <p>Nombre Total des Patients du Centre ayant un Donneur Vivant et un bilan de Transplantation en Cours : {{ ongoing_donor_assessments_count }}</p>
+        <p>Nombre Total des Patients du Centre ayant un bilan de Transplantation abouti : {{ completed_donor_assessments_count }}</p>
+        <p>Nombre Total des Patients Inscrits au CNPTO : {{ cnpoto_registered_count }}</p>
+    </div>
+
+    <div class="section-title">VI – LES MALADIES TRANSMISSIBLES</div>
+    <div class="subsection">
+        <h2>1 – Répartition des Maladies Transmissibles et leur Mode de Transmission</h2>
+        <p>{{ communicable_diseases_distribution }}</p>
+        <h2>2 – L'Immunisation Spontanée ou Après Vaccination à l'Hépatite B</h2>
+        <p>{{ hepatitis_b_immunization }}</p>
+    </div>
+
+    <div class="section-title">VII – MORBIDITE ET MORTALITE</div>
+    <div class="subsection">
+        <h2>1 – Les Causes de Complication (***)</h2>
+        <p>{{ complications_causes }}</p>
+        <h2>2 – Les Causes de Décès et leur répartition par Genre et Tranche d'Âges</h2>
+        <table class="table">
+            <tr><th>Cause</th><th>Genre</th><th>Tranche d'Âge</th><th>Nombre</th></tr>
+            {% for row in mortality_distribution %}
+                <tr>
+                    <td>{{ row.cause }}</td>
+                    <td>{{ row.gender }}</td>
+                    <td>{{ row.age_range }}</td>
+                    <td>{{ row.count }}</td>
+                </tr>
+            {% endfor %}
+        </table>
+    </div>
+
+    <div class="section-title">VIII – LES OBSERVATIONS</div>
+    <div class="subsection">
+        <p>{{ observations }}</p>
+    </div>
+
+    <div class="footer">
+        <div>
+            <p>Visa Du Médecin Contrôleur</p>
+            <p>{{ center.controller_name }}</p>
+        </div>
+        <div>
+            <p>Visa Du Médecin Responsable</p>
+            <p>{{ center.responsible_doctor_name }}</p>
+        </div>
+    </div>
+</body>
+</html>

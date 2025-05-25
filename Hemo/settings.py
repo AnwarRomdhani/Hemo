@@ -29,8 +29,14 @@ ALLOWED_HOSTS = ['localhost','.localhost']
 
 
 # Application definition
-
+CORS_ORIGIN_REGEX_WHITELIST = [
+    r'^http://[a-zA-Z0-9-]+\.localhost:3000$',  # Matches center1.localhost:3000, center2.localhost:3000, etc.
+    r'^http://localhost:3000$',  # Matches localhost:3000
+]
 INSTALLED_APPS = [
+    'rest_framework',
+    'corsheaders',
+    'rest_framework_simplejwt',
     'Hemo',
     'centers',
     'django.contrib.admin',
@@ -43,10 +49,11 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'centers.middleware.TenantMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
-    'django.middleware.csrf.CsrfViewMiddleware',
+    #'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
@@ -77,6 +84,17 @@ WSGI_APPLICATION = 'Hemo.wsgi.application'
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
 
 DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'hemo',
+        'USER': 'django_user',
+        'PASSWORD': '0000',
+        'HOST': 'localhost',
+        'PORT': '5432',
+    }
+}
+
+"""DATABASES = {
    'default': {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'Hemo',   
@@ -85,9 +103,7 @@ DATABASES = {
         'HOST': 'localhost',        
         'PORT': '3306',           
     }
-}
-
-
+}"""
 # Password validation
 # https://docs.djangoproject.com/en/5.1/ref/settings/#auth-password-validators
 
@@ -106,7 +122,19 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+    ],
+}
 
+from datetime import timedelta
+
+SIMPLE_JWT = {
+    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=60),
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=1),
+    'AUTH_HEADER_TYPES': ('Bearer',),
+}
 # Internationalization
 # https://docs.djangoproject.com/en/5.1/topics/i18n/
 
@@ -148,3 +176,6 @@ LOGGING = {
         },
     },
 }
+
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+DEFAULT_FROM_EMAIL = 'no-reply@hemo.localhost'

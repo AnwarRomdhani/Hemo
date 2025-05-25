@@ -2,6 +2,8 @@ import logging
 from django.db import models
 from django.core.exceptions import ValidationError
 from django.contrib.auth.models import User
+import random
+import string
 logger = logging.getLogger(__name__)
 
 class Center(models.Model):
@@ -197,13 +199,24 @@ class Patient(Person):
         ('O+', 'O+'),
         ('O-', 'O-'),
     ]
-    
+    GENDER_CHOICES = [
+        ('M', 'Male'),
+        ('F', 'Female'),
+    ]
+    STATUS_CHOICES = [
+        ('ALIVE', 'Alive'),
+        ('DECEASED', 'Deceased'),
+    ]
+    weight = models.FloatField(null=True, blank=True)  # Weight in kg
+    age = models.IntegerField(null=True, blank=True)
     cnam = models.ForeignKey(CNAM, on_delete=models.CASCADE, related_name='patients')
-    status = models.CharField(max_length=20, default='Active')
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='ALIVE')
+    decease_note = models.TextField(null=True, blank=True)  # Notes for deceased patients
     entry_date = models.DateField()
     previously_dialysed = models.BooleanField(default=False)
     date_first_dia = models.DateField(null=True, blank=True)
     blood_type = models.CharField(max_length=3, choices=BLOOD_TYPE_CHOICES)
+    gender = models.CharField(max_length=1, choices=GENDER_CHOICES, blank=True)
 
     class Meta:
         db_table = 'centers_patient'
@@ -244,10 +257,10 @@ class Filtre(models.Model):
     STERILISATION_CHOICES = [
         ('WATER_STEAM', 'Water Steam'),
         ('GAMMA_RAYS', 'Gamma Rays'),
-        ('ETH ethylene_OXIDE', 'Ethylene Oxide'),
+        ('ETHYLENE_OXIDE', 'Ethylene Oxide'),
     ]
     type = models.CharField(max_length=100)
-    sterilisation = models.CharField(max_length=100, blank=True)
+    sterilisation = models.CharField(max_length=100, blank=True, choices=STERILISATION_CHOICES)
 
     def __str__(self):
         return self.type
@@ -326,6 +339,54 @@ class Complications(models.Model):
 
     def __str__(self):
         return f"{self.complication.label_complication} for {self.medical_activity.patient} on {self.date_of_contraction}"
+
+class TransplantationRef(models.Model):
+    label_transplantation = models.CharField(max_length=100, unique=True)
+
+    class Meta:
+        db_table = 'centers_transplantationref'
+
+    def __str__(self):
+        return self.label_transplantation
+
+class Transplantation(models.Model):
+    medical_activity = models.ForeignKey(MedicalActivity, on_delete=models.CASCADE, related_name='transplantations')
+    transplantation = models.ForeignKey(TransplantationRef, on_delete=models.CASCADE)
+    date_operation = models.DateField()
+    notes = models.TextField(blank=True)
+
+    class Meta:
+        db_table = 'centers_transplantation'
+
+    def __str__(self):
+        return f"{self.transplantation.label_transplantation} for {self.medical_activity.patient} on {self.date_operation}"
+
+class UserProfile(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='verification_profile')
+    verification_code = models.CharField(max_length=6, blank=True, null=True)
+    is_verified = models.BooleanField(default=False)
+
+    def generate_verification_code(self):
+        """Generate a 6-digit verification code."""
+        code = ''.join(random.choices(string.digits, k=6))
+        self.verification_code = code
+        self.save()
+        logger.debug("Generated verification code for user %s: %s", self.user.username, code)
+        return code
+
+    def verify_code(self, code):
+        """Verify the provided code."""
+        if self.verification_code == code:
+            self.is_verified = True
+            self.verification_code = None  # Clear code after verification
+            self.save()
+            logger.info("User %s verified successfully", self.user.username)
+            return True
+        logger.warning("Invalid verification code for user %s: %s", self.user.username, code)
+        return False
+
+    def __str__(self):
+        return f"Verification profile for {self.user.username}"
 
 class HemodialysisSession(models.Model):
     medical_activity = models.ForeignKey(MedicalActivity, on_delete=models.CASCADE, related_name='hemodialysis_sessions')

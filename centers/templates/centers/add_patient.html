@@ -129,7 +129,6 @@
                 <p><a href="{% url 'login' %}" class="btn">Login</a></p>
             {% endif %}
         </div>
-    <div class="container">
         <h1>Add New Patient for {{ center.label }}</h1>
         <form method="post">
             {% csrf_token %}
@@ -262,6 +261,44 @@
                 <p class="help-text">Select the patient's blood type</p>
             </div>
             
+            <div class="form-group">
+                <label for="{{ form.gender.id_for_label }}">Gender</label>
+                {{ form.gender }}
+                {% if form.gender.errors %}
+                    <ul class="errorlist">
+                        {% for error in form.gender.errors %}
+                            <li>{{ error }}</li>
+                        {% endfor %}
+                    </ul>
+                {% endif %}
+                <p class="help-text">Select the patient's gender</p>
+            </div>
+                <div>
+                    <label class="form-group">Weight </label>
+                    {{ form.weight }}
+                    {% if form.weight.errors %}
+                        <div class="errorlist">
+                            {% for error in form.weight.errors %}
+                                <p>{{ error }}</p>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                    <p class="mt-1 text-sm text-gray-500">Patient's weight in kilograms</p>
+                </div>
+
+                <div>
+                    <label class="form-group">Age</label>
+                    {{ form.age }}
+                    {% if form.age.errors %}
+                        <div class="help-text">
+                            {% for error in form.age.errors %}
+                                <p>{{ error }}</p>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                    <p class="help-text">Patient's age in years</p>
+                </div>
+            
             <button type="submit">Add Patient</button>
         </form>
     </div>
@@ -269,7 +306,7 @@
     <!-- Modal for Adding New CNAM -->
     <div id="addCnamModal" class="modal">
         <div class="modal-content">
-            <span class="close" onclick="closeCnamModal()">&times;</span>
+            <span class="close" onclick="closeCnamModal()">×</span>
             <h2>Add New CNAM</h2>
             <form id="add-cnam-form">
                 {% csrf_token %}

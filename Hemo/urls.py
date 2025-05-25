@@ -17,7 +17,9 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path,include
 from django.contrib.auth.views import LoginView, LogoutView
-from Hemo.views import add_center , list_centers , superadmin_center_detail , add_center_staff
+from Hemo.views import (add_center , list_centers , superadmin_center_detail , add_center_staff,AddCenterAPIView , SuperAdminLoginAPIView ,
+     CheckSubdomainAPIView
+) 
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -30,4 +32,8 @@ urlpatterns = [
     path('centers/<int:pk>/', superadmin_center_detail, name='superadmin_center_detail'),
     path('centers/<int:pk>/add_staff/', add_center_staff, name='add_center_staff'),
     path('', list_centers, name='list_centers'),
+
+    path('api/add-center/', AddCenterAPIView.as_view(), name='add-center'),
+    path('api/superadmin-login/', SuperAdminLoginAPIView.as_view(), name='superadmin-login'),
+    path('api/check-subdomain/', CheckSubdomainAPIView.as_view(), name='check-subdomain'),
 ]

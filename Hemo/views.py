@@ -8,6 +8,14 @@ from centers.forms import AdministrativeStaffForm  # Use centers.forms
 from .forms import CenterForm
 import logging
 import traceback
+from django.db import transaction
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework import status
+from rest_framework.authentication import BasicAuthentication
+from rest_framework.permissions import IsAuthenticated
+from django.views.decorators.csrf import csrf_exempt
+from django.utils.decorators import method_decorator
 
 logger = logging.getLogger(__name__)
 
@@ -150,3 +158,96 @@ def add_center_staff(request, pk):
         'form': form,
         'center': center,
     })
+
+@method_decorator(csrf_exempt, name='dispatch')
+class AddCenterAPIView(APIView):
+    authentication_classes = [BasicAuthentication]
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request):
+        logger.debug("CENTER: Received POST request to AddCenterAPIView. User: %s, Data: %s",
+                    request.user.username, request.data)
+
+        # Check SUPERADMIN permission
+        if not request.user.is_superuser:
+            logger.warning("CENTER: Permission denied for user %s. Not a superadmin.", request.user.username)
+            return Response({"error": "Permission denied. Only superadmins can add centers."}, status=status.HTTP_403_FORBIDDEN)
+
+        # Validate and save form
+        form = CenterForm(request.data)
+        if form.is_valid():
+            try:
+                with transaction.atomic():
+                    center = form.save()
+                    logger.info("CENTER: Center (ID: %s, Subdomain: %s, Label: %s) added by %s",
+                               center.id, center.sub_domain, center.label, request.user.username)
+                    return Response(
+                        {
+                            "success": "Center added successfully.",
+                            "center_id": center.id,
+                            "sub_domain": center.sub_domain
+                        },
+                        status=status.HTTP_201_CREATED
+                    )
+            except Exception as e:
+                logger.error("CENTER: Error saving center: %s", str(e))
+                return Response({"error": f"Failed to save center: {str(e)}"}, status=status.HTTP_400_BAD_REQUEST)
+        else:
+            logger.warning("CENTER: Center form invalid: %s", form.errors)
+            return Response({"error": "Form validation failed.", "errors": form.errors.as_data()}, status=status.HTTP_400_BAD_REQUEST)
+        
+@method_decorator(csrf_exempt, name='dispatch')
+class SuperAdminLoginAPIView(APIView):
+    authentication_classes = [BasicAuthentication]
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request):
+        logger.debug("HEMO: Received POST request to SuperAdminLoginAPIView. User: %s, Data: %s",
+                    request.user.username, request.data)
+
+        # Since Basic Auth is used, user is already authenticated
+        user = request.user
+
+        # Check if user is superuser
+        if not user.is_superuser:
+            logger.warning("HEMO: Failed superadmin login attempt: %s (not a superuser)", user.username)
+            return Response(
+                {"error": "Invalid username or password, or not a superuser."},
+                status=status.HTTP_401_UNAUTHORIZED
+            )
+
+        # Check if user is not center staff
+        if AdministrativeStaff.objects.filter(user=user).exists():
+            logger.warning("HEMO: Center staff attempted superadmin login: %s", user.username)
+            return Response(
+                {"error": "This account is for center staff, not superadmin."},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        # Successful login
+        logger.info("HEMO: Superadmin logged in: %s", user.username)
+        return Response(
+            {
+                "success": "Superadmin login successful.",
+                "username": user.username
+            },
+            status=status.HTTP_201_CREATED
+        )
+    
+    
+@method_decorator(csrf_exempt, name='dispatch')
+class CheckSubdomainAPIView(APIView):
+    def get(self, request):
+        subdomain = request.GET.get('subdomain')
+        if not subdomain:
+            logger.warning("HEMO: Subdomain check failed: No subdomain provided")
+            return Response({"error": "Subdomain is required."}, status=status.HTTP_400_BAD_REQUEST)
+
+        try:
+            Center.objects.get(sub_domain=subdomain)
+            logger.debug("HEMO: Subdomain %s exists", subdomain)
+            return Response({"success": f"Subdomain {subdomain} exists."}, status=status.HTTP_200_OK)
+        except Center.DoesNotExist:
+            logger.warning("HEMO: Subdomain %s does not exist", subdomain)
+            return Response({"error": f"Subdomain {subdomain} does not exist."}, status=status.HTTP_404_NOT_FOUND)
+

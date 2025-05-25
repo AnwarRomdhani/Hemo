@@ -204,6 +204,13 @@
                 {% endif %}
             </div>
             <div class="form-group">
+                <label for="{{ form.job_title.id_for_label }}">job_title</label>
+                {{ form.job_title }}
+                {% if form.email.errors %}
+                    <div class="field-error">{{ form.job_title.errors }}</div>
+                {% endif %}
+            </div>
+            <div class="form-group">
                 <label for="{{ form.password.id_for_label }}">Password</label>
                 {{ form.password }}
                 {% if form.password.errors %}
