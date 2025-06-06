@@ -10,7 +10,7 @@ from django.contrib.auth.models import User
 from django.db.models import Count, Q
 from io import BytesIO
 from datetime import datetime
-from .models import UserProfile,TypeHemo,MethodHemo, Center, TechnicalStaff, MedicalStaff, ParamedicalStaff, AdministrativeStaff, WorkerStaff, Delegation, Patient, CNAM, MethodHemo, MedicalActivity, TransmittableDiseaseRef, ComplicationsRef, Machine, HemodialysisSession, TransmittableDisease, Complications, Transplantation, TransplantationRef
+from .models import UserProfile,TypeHemo,MethodHemo,Filtre,Membrane, Center, TechnicalStaff, MedicalStaff, ParamedicalStaff, AdministrativeStaff, WorkerStaff, Delegation, Patient, CNAM, MethodHemo, MedicalActivity, TransmittableDiseaseRef, ComplicationsRef, Machine, HemodialysisSession, TransmittableDisease, Complications, Transplantation, TransplantationRef
 from .forms import DeceasePatientForm, VerificationForm, TransplantationRefForm, TechnicalStaffForm, MedicalStaffForm, ParamedicalStaffForm, AdministrativeStaffForm, WorkerStaffForm, MachineForm, PatientForm, HemodialysisSessionForm, TransmittableDiseaseForm, TransmittableDiseaseRefForm, ComplicationsForm, ComplicationsRefForm, TransplantationForm
 from .utils import send_verification_email
 from django.template.loader import render_to_string
@@ -29,8 +29,33 @@ from django.contrib.auth import authenticate
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework.permissions import IsAuthenticated
 from rest_framework_simplejwt.authentication import JWTAuthentication
-
+from django.db import IntegrityError
+import re
+from .permissions import RoleBasedPermission
+from .ml.predictor import predict_hemodialysis
+import traceback
 logger = logging.getLogger(__name__)
+
+class HemodialysisPredictionView(APIView):
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request):
+        data = request.data
+
+        try:
+            # Let predict_hemodialysis handle parsing and preparation of features from raw data
+            result = predict_hemodialysis(data)
+            return Response(result)
+
+        except ValueError as ve:
+            # Catch validation errors from predict_hemodialysis and return as 400
+            return Response({"error": str(ve)}, status=400)
+
+        except Exception as e:
+            tb = traceback.format_exc()
+            print(f"Error in HemodialysisPredictionView.post:\n{tb}")
+            return Response({"error": "Internal Server Error"}, status=500)
 
 def CenterLoginView(request):
     tenant = getattr(request, 'tenant', None)
@@ -172,7 +197,6 @@ def get_user_role(user):
     except AttributeError:
         return None
     return None
-
 def is_local_admin(user):
     if not user.is_authenticated:
         return False
@@ -188,7 +212,6 @@ def is_submitter(user):
         return True
     role = get_user_role(user)
     return role in ['SUBMITTER', 'MEDICAL_PARA_STAFF']
-
 def is_medical_para_staff(user):
     if not user.is_authenticated:
         return False
@@ -196,7 +219,6 @@ def is_medical_para_staff(user):
         return True
     role = get_user_role(user)
     return role == 'MEDICAL_PARA_STAFF'
-
 def is_viewer(user):
     if not user.is_authenticated:
         return False
@@ -205,41 +227,6 @@ def is_viewer(user):
     role = get_user_role(user)
     return role == 'VIEWER'
 
-@login_required
-def declare_deceased(request, pk):
-    center = request.tenant
-    if not center:
-        logger.error("No tenant provided for declare_deceased")
-        return JsonResponse({'error': 'No center found for this subdomain.'}, status=404)
-
-    patient = get_object_or_404(Patient, pk=pk, center=center)
-    if patient.status == 'DECEASED':
-        return JsonResponse({'error': 'Patient is already deceased.'}, status=400)
-
-    user_roles = []
-    for staff_type in [MedicalStaff, ParamedicalStaff, AdministrativeStaff, WorkerStaff, TechnicalStaff]:
-        try:
-            staff = staff_type.objects.get(user=request.user, center=center)
-            user_roles.append(staff.role)
-        except staff_type.DoesNotExist:
-            continue
-    if not any(role in ['LOCAL_ADMIN', 'SUBMITTER'] for role in user_roles):
-        logger.warning("Permission denied for user %s in center %s", request.user.username, center.label)
-        return JsonResponse({'error': 'Permission denied.'}, status=403)
-
-    if request.method == 'POST':
-        form = DeceasePatientForm(request.POST, instance=patient)
-        if form.is_valid():
-            patient.status = 'DECEASED'
-            form.save()
-            logger.info("Patient %s declared deceased by user %s in center %s", patient, request.user.username, center.label)
-            return JsonResponse({'success': 'Patient declared deceased successfully.'})
-        else:
-            errors = form.errors.as_json()
-            logger.error("Form validation failed for declare_deceased: %s", errors)
-            return JsonResponse({'error': 'Form validation failed.', 'errors': errors}, status=400)
-    else:
-        return JsonResponse({'error': 'Invalid request method.'}, status=405)
 
 @login_required
 def export_pdf(request):
@@ -608,561 +595,56 @@ def center_detail(request):
         'patients': center.patient_staff.all(),
     })
 
-@user_passes_test(is_local_admin)
-def add_machine(request):
-    center = request.tenant
-    if not center:
-        logger.error("No tenant provided for add_machine")
-        return render(request, 'centers/error.html', {'message': 'No center selected. Please access via a valid tenant.'}, status=400)
-    if request.method == 'POST':
-        form = MachineForm(request.POST, center=center)
-        if form.is_valid():
-            machine = form.save()
-            logger.info("Machine saved: %s for center %s", machine, center.label)
-            return redirect('center_detail')
-        else:
-            logger.warning("Machine form is invalid: %s", form.errors)
-    else:
-        form = MachineForm(center=center)
-    return render(request, 'centers/add_machine.html', {'form': form, 'center': center})
-
-@user_passes_test(is_local_admin)
-def add_technical_staff(request):
-    center = request.tenant
-    if not center:
-        return render(request, 'centers/404.html', status=404)
-    if request.method == 'POST':
-        form = TechnicalStaffForm(request.POST, center=center)
-        if form.is_valid():
-            staff = form.save()
-            logger.info("Technical staff saved: %s", staff)
-            return redirect('center_detail')
-        else:
-            logger.warning("Technical staff form is invalid: %s", form.errors)
-    else:
-        form = TechnicalStaffForm(center=center)
-    return render(request, 'centers/add_technical_staff.html', {
-        'form': form,
-        'center': center
-    })
-
-@user_passes_test(is_local_admin)
-def add_medical_staff(request):
-    center = request.tenant
-    if not center:
-        return render(request, 'centers/404.html', status=404)
-    if request.method == 'POST':
-        form = MedicalStaffForm(request.POST, center=center)
-        if form.is_valid():
-            staff = form.save()
-            logger.info("Medical staff saved: %s", staff)
-            return redirect('center_detail')
-        else:
-            logger.warning("Medical staff form is invalid: %s", form.errors)
-    else:
-        form = MedicalStaffForm(center=center)
-    return render(request, 'centers/add_medical_staff.html', {
-        'form': form,
-        'center': center
-    })
-
-@user_passes_test(is_local_admin)
-def add_paramedical_staff(request):
-    center = request.tenant
-    if not center:
-        return render(request, 'centers/404.html', status=404)
-    if request.method == 'POST':
-        form = ParamedicalStaffForm(request.POST, center=center)
-        logger.debug("POST data for add_paramedical_staff: %s", dict(request.POST))
-        if form.is_valid():
-            try:
-                staff = form.save()
-                logger.info("Paramedical staff saved: %s for center %s", staff, center.label)
-                return redirect('center_detail')
-            except Exception as e:
-                logger.error("Error saving paramedical staff: %s", str(e))
-                form.add_error(None, f"Error: {str(e)}")
-        else:
-            logger.warning("Paramedical staff form is invalid: %s", form.errors)
-    else:
-        form = ParamedicalStaffForm(center=center)
-    return render(request, 'centers/add_paramedical_staff.html', {
-        'form': form,
-        'center': center,
-        'error': form.errors
-    })
-
-@user_passes_test(is_local_admin)
-def add_administrative_staff(request):
-    center = request.tenant
-    if not center:
-        return render(request, 'centers/404.html', status=404)
-    if request.method == 'POST':
-        form = AdministrativeStaffForm(request.POST, center=center)
-        if form.is_valid():
-            staff = form.save()
-            logger.info("Administrative staff saved: %s", staff)
-            return redirect('center_detail')
-        else:
-            logger.warning("Administrative staff form is invalid: %s", form.errors)
-    else:
-        form = AdministrativeStaffForm(center=center)
-    return render(request, 'centers/add_administrative_staff.html', {
-        'form': form,
-        'center': center
-    })
-
-@user_passes_test(is_local_admin)
-def add_worker_staff(request):
-    center = request.tenant
-    if not center:
-        return render(request, 'centers/404.html', status=404)
-    if request.method == 'POST':
-        form = WorkerStaffForm(request.POST, center=center)
-        if form.is_valid():
-            staff = form.save()
-            logger.info("Worker staff saved: %s", staff)
-            return redirect('center_detail')
-        else:
-            logger.warning("Worker staff form is invalid: %s", form.errors)
-    else:
-        form = WorkerStaffForm(center=center)
-    return render(request, 'centers/add_worker_staff.html', {
-        'form': form,
-        'center': center
-    })
-
-@user_passes_test(is_medical_para_staff)
-def add_patient(request):
-    center = request.tenant
-    if not center:
-        return render(request, 'centers/404.html', status=404)
-    if request.method == 'POST':
-        form = PatientForm(request.POST, center=center)
-        if form.is_valid():
-            form.save()
-            return redirect('center_detail')
-        else:
-            logger.warning("Patient form is invalid: %s", form.errors)
-    else:
-        form = PatientForm(center=center)
-    return render(request, 'centers/add_patient.html', {
-        'form': form,
-        'center': center
-    })
-
-def add_cnam(request):
-    if request.method != 'POST':
-        return JsonResponse({'error': 'Invalid request method'}, status=400)
-    number = request.POST.get('number')
-    if not number:
-        return JsonResponse({'error': 'CNAM number is required'}, status=400)
-    try:
-        cnam, created = CNAM.objects.get_or_create(number=number)
-        return JsonResponse({'id': cnam.id, 'number': cnam.number})
-    except Exception as e:
-        logger.error("Error adding CNAM: %s", str(e))
-        return JsonResponse({'error': str(e)}, status=500)
-
-def load_delegations(request):
-    governorate_id = request.GET.get('governorate_id')
-    logger.debug("Loading delegations for governorate_id: %s", governorate_id)
-    delegations = Delegation.objects.filter(governorate_id=governorate_id).order_by('name')
-    logger.debug("Delegations found: %s", list(delegations.values('id', 'name')))
-    return render(request, 'centers/delegation_dropdown_list_options.html', {'delegations': delegations})
-
-def load_methods(request):
-    type_hemo_id = request.GET.get('type_hemo_id')
-    logger.debug("Loading methods for type_hemo_id: %s", type_hemo_id)
-    methods = MethodHemo.objects.filter(type_hemo_id=type_hemo_id).order_by('name')
-    logger.debug("Methods found: %s", list(methods.values('id', 'name')))
-    return render(request, 'centers/method_dropdown_list_options.html', {'methods': methods})
-
-@login_required
-def list_patients(request):
-    center = request.tenant
-    if not center:
-        logger.error("No tenant provided for list_patients")
-        return render(request, 'centers/404.html', status=404)
-    if not is_viewer(request.user):
-        return HttpResponse("Permission denied.", status=403)
-    patients = center.patient_staff.all()
-    logger.debug("Patients fetched for center %s: %s", center.label, list(patients.values('nom', 'prenom')))
-    return render(request, 'centers/list_patients.html', {
-        'center': center,
-        'patients': patients,
-    })
-
-@user_passes_test(is_local_admin)
-def add_disease_ref(request):
-    center = request.tenant
-    if not center:
-        logger.error("No tenant provided for add_disease_ref")
-        return render(request, 'centers/404.html', status=404)
-    if request.method == 'POST':
-        form = TransmittableDiseaseRefForm(request.POST)
-        if form.is_valid():
-            form.save()
-            logger.info("TransmittableDiseaseRef saved: %s", form.cleaned_data['label_disease'])
-            return redirect('center_detail')
-        else:
-            logger.warning("TransmittableDiseaseRef form is invalid: %s", form.errors)
-    else:
-        form = TransmittableDiseaseRefForm()
-    return render(request, 'centers/add_disease_ref.html', {
-        'form': form,
-        'center': center
-    })
-
-@user_passes_test(is_local_admin)
-def add_complication_ref(request):
-    center = request.tenant
-    if not center:
-        logger.error("No tenant provided for add_complication_ref")
-        return render(request, 'centers/404.html', status=404)
-    if request.method == 'POST':
-        form = ComplicationsRefForm(request.POST)
-        if form.is_valid():
-            form.save()
-            logger.info("ComplicationsRef saved: %s", form.cleaned_data['label_complication'])
-            return redirect('center_detail')
-        else:
-            logger.warning("ComplicationsRef form is invalid: %s", form.errors)
-    else:
-        form = ComplicationsRefForm()
-    return render(request, 'centers/add_complication_ref.html', {
-        'form': form,
-        'center': center
-    })
-
-@login_required
-def patient_detail(request, pk):
-    center = request.tenant
-    if not center:
-        logger.error("No tenant provided for patient_detail")
-        return render(request, 'centers/404.html', status=404)
-    if not is_viewer(request.user):
-        return HttpResponse("Permission denied.", status=403)
-    patient = get_object_or_404(Patient, pk=pk, center=center)
-    logger.debug("Patient fetched: %s for center %s", patient, center.label)
-    
-    if request.method == 'POST' and is_submitter(request.user):
-        session_form = HemodialysisSessionForm(request.POST, center=center, prefix='session')
-        disease_form = TransmittableDiseaseForm(request.POST, center=center, prefix='disease')
-        complication_form = ComplicationsForm(request.POST, center=center, prefix='complication')
-        transplantation_form = TransplantationForm(request.POST, center=center, prefix='transplantation')
-        if 'session_submit' in request.POST and session_form.is_valid():
-            session = session_form.save(commit=False)
-            try:
-                medical_activity = patient.medical_activity
-            except MedicalActivity.DoesNotExist:
-                logger.warning("No MedicalActivity for patient %s, creating one", patient)
-                medical_activity = MedicalActivity.objects.create(
-                    patient=patient,
-                    created_at=patient.entry_date
-                )
-            session.medical_activity = medical_activity
-            try:
-                session.save()
-                logger.info("Hemodialysis session saved for patient %s: %s", patient, session)
-                return redirect('patient_detail', pk=pk)
-            except Exception as e:
-                logger.error("Error saving hemodialysis session: %s", str(e))
-                session_form.add_error(None, f"Error saving session: {str(e)}")
-        elif 'disease_submit' in request.POST and disease_form.is_valid():
-            disease = disease_form.save(commit=False)
-            try:
-                medical_activity = patient.medical_activity
-            except MedicalActivity.DoesNotExist:
-                logger.warning("No MedicalActivity for patient %s, creating one", patient)
-                medical_activity = MedicalActivity.objects.create(
-                    patient=patient,
-                    created_at=patient.entry_date
-                )
-            disease.medical_activity = medical_activity
-            try:
-                disease.save()
-                logger.info("Transmittable disease saved for patient %s: %s", patient, disease)
-                return redirect('patient_detail', pk=pk)
-            except Exception as e:
-                logger.error("Error saving transmittable disease: %s", str(e))
-                disease_form.add_error(None, f"Error saving disease: {str(e)}")
-        elif 'complication_submit' in request.POST and complication_form.is_valid():
-            complication = complication_form.save(commit=False)
-            try:
-                medical_activity = patient.medical_activity
-            except MedicalActivity.DoesNotExist:
-                logger.warning("No MedicalActivity for patient %s, creating one", patient)
-                medical_activity = MedicalActivity.objects.create(
-                    patient=patient,
-                    created_at=patient.entry_date
-                )
-            complication.medical_activity = medical_activity
-            try:
-                complication.save()
-                logger.info("Complication saved for patient %s: %s", patient, complication)
-                return redirect('patient_detail', pk=pk)
-            except Exception as e:
-                logger.error("Error saving complication: %s", str(e))
-                complication_form.add_error(None, f"Error saving complication: {str(e)}")
-        elif 'transplantation_submit' in request.POST and transplantation_form.is_valid():
-            transplantation = transplantation_form.save(commit=False)
-            try:
-                medical_activity = patient.medical_activity
-            except MedicalActivity.DoesNotExist:
-                logger.warning("No MedicalActivity for patient %s, creating one", patient)
-                medical_activity = MedicalActivity.objects.create(
-                    patient=patient,
-                    created_at=patient.entry_date
-                )
-            transplantation.medical_activity = medical_activity
-            try:
-                transplantation.save()
-                logger.info("Transplantation saved for patient %s: %s", patient, transplantation)
-                return redirect('patient_detail', pk=pk)
-            except Exception as e:
-                logger.error("Error saving transplantation: %s", str(e))
-                transplantation_form.add_error(None, f"Error saving transplantation: {str(e)}")
-        else:
-            logger.warning("Forms invalid: session_form=%s, disease_form=%s, complication_form=%s, transplantation_form=%s", 
-                          session_form.errors, disease_form.errors, complication_form.errors, transplantation_form.errors)
-    else:
-        session_form = HemodialysisSessionForm(center=center, prefix='session')
-        disease_form = TransmittableDiseaseForm(center=center, prefix='disease')
-        complication_form = ComplicationsForm(center=center, prefix='complication')
-        transplantation_form = TransplantationForm(center=center, prefix='transplantation')
-
-    if not is_submitter(request.user):
-        session_form.fields['type'].disabled = True
-        session_form.fields['method'].disabled = True
-        session_form.fields['date_of_session'].disabled = True
-        session_form.fields['responsible_doc'].disabled = True
-        disease_form.fields['disease'].disabled = True
-        disease_form.fields['date_of_contraction'].disabled = True
-        complication_form.fields['complication'].disabled = True
-        complication_form.fields['notes'].disabled = True
-        complication_form.fields['date_of_contraction'].disabled = True
-        transplantation_form.fields['transplantation'].disabled = True
-        transplantation_form.fields['date_operation'].disabled = True
-        transplantation_form.fields['notes'].disabled = True
-    
-    return render(request, 'centers/patient_detail.html', {
-        'center': center,
-        'patient': patient,
-        'session_form': session_form,
-        'disease_form': disease_form,
-        'complication_form': complication_form,
-        'transplantation_form': transplantation_form,
-    })
-
-@login_required
-def center_users_list(request):
-    center = request.tenant
-    if not center:
-        logger.error("No tenant provided for center_users_list")
-        return render(request, 'centers/404.html', status=404)
-    if not is_viewer(request.user):
-        logger.warning("Permission denied for user %s in center %s", request.user.username, center.label)
-        return HttpResponse("Permission denied.", status=403)
-
-    admin_staff = AdministrativeStaff.objects.filter(center=center)
-    worker_staff = WorkerStaff.objects.filter(center=center)
-    technical_staff = TechnicalStaff.objects.filter(center=center)
-    medical_staff = MedicalStaff.objects.filter(center=center)
-    paramedical_staff = ParamedicalStaff.objects.filter(center=center)
-
-    staff_list = []
-    for staff in admin_staff:
-        staff_list.append({
-            'id': staff.id,
-            'type': 'Administrative',
-            'nom': staff.nom,
-            'prenom': staff.prenom,
-            'role': staff.get_role_display(),
-            'specific_field': staff.job_title,
-            'specific_field_label': 'Job Title',
-            'user': staff.user
-        })
-    for staff in worker_staff:
-        staff_list.append({
-            'id': staff.id,
-            'type': 'Worker',
-            'nom': staff.nom,
-            'prenom': staff.prenom,
-            'role': staff.get_role_display(),
-            'specific_field': staff.job_title,
-            'specific_field_label': 'Job Title',
-            'user': staff.user
-        })
-    for staff in technical_staff:
-        staff_list.append({
-            'id': staff.id,
-            'type': 'Technical',
-            'nom': staff.nom,
-            'prenom': staff.prenom,
-            'role': staff.get_role_display(),
-            'specific_field': staff.qualification,
-            'specific_field_label': 'Qualification',
-            'user': staff.user
-        })
-    for staff in medical_staff:
-        staff_list.append({
-            'id': staff.id,
-            'type': 'Medical',
-            'nom': staff.nom,
-            'prenom': staff.prenom,
-            'role': staff.get_role_display(),
-            'specific_field': staff.cnom,
-            'specific_field_label': 'CNOM',
-            'user': staff.user
-        })
-    for staff in paramedical_staff:
-        staff_list.append({
-            'id': staff.id,
-            'type': 'Paramedical',
-            'nom': staff.nom,
-            'prenom': staff.prenom,
-            'role': staff.get_role_display(),
-            'specific_field': staff.qualification,
-            'specific_field_label': 'Qualification',
-            'user': staff.user
-        })
-
-    logger.debug("User %s accessed staff list for center %s. Staff count: %s",
-                 request.user.username, center.label, len(staff_list))
-
-    context = {
-        'center': center,
-        'staff_list': staff_list,
-        'is_local_admin': is_local_admin(request.user),
-    }
-    return render(request, 'centers/list_center_users.html', context)
-
-@user_passes_test(is_local_admin)
-def delete_staff(request, staff_id):
-    center = request.tenant
-    if not center:
-        logger.error("No tenant provided for delete_staff")
-        return render(request, 'centers/404.html', status=404)
-
-    if request.method != 'POST':
-        logger.warning("Invalid method for delete_staff by user %s in center %s",
-                       request.user.username, center.label)
-        return HttpResponse("Method not allowed.", status=405)
-
-    staff = None
-    model = None
-    for model_class in [AdministrativeStaff, WorkerStaff, TechnicalStaff, MedicalStaff, ParamedicalStaff]:
-        try:
-            staff = model_class.objects.get(id=staff_id, center=center)
-            model = model_class.__name__
-            break
-        except model_class.DoesNotExist:
-            continue
-
-    if not staff:
-        logger.error("Staff ID %s not found in center %s", staff_id, center.label)
-        return render(request, 'centers/error.html', {
-            'message': 'Staff member not found.'
-        }, status=404)
-
-    if staff.user == request.user:
-        logger.warning("User %s attempted to delete themselves in center %s",
-                       request.user.username, center.label)
-        return render(request, 'centers/error.html', {
-            'message': 'You cannot delete your own account.'
-        }, status=403)
-
-    user = staff.user
-    try:
-        staff.delete()
-        if user:
-            user.delete()
-        logger.info("Deleted staff ID %s (%s) and user %s from center %s by %s",
-                    staff_id, model, user.username if user else 'no user', center.label, request.user.username)
-        return redirect('center_users_list')
-    except Exception as e:
-        logger.error("Failed to delete staff ID %s in center %s: %s", staff_id, center.label, str(e))
-        return render(request, 'centers/error.html', {
-            'message': f'Failed to delete staff member: {str(e)}'
-        }, status=500)
-
-@user_passes_test(is_local_admin)
-def add_transplantation_ref(request):
-    center = request.tenant
-    if not center:
-        logger.error("No tenant provided for add_transplantation_ref")
-        return render(request, 'centers/404.html', status=404)
-    if request.method == 'POST':
-        form = TransplantationRefForm(request.POST)
-        if form.is_valid():
-            form.save()
-            logger.info("TransplantationRef saved: %s", form.cleaned_data['label_transplantation'])
-            return redirect('center_detail')
-        else:
-            logger.warning("TransplantationRef form is invalid: %s", form.errors)
-    else:
-        form = TransplantationRefForm()
-    return render(request, 'centers/add_transplantation_ref.html', {
-        'form': form,
-        'center': center
-    })
-
 
 #=====================================APIS===================================
 
 @method_decorator(csrf_exempt, name='dispatch')
 class CenterLoginAPIView(APIView):
+    def get_tokens_for_user(self, user):
+        refresh = RefreshToken.for_user(user)
+        refresh['is_superuser'] = user.is_superuser
+        refresh['username'] = user.username
+        return {
+            "refresh": str(refresh),
+            "access": str(refresh.access_token),
+        }
+
     def post(self, request):
         logger.debug("Received POST request to CenterLoginAPIView. CSRF exempt: %s", request.META.get('CSRF_COOKIE') is None)
         
         tenant = getattr(request, 'tenant', None)
         if not tenant:
             logger.error("No tenant found for API login request")
-            return Response(
-                {"error": "Invalid center subdomain."},
-                status=status.HTTP_400_BAD_REQUEST
-            )
+            return Response({"error": "Invalid center subdomain."}, status=status.HTTP_400_BAD_REQUEST)
 
         username = request.data.get('username')
         password = request.data.get('password')
 
         if not username or not password:
             logger.warning("Missing username or password in API login request")
-            return Response(
-                {"error": "Username and password are required."},
-                status=status.HTTP_400_BAD_REQUEST
-            )
+            return Response({"error": "Username and password are required."}, status=status.HTTP_400_BAD_REQUEST)
 
         user = authenticate(request, username=username, password=password)
         if user is None:
             logger.warning("Failed login attempt for username: %s at center %s", username, tenant.label)
-            return Response(
-                {"error": "Invalid username or password."},
-                status=status.HTTP_401_UNAUTHORIZED
-            )
+            return Response({"error": "Invalid username or password."}, status=status.HTTP_401_UNAUTHORIZED)
 
-        # Handle superadmin
         if user.is_superuser:
             logger.info("Superadmin %s logging in to center %s", username, tenant.label)
             try:
-                profile = user.verification_profile
+                profile = UserProfile.objects.get(user=user)
                 tokens = self.get_tokens_for_user(user)
-                logger.info("Superadmin %s logged in for center %s (verification bypassed)", username, tenant.label)
+                logger.info("Superadmin %s logged in for center %s as LOCAL_ADMIN", username, tenant.label)
                 return Response({
                     "access": tokens["access"],
                     "refresh": tokens["refresh"],
-                    "role": "SUPERADMIN",
+                    "role": "LOCAL_ADMIN",
                     "center": tenant.label
                 }, status=status.HTTP_200_OK)
             except UserProfile.DoesNotExist:
                 logger.error("No verification profile for superadmin %s", username)
-                return Response(
-                    {"error": "Verification profile missing. Contact support."},
-                    status=status.HTTP_403_FORBIDDEN
-                )
+                return Response({"error": "Verification profile missing. Contact support."}, status=status.HTTP_403_FORBIDDEN)
 
-        # Handle non-superadmin users
         staff_types = [AdministrativeStaff, ParamedicalStaff, TechnicalStaff, MedicalStaff, WorkerStaff]
         staff = None
         staff_role = None
@@ -1178,45 +660,35 @@ class CenterLoginAPIView(APIView):
 
         if staff:
             try:
-                profile = user.verification_profile
+                profile = UserProfile.objects.get(user=user)
                 if not profile.is_verified:
-                    logger.info("User %s requires email verification", username)
-                    return Response(
-                        {"error": "Email verification required.", "redirect": "verify_email"},
-                        status=status.HTTP_403_FORBIDDEN
-                    )
+                    logger.info("User %s requires email verification for center %s", username, tenant.label)
+                    return Response({
+                        "error": "Email verification required.",
+                        "redirect_to": "/verify-email",
+                        "user_id": user.id
+                    }, status=status.HTTP_403_FORBIDDEN)
                 tokens = self.get_tokens_for_user(user)
                 logger.info("User %s logged in for center %s as %s", username, tenant.label, staff.__class__.__name__)
                 return Response({
                     "access": tokens["access"],
                     "refresh": tokens["refresh"],
                     "role": staff_role,
-                    "center": tenant.label
+                    "center": tenant.label,
+                    "is_verified": profile.is_verified,
+                    "has_role_privileges": profile.has_role_privileges()
                 }, status=status.HTTP_200_OK)
             except UserProfile.DoesNotExist:
                 logger.error("No verification profile for user %s", username)
-                return Response(
-                    {"error": "Verification profile missing. Contact support."},
-                    status=status.HTTP_403_FORBIDDEN
-                )
+                return Response({"error": "Verification profile missing. Contact support."}, status=status.HTTP_403_FORBIDDEN)
         else:
             logger.warning("User %s not authorized for center %s", username, tenant.label)
-            return Response(
-                {"error": "You are not authorized for this center."},
-                status=status.HTTP_403_FORBIDDEN
-            )
-
-    def get_tokens_for_user(self, user):
-        refresh = RefreshToken.for_user(user)
-        return {
-            "refresh": str(refresh),
-            "access": str(refresh.access_token),
-        }
-    
+            return Response({"error": "You are not authorized for this center."}, status=status.HTTP_403_FORBIDDEN)
 
 @method_decorator(csrf_exempt, name='dispatch')
 class AddAdministrativeStaffAPIView(APIView):
-    permission_classes = [IsAuthenticated]
+    permission_classes = [RoleBasedPermission]
+    allowed_roles = ['LOCAL_ADMIN']
 
     def post(self, request):
         logger.debug("Received POST request to AddAdministrativeStaffAPIView. User: %s", request.user.username)
@@ -1276,7 +748,8 @@ class AddAdministrativeStaffAPIView(APIView):
         
 @method_decorator(csrf_exempt, name='dispatch')
 class AddTechnicalStaffAPIView(APIView):
-    permission_classes = [IsAuthenticated]
+    permission_classes = [RoleBasedPermission]
+    allowed_roles = ['LOCAL_ADMIN']
 
     def post(self, request):
         logger.debug("Received POST request to AddTechnicalStaffAPIView. User: %s", request.user.username)
@@ -1336,26 +809,19 @@ class AddTechnicalStaffAPIView(APIView):
 
 @method_decorator(csrf_exempt, name='dispatch')
 class AddMedicalStaffAPIView(APIView):
-    permission_classes = [IsAuthenticated]
+    permission_classes = [RoleBasedPermission]
+    allowed_roles = ['LOCAL_ADMIN']
 
     def post(self, request):
-        logger.debug("Received POST request to AddMedicalStaffAPIView. User: %s", request.user.username)
+        logger.debug("MEDICAL_STAFF: Received POST request to AddMedicalStaffAPIView. User: %s", request.user.username)
 
         # Check tenant
         tenant = getattr(request, 'tenant', None)
         if not tenant:
-            logger.error("No tenant found for add medical staff request")
+            logger.error("MEDICAL_STAFF: No tenant found for add medical staff request")
             return Response(
                 {"error": "Invalid or missing center subdomain."},
                 status=status.HTTP_400_BAD_REQUEST
-            )
-
-        # Check LOCAL_ADMIN permission
-        if not is_local_admin(request.user):
-            logger.warning("Permission denied for user %s in center %s", request.user.username, tenant.label)
-            return Response(
-                {"error": "Permission denied. Only local admins can add staff."},
-                status=status.HTTP_403_FORBIDDEN
             )
 
         # Prepare form data
@@ -1368,8 +834,8 @@ class AddMedicalStaffAPIView(APIView):
             try:
                 with transaction.atomic():
                     staff = form.save(commit=True)
-                    logger.info("Medical staff %s %s (ID: %s) added by %s in center %s",
-                               staff.nom, staff.prenom, staff.id, request.user.username, tenant.label)
+                    logger.info("MEDICAL_STAFF: Medical staff %s %s (ID: %s) added by %s in center %s",
+                                staff.nom, staff.prenom, staff.id, request.user.username, tenant.label)
                     return Response(
                         {
                             "success": "Medical staff added successfully.",
@@ -1379,13 +845,13 @@ class AddMedicalStaffAPIView(APIView):
                         status=status.HTTP_201_CREATED
                     )
             except Exception as e:
-                logger.error("Error saving medical staff: %s", str(e))
+                logger.error("MEDICAL_STAFF: Error saving medical staff: %s", str(e))
                 return Response(
                     {"error": f"Failed to save staff: {str(e)}"},
                     status=status.HTTP_400_BAD_REQUEST
                 )
         else:
-            logger.warning("Medical staff form invalid: %s", form.errors)
+            logger.warning("MEDICAL_STAFF: Medical staff form invalid: %s", form.errors)
             return Response(
                 {
                     "error": "Form validation failed.",
@@ -1396,26 +862,19 @@ class AddMedicalStaffAPIView(APIView):
 
 @method_decorator(csrf_exempt, name='dispatch')
 class AddParamedicalStaffAPIView(APIView):
-    permission_classes = [IsAuthenticated]
+    permission_classes = [RoleBasedPermission]
+    allowed_roles = ['LOCAL_ADMIN']
 
     def post(self, request):
-        logger.debug("Received POST request to AddParamedicalStaffAPIView. User: %s", request.user.username)
+        logger.debug("PARAMEDICAL_STAFF: Received POST request to AddParamedicalStaffAPIView. User: %s", request.user.username)
 
         # Check tenant
         tenant = getattr(request, 'tenant', None)
         if not tenant:
-            logger.error("No tenant found for add paramedical staff request")
+            logger.error("PARAMEDICAL_STAFF: No tenant found for add paramedical staff request")
             return Response(
                 {"error": "Invalid or missing center subdomain."},
                 status=status.HTTP_400_BAD_REQUEST
-            )
-
-        # Check LOCAL_ADMIN permission
-        if not is_local_admin(request.user):
-            logger.warning("Permission denied for user %s in center %s", request.user.username, tenant.label)
-            return Response(
-                {"error": "Permission denied. Only local admins can add staff."},
-                status=status.HTTP_403_FORBIDDEN
             )
 
         # Prepare form data
@@ -1428,8 +887,8 @@ class AddParamedicalStaffAPIView(APIView):
             try:
                 with transaction.atomic():
                     staff = form.save(commit=True)
-                    logger.info("Paramedical staff %s %s (ID: %s) added by %s in center %s",
-                               staff.nom, staff.prenom, staff.id, request.user.username, tenant.label)
+                    logger.info("PARAMEDICAL_STAFF: Paramedical staff %s %s (ID: %s) added by %s in center %s",
+                                staff.nom, staff.prenom, staff.id, request.user.username, tenant.label)
                     return Response(
                         {
                             "success": "Paramedical staff added successfully.",
@@ -1439,13 +898,13 @@ class AddParamedicalStaffAPIView(APIView):
                         status=status.HTTP_201_CREATED
                     )
             except Exception as e:
-                logger.error("Error saving paramedical staff: %s", str(e))
+                logger.error("PARAMEDICAL_STAFF: Error saving paramedical staff: %s", str(e))
                 return Response(
                     {"error": f"Failed to save staff: {str(e)}"},
                     status=status.HTTP_400_BAD_REQUEST
                 )
         else:
-            logger.warning("Paramedical staff form invalid: %s", form.errors)
+            logger.warning("PARAMEDICAL_STAFF: Paramedical staff form invalid: %s", form.errors)
             return Response(
                 {
                     "error": "Form validation failed.",
@@ -1456,26 +915,19 @@ class AddParamedicalStaffAPIView(APIView):
 
 @method_decorator(csrf_exempt, name='dispatch')
 class AddWorkerStaffAPIView(APIView):
-    permission_classes = [IsAuthenticated]
+    permission_classes = [RoleBasedPermission]
+    allowed_roles = ['LOCAL_ADMIN']
 
     def post(self, request):
-        logger.debug("Received POST request to AddWorkerStaffAPIView. User: %s", request.user.username)
+        logger.debug("WORKER_STAFF: Received POST request to AddWorkerStaffAPIView. User: %s", request.user.username)
 
         # Check tenant
         tenant = getattr(request, 'tenant', None)
         if not tenant:
-            logger.error("No tenant found for add worker staff request")
+            logger.error("WORKER_STAFF: No tenant found for add worker staff request")
             return Response(
                 {"error": "Invalid or missing center subdomain."},
                 status=status.HTTP_400_BAD_REQUEST
-            )
-
-        # Check LOCAL_ADMIN permission
-        if not is_local_admin(request.user):
-            logger.warning("Permission denied for user %s in center %s", request.user.username, tenant.label)
-            return Response(
-                {"error": "Permission denied. Only local admins can add staff."},
-                status=status.HTTP_403_FORBIDDEN
             )
 
         # Prepare form data
@@ -1488,8 +940,8 @@ class AddWorkerStaffAPIView(APIView):
             try:
                 with transaction.atomic():
                     staff = form.save(commit=True)
-                    logger.info("Worker staff %s %s (ID: %s) added by %s in center %s",
-                               staff.nom, staff.prenom, staff.id, request.user.username, tenant.label)
+                    logger.info("WORKER_STAFF: Worker staff %s %s (ID: %s) added by %s in center %s",
+                                staff.nom, staff.prenom, staff.id, request.user.username, tenant.label)
                     return Response(
                         {
                             "success": "Worker staff added successfully.",
@@ -1499,13 +951,13 @@ class AddWorkerStaffAPIView(APIView):
                         status=status.HTTP_201_CREATED
                     )
             except Exception as e:
-                logger.error("Error saving worker staff: %s", str(e))
+                logger.error("WORKER_STAFF: Error saving worker staff: %s", str(e))
                 return Response(
                     {"error": f"Failed to save staff: {str(e)}"},
                     status=status.HTTP_400_BAD_REQUEST
                 )
         else:
-            logger.warning("Worker staff form invalid: %s", form.errors)
+            logger.warning("WORKER_STAFF: Worker staff form invalid: %s", form.errors)
             return Response(
                 {
                     "error": "Form validation failed.",
@@ -1516,7 +968,9 @@ class AddWorkerStaffAPIView(APIView):
         
 @method_decorator(csrf_exempt, name='dispatch')
 class AddPatientAPIView(APIView):
-    permission_classes = [IsAuthenticated]
+    permission_classes = [RoleBasedPermission]
+    allowed_roles = ['LOCAL_ADMIN', 'MEDICAL_PARA_STAFF']
+    read_only_roles = ['VIEWER']
 
     def post(self, request):
         logger.debug("Received POST request to AddPatientAPIView. User: %s", request.user.username)
@@ -1528,14 +982,6 @@ class AddPatientAPIView(APIView):
             return Response(
                 {"error": "Invalid or missing center subdomain."},
                 status=status.HTTP_400_BAD_REQUEST
-            )
-
-        # Check LOCAL_ADMIN permission
-        if not is_local_admin(request.user):
-            logger.warning("Permission denied for user %s in center %s", request.user.username, tenant.label)
-            return Response(
-                {"error": "Permission denied. Only local admins can add patients."},
-                status=status.HTTP_403_FORBIDDEN
             )
 
         # Prepare form data
@@ -1572,10 +1018,37 @@ class AddPatientAPIView(APIView):
                 },
                 status=status.HTTP_400_BAD_REQUEST
             )
-        
+
+    def get(self, request):
+        logger.debug("Received GET request to AddPatientAPIView. User: %s", request.user.username)
+        tenant = getattr(request, 'tenant', None)
+        if not tenant:
+            logger.error("No tenant found for patient list request")
+            return Response(
+                {"error": "Invalid or missing center subdomain."},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+        try:
+            patients = Patient.objects.filter(center=tenant)
+            data = [{
+                'id': p.id,
+                'nom': p.nom,
+                'prenom': p.prenom,
+                'cin': p.cin,
+                'status': p.status
+            } for p in patients]
+            logger.info("Patient list retrieved by %s in center %s", request.user.username, tenant.label)
+            return Response(data, status=status.HTTP_200_OK)
+        except Exception as e:
+            logger.error("Error fetching patients: %s", str(e))
+            return Response(
+                {"error": f"Failed to fetch patients: {str(e)}"},
+                status=status.HTTP_400_BAD_REQUEST
+            )
 @method_decorator(csrf_exempt, name='dispatch')
 class DeclareDeceasedAPIView(APIView):
-    permission_classes = [IsAuthenticated]
+    permission_classes = [RoleBasedPermission]
+    allowed_roles = ['LOCAL_ADMIN', 'MEDICAL_PARA_STAFF']
 
     def post(self, request, patient_id):
         logger.debug("Received POST request to DeclareDeceasedAPIView for patient ID: %s. User: %s",
@@ -1643,7 +1116,8 @@ class DeclareDeceasedAPIView(APIView):
             )
 @method_decorator(csrf_exempt, name='dispatch')
 class AddHemodialysisSessionAPIView(APIView):
-    permission_classes = [IsAuthenticated]
+    permission_classes = [RoleBasedPermission]
+    allowed_roles = ['LOCAL_ADMIN', 'MEDICAL_PARA_STAFF']
 
     def post(self, request, patient_id):
         logger.debug("Received POST request to AddHemodialysisSessionAPIView for patient ID: %s. User: %s",
@@ -1666,19 +1140,25 @@ class AddHemodialysisSessionAPIView(APIView):
                 status=status.HTTP_403_FORBIDDEN
             )
 
-        # Check if patient exists and belongs to the center
+        # Check if patient and medical activity exist
         try:
             patient = Patient.objects.get(id=patient_id, center=tenant)
+            medical_activity = MedicalActivity.objects.get(patient=patient, center=tenant)
         except Patient.DoesNotExist:
             logger.error("Patient ID %s not found in center %s", patient_id, tenant.label)
             return Response(
                 {"error": "Patient not found or does not belong to this center."},
                 status=status.HTTP_404_NOT_FOUND
             )
+        except MedicalActivity.DoesNotExist:
+            logger.error("Medical activity not found for patient ID %s in center %s", patient_id, tenant.label)
+            return Response(
+                {"error": "Medical activity not found for this patient."},
+                status=status.HTTP_404_NOT_FOUND
+            )
 
         # Prepare form data
         form_data = request.data.copy()
-        form_data['patient'] = patient_id
 
         # Validate and save form
         form = HemodialysisSessionForm(form_data, center=tenant)
@@ -1686,7 +1166,7 @@ class AddHemodialysisSessionAPIView(APIView):
             try:
                 with transaction.atomic():
                     session = form.save(commit=False)
-                    session.patient = patient
+                    session.medical_activity = medical_activity
                     session.center = tenant
                     session.save()
                     logger.info("Hemodialysis session (ID: %s) added for patient %s %s by %s in center %s",
@@ -1717,7 +1197,8 @@ class AddHemodialysisSessionAPIView(APIView):
 
 @method_decorator(csrf_exempt, name='dispatch')
 class AddTransmittableDiseaseRefAPIView(APIView):
-    permission_classes = [IsAuthenticated]
+    permission_classes = [RoleBasedPermission]
+    allowed_roles = ['LOCAL_ADMIN', 'MEDICAL_PARA_STAFF']
 
     def post(self, request):
         logger.debug("TRANS_REF: Received POST request to AddTransmittableDiseaseRefAPIView. User: %s, Data: %s",
@@ -1758,7 +1239,8 @@ class AddTransmittableDiseaseRefAPIView(APIView):
 
 @method_decorator(csrf_exempt, name='dispatch')
 class AddComplicationsRefAPIView(APIView):
-    permission_classes = [IsAuthenticated]
+    permission_classes = [RoleBasedPermission]
+    allowed_roles = ['LOCAL_ADMIN', 'MEDICAL_PARA_STAFF']
 
     def post(self, request):
         logger.debug("COMP_REF: Received POST request to AddComplicationsRefAPIView. User: %s, Data: %s",
@@ -1799,7 +1281,8 @@ class AddComplicationsRefAPIView(APIView):
 
 @method_decorator(csrf_exempt, name='dispatch')
 class AddTransplantationRefAPIView(APIView):
-    permission_classes = [IsAuthenticated]
+    permission_classes = [RoleBasedPermission]
+    allowed_roles = ['LOCAL_ADMIN', 'MEDICAL_PARA_STAFF']
 
     def post(self, request):
         logger.debug("TRANSPLANT_REF: Received POST request to AddTransplantationRefAPIView. User: %s, Data: %s",
@@ -1837,9 +1320,13 @@ class AddTransplantationRefAPIView(APIView):
         else:
             logger.warning("TRANSPLANT_REF: Transplantation ref form invalid: %s", form.errors)
             return Response({"error": "Form validation failed.", "errors": form.errors.as_data()}, status=status.HTTP_400_BAD_REQUEST)
+        
+
 @method_decorator(csrf_exempt, name='dispatch')
 class AddMachineAPIView(APIView):
-    permission_classes = [IsAuthenticated]
+    permission_classes = [RoleBasedPermission]
+    allowed_roles = ['LOCAL_ADMIN', 'TECHNICAL']
+    read_only_roles = ['VIEWER']
 
     def post(self, request):
         logger.debug("MACHINE: Received POST request to AddMachineAPIView. User: %s, Data: %s",
@@ -1851,29 +1338,23 @@ class AddMachineAPIView(APIView):
             logger.error("MACHINE: No tenant found")
             return Response({"error": "Invalid or missing center subdomain."}, status=status.HTTP_400_BAD_REQUEST)
 
-        # Check LOCAL_ADMIN permission
-        if not is_local_admin(request.user):
-            logger.warning("MACHINE: Permission denied for user %s in center %s", request.user.username, tenant.label)
-            return Response({"error": "Permission denied. Only local admins can add machines."}, status=status.HTTP_403_FORBIDDEN)
+        # Prepare form data
+        form_data = request.data.copy()
+        form_data['center'] = tenant.id
 
         # Validate and save form
-        form = MachineForm(request.data, center=tenant)
+        form = MachineForm(form_data, center=tenant)
         if form.is_valid():
             try:
                 with transaction.atomic():
-                    machine = form.save(commit=False)
-                    machine.center = tenant
-                    logger.debug("MACHINE: Machine before save: brand=%s, center=%s, membrane=%s, filtre=%s",
-                                machine.brand, machine.center_id,
-                                machine.membrane_id if machine.membrane else 'None',
-                                machine.filtre_id if machine.filtre else 'None')
-                    machine.save()
+                    machine = form.save(commit=True)
                     logger.info("MACHINE: Machine (ID: %s, Brand: %s) added by %s in center %s",
                                machine.id, machine.brand, request.user.username, tenant.label)
                     return Response(
                         {
                             "success": "Machine added successfully.",
-                            "machine_id": machine.id
+                            "machine_id": machine.id,
+                            "brand": machine.brand
                         },
                         status=status.HTTP_201_CREATED
                     )
@@ -1883,6 +1364,39 @@ class AddMachineAPIView(APIView):
         else:
             logger.warning("MACHINE: Machine form invalid: %s", form.errors)
             return Response({"error": "Form validation failed.", "errors": form.errors.as_data()}, status=status.HTTP_400_BAD_REQUEST)
+
+    def get(self, request):
+        logger.debug("MACHINE: Received GET request to AddMachineAPIView. User: %s", request.user.username)
+        tenant = getattr(request, 'tenant', None)
+        if not tenant:
+            logger.error("MACHINE: No tenant found")
+            return Response({"error": "Invalid or missing center subdomain."}, status=status.HTTP_400_BAD_REQUEST)
+        try:
+            machines = Machine.objects.filter(center=tenant)
+            data = [
+                {
+                    "id": machine.id,
+                    "brand": machine.brand,
+                    "functional": machine.functional,
+                    "reserve": machine.reserve,
+                    "refurbished": machine.refurbished,
+                    "nbre_hrs": machine.nbre_hrs,
+                    "membrane": {
+                        "id": machine.membrane.id,
+                        "type": machine.membrane.type
+                    } if machine.membrane else None,
+                    "filtre": {
+                        "id": machine.filtre.id,
+                        "type": machine.filtre.type,
+                        "sterilisation": machine.filtre.sterilisation
+                    } if machine.filtre else None
+                } for machine in machines
+            ]
+            logger.info("MACHINE: Machine list retrieved by %s in center %s", request.user.username, tenant.label)
+            return Response(data, status=status.HTTP_200_OK)
+        except Exception as e:
+            logger.error("MACHINE: Error fetching machines: %s", str(e))
+            return Response({"error": f"Failed to fetch machines: {str(e)}"}, status=status.HTTP_400_BAD_REQUEST)
         
 class UserProfileView(APIView):
     authentication_classes = [JWTAuthentication]
@@ -1934,8 +1448,8 @@ class UserProfileView(APIView):
         
 
 class PatientsView(APIView):
-    authentication_classes = [JWTAuthentication]
-    permission_classes = [IsAuthenticated]
+    permission_classes = [RoleBasedPermission]
+    allowed_roles = ['LOCAL_ADMIN', 'MEDICAL_PARA_STAFF']
 
     def get(self, request):
         try:
@@ -1951,8 +1465,8 @@ class PatientsView(APIView):
             }, status=404)
 
 class PatientMedicalActivityView(APIView):
-    authentication_classes = [JWTAuthentication]
-    permission_classes = [IsAuthenticated]
+    permission_classes = [RoleBasedPermission]
+    allowed_roles = ['LOCAL_ADMIN', 'MEDICAL_PARA_STAFF']
 
     def get(self, request, patient_id):
         try:
@@ -2037,41 +1551,47 @@ class UserProfileView(APIView):
                 'error': 'Center not found for this tenant.'
             }, status=404)
 
-class PatientsView(APIView):
-    authentication_classes = [JWTAuthentication]
-    permission_classes = [IsAuthenticated]
-
-    def get(self, request):
-        try:
-            center = Center.objects.get(sub_domain=request.tenant.sub_domain)
-            patients = Patient.objects.filter(center=center).select_related('cnam').values(
-                'id', 'nom', 'prenom', 'cin', 'weight', 'age', 'cnam__number', 'status',
-                'entry_date', 'previously_dialysed', 'date_first_dia', 'blood_type', 'gender'
-            )
-            return Response(list(patients))
-        except ObjectDoesNotExist:
-            return Response({
-                'error': 'Center not found for this tenant.'
-            }, status=404)
 
 class PatientDetailAPIView(APIView):
-    authentication_classes = [JWTAuthentication]
-    permission_classes = [IsAuthenticated]
+    permission_classes = [RoleBasedPermission]
+    allowed_roles = ['LOCAL_ADMIN', 'MEDICAL_PARA_STAFF']
 
     def get(self, request, patient_id):
+        logger.debug("PATIENT_DETAIL: Received GET request to PatientDetailAPIView. User: %s, Patient ID: %s",
+                     request.user.username, patient_id)
+
         tenant = getattr(request, 'tenant', None)
         if not tenant:
-            logger.error("No tenant provided for PatientDetailAPIView")
-            return Response({"error": "Invalid or missing center subdomain."}, status=400)
-
-        if not is_viewer(request.user):
-            logger.warning("Permission denied for user %s in center %s", request.user.username, tenant.label)
-            return Response({"error": "Permission denied."}, status=403)
+            logger.error("PATIENT_DETAIL: No tenant found for center")
+            return Response({"error": "Invalid or missing center subdomain."}, status=status.HTTP_400_BAD_REQUEST)
 
         try:
             patient = Patient.objects.get(id=patient_id, center=tenant)
             hemodialysis_sessions = HemodialysisSession.objects.filter(medical_activity__patient=patient).values(
-                'id', 'type__name', 'method__name', 'date_of_session', 'responsible_doc__nom', 'responsible_doc__prenom'
+                'id',
+                'type__name',
+                'method__name',
+                'date_of_session',
+                'responsible_doc__nom',
+                'responsible_doc__prenom',
+                'pre_dialysis_bp',
+                'during_dialysis_bp',
+                'post_dialysis_bp',
+                'heart_rate',
+                'creatinine',
+                'urea',
+                'potassium',
+                'hemoglobin',
+                'hematocrit',
+                'albumin',
+                'kt_v',
+                'urine_output',
+                'dry_weight',
+                'fluid_removal_rate',
+                'dialysis_duration',
+                'vascular_access_type',
+                'dialyzer_type',
+                'severity_of_case'
             )
             diseases = TransmittableDisease.objects.filter(medical_activity__patient=patient).values(
                 'id', 'disease__label_disease', 'date_of_contraction'
@@ -2082,7 +1602,7 @@ class PatientDetailAPIView(APIView):
             transplantations = Transplantation.objects.filter(medical_activity__patient=patient).values(
                 'id', 'transplantation__label_transplantation', 'date_operation', 'notes'
             )
-            logger.debug("Patient fetched: %s for center %s", patient, tenant.label)
+            logger.info("PATIENT_DETAIL: Patient ID %s fetched by %s for center %s", patient_id, request.user.username, tenant.label)
             return Response({
                 'id': patient.id,
                 'nom': patient.nom,
@@ -2095,39 +1615,38 @@ class PatientDetailAPIView(APIView):
                 'decease_note': patient.decease_note,
                 'entry_date': patient.entry_date,
                 'previously_dialysed': patient.previously_dialysed,
-                'date_first_dia': patient.date_first_dia,
+                'date_first_dialysis': patient.date_first_dia,
                 'blood_type': patient.blood_type,
                 'gender': patient.gender,
                 'hemodialysis_sessions': list(hemodialysis_sessions),
                 'transmittable_diseases': list(diseases),
                 'complications': list(complications),
                 'transplantations': list(transplantations),
-            })
+            }, status=status.HTTP_200_OK)
         except Patient.DoesNotExist:
-            logger.error("Patient ID %s not found in center %s", patient_id, tenant.label)
-            return Response({"error": "Patient not found or does not belong to this center."}, status=404)
-        
+            logger.error("PATIENT_DETAIL: Patient ID %s not found in center %s", patient_id, tenant.label)
+            return Response({"error": "Patient not found or does not belong to this center."}, status=status.HTTP_404_NOT_FOUND)
 
 @method_decorator(csrf_exempt, name='dispatch')
 class DeclareDeceasedAPIView(APIView):
-    authentication_classes = [JWTAuthentication]
-    permission_classes = [IsAuthenticated]
+    permission_classes = [RoleBasedPermission]
+    allowed_roles = ['LOCAL_ADMIN', 'MEDICAL_PARA_STAFF']
 
     def post(self, request, patient_id):
-        logger.debug("Received POST request to DeclareDeceasedAPIView for patient ID: %s. User: %s",
-                    patient_id, request.user.username)
+        logger.debug("DECEASE: Received POST request to DeclareDeceasedAPIView for patient ID: %s. User: %s",
+                     patient_id, request.user.username)
+
         tenant = getattr(request, 'tenant', None)
         if not tenant:
-            logger.error("No tenant found for declare deceased request")
-            return Response({"error": "Invalid or missing center subdomain."}, status=400)
-        if not is_local_admin(request.user):
-            logger.warning("Permission denied for user %s in center %s", request.user.username, tenant.label)
-            return Response({"error": "Permission denied. Only local admins can declare patients deceased."}, status=403)
+            logger.error("DECEASE: No tenant found for declare deceased request")
+            return Response({"error": "Invalid or missing center subdomain."}, status=status.HTTP_400_BAD_REQUEST)
+
         try:
             patient = Patient.objects.get(id=patient_id, center=tenant)
         except Patient.DoesNotExist:
-            logger.error("Patient ID %s not found in center %s", patient_id, tenant.label)
-            return Response({"error": "Patient not found or does not belong to this center."}, status=404)
+            logger.error("DECEASE: Patient ID %s not found in center %s", patient_id, tenant.label)
+            return Response({"error": "Patient not found or does not belong to this center."}, status=status.HTTP_404_NOT_FOUND)
+
         form_data = request.data.copy()
         form = DeceasePatientForm(form_data, instance=patient)
         if form.is_valid():
@@ -2136,19 +1655,19 @@ class DeclareDeceasedAPIView(APIView):
                     patient = form.save(commit=False)
                     patient.status = 'DECEASED'
                     patient.save()
-                    logger.info("Patient %s %s (ID: %s) declared deceased by %s in center %s",
-                               patient.nom, patient.prenom, patient.id, request.user.username, tenant.label)
-                    return Response({"success": "Patient declared deceased.", "patient_id": patient.id}, status=200)
+                    logger.info("DECEASE: Patient %s %s (ID: %s) declared deceased by %s in center %s",
+                                patient.nom, patient.prenom, patient.id, request.user.username, tenant.label)
+                    return Response({"success": "Patient declared deceased.", "patient_id": patient.id}, status=status.HTTP_200_OK)
             except Exception as e:
-                logger.error("Error declaring patient deceased: %s", str(e))
-                return Response({"error": f"Failed to declare patient deceased: {str(e)}"}, status=400)
+                logger.error("DECEASE: Error declaring patient deceased: %s", str(e))
+                return Response({"error": f"Failed to declare patient deceased: {str(e)}"}, status=status.HTTP_400_BAD_REQUEST)
         else:
-            logger.warning("Decease patient form invalid: %s", form.errors)
-            return Response({"error": "Form validation failed.", "errors": form.errors.as_data()}, status=400)
+            logger.warning("DECEASE: Decease patient form invalid: %s", form.errors)
+            return Response({"error": "Form validation failed.", "errors": form.errors.as_data()}, status=status.HTTP_400_BAD_REQUEST)
 
 class PatientMedicalActivityView(APIView):
-    authentication_classes = [JWTAuthentication]
-    permission_classes = [IsAuthenticated]
+    permission_classes = [RoleBasedPermission]
+    allowed_roles = ['LOCAL_ADMIN', 'MEDICAL_PARA_STAFF']
 
     def get(self, request, patient_id):
         try:
@@ -2167,7 +1686,9 @@ class PatientMedicalActivityView(APIView):
 @method_decorator(csrf_exempt, name='dispatch')
 class AddHemodialysisSessionAPIView(APIView):
     authentication_classes = [JWTAuthentication]
-    permission_classes = [IsAuthenticated]
+    permission_classes = [RoleBasedPermission]
+    allowed_roles = ['LOCAL_ADMIN', 'MEDICAL_PARA_STAFF']
+    read_only_roles = ['VIEWER']
 
     def post(self, request, patient_id):
         logger.debug("Received POST request to AddHemodialysisSessionAPIView for patient ID: %s. User: %s",
@@ -2176,15 +1697,13 @@ class AddHemodialysisSessionAPIView(APIView):
         if not tenant:
             logger.error("No tenant found for add hemodialysis session request")
             return Response({"error": "Invalid or missing center subdomain."}, status=400)
-        if not is_submitter(request.user):
-            logger.warning("Permission denied for user %s in center %s", request.user.username, tenant.label)
-            return Response({"error": "Permission denied. Only submitters can add hemodialysis sessions."}, status=403)
         try:
             patient = Patient.objects.get(id=patient_id, center=tenant)
         except Patient.DoesNotExist:
-            logger.error("Patient ID %s not found in center %s", patient_id, tenant.label)
+            logger.error("Patient ID %s not found in center %s", patient_id, 'unknown')
             return Response({"error": "Patient not found or does not belong to this center."}, status=404)
         form_data = request.data.copy()
+        form_data['center'] = tenant.id
         form = HemodialysisSessionForm(form_data, center=tenant)
         if form.is_valid():
             try:
@@ -2206,7 +1725,15 @@ class AddHemodialysisSessionAPIView(APIView):
                     return Response({
                         "success": "Hemodialysis session added successfully.",
                         "session_id": session.id,
-                        "patient_id": patient_id
+                        "patient_id": patient.id,
+                        "type": session.type.id if session.type else None,
+                        "method": session.method.id if session.method else None,
+                        "date_of_session": session.date_of_session,
+                        "responsible_doc": session.responsible_doc.id if session.responsible_doc else None,
+                        "pre_dialysis_bp": session.pre_dialysis_bp,
+                        "during_dialysis_bp": session.during_dialysis_bp,
+                        "post_dialysis_bp": session.post_dialysis_bp,
+                        "heart_rate": session.heart_rate
                     }, status=201)
             except Exception as e:
                 logger.error("Error saving hemodialysis session for patient ID %s: %s", patient_id, str(e))
@@ -2215,22 +1742,53 @@ class AddHemodialysisSessionAPIView(APIView):
             logger.warning("Hemodialysis session form invalid for patient ID %s: %s", patient_id, form.errors)
             return Response({"error": "Form validation failed.", "errors": form.errors.as_data()}, status=400)
 
+    def get(self, request, patient_id):
+        logger.debug("Received GET request to AddHemodialysisSessionAPIView for patient ID: %s. User: %s",
+                    patient_id, request.user.username)
+        tenant = getattr(request, 'tenant', None)
+        if not tenant:
+            logger.error("No tenant found for hemodialysis session list request")
+            return Response({"error": "Invalid or missing center subdomain."}, status=400)
+        try:
+            patient = Patient.objects.get(id=patient_id, center=tenant)
+            sessions = HemodialysisSession.objects.filter(medical_activity__patient=patient)
+            data = [
+                {
+                    "id": s.id,
+                    "type": s.type.name if s.type else None,
+                    "method": s.method.name if s.method else None,
+                    "date_of_session": s.date_of_session,
+                    "responsible_doc": f"{s.responsible_doc.nom} {s.responsible_doc.prenom}" if s.responsible_doc else None,
+                    "pre_dialysis_bp": s.pre_dialysis_bp,
+                    "during_dialysis_bp": s.during_dialysis_bp,
+                    "post_dialysis_bp": s.post_dialysis_bp,
+                    "heart_rate": s.heart_rate
+                } for s in sessions
+            ]
+            logger.info("Hemodialysis session list retrieved for patient %s %s (ID: %s) by %s in center %s",
+                       patient.nom, patient.prenom, patient.id, request.user.username, tenant.label)
+            return Response(data, status=200)
+        except Patient.DoesNotExist:
+            logger.error("Patient ID %s not found in center %s", patient_id, 'unknown')
+            return Response({"error": "Patient not found or does not belong to this center."}, status=404)
+        except Exception as e:
+            logger.error("Error fetching sessions: %s", str(e))
+            return Response({"error": f"Failed to fetch sessions: {str(e)}"}, status=400)
 
 @method_decorator(csrf_exempt, name='dispatch')
 class AddTransmittableDiseaseAPIView(APIView):
     authentication_classes = [JWTAuthentication]
-    permission_classes = [IsAuthenticated]
+    permission_classes = [RoleBasedPermission]
+    allowed_roles = ['LOCAL_ADMIN', 'MEDICAL_PARA_STAFF']
+    read_only_roles = ['VIEWER']
 
     def post(self, request, patient_id):
-        logger.debug("Received POST request to AddTransmittableDiseaseAPIView for patient ID: %s. User: %s, Data: %s",
-                     patient_id, request.user.username, request.data)
+        logger.debug("Received POST request to AddTransmittableDiseaseAPIView for patient ID: %s. User: %s",
+                     patient_id, request.user.username)
         tenant = getattr(request, 'tenant', None)
         if not tenant:
             logger.error("No tenant found for add transmittable disease request")
             return Response({"error": "Invalid or missing center subdomain."}, status=400)
-        if not is_submitter(request.user):
-            logger.warning("Permission denied for user %s in center %s", request.user.username, tenant.label)
-            return Response({"error": "Permission denied. Only submitters can add transmittable diseases."}, status=403)
         try:
             patient = Patient.objects.get(id=patient_id, center=tenant)
         except Patient.DoesNotExist:
@@ -2244,24 +1802,24 @@ class AddTransmittableDiseaseAPIView(APIView):
                 with transaction.atomic():
                     disease = form.save(commit=False)
                     if form.cleaned_data.get('new_disease_name'):
-                        ref_form = TransmittableDiseaseRefForm({
+                        ref_form_data = {
                             'label_disease': form.cleaned_data['new_disease_name'],
                             'type_of_transmission': form_data.get('type_of_transmission', 'Unknown')
-                        })
+                        }
+                        ref_form = TransmittedDiseaseRefForm(ref_form_data)
                         if ref_form.is_valid():
                             disease_ref = ref_form.save()
                             disease.disease = disease_ref
                         else:
                             logger.warning("TransmittableDiseaseRef form invalid: %s", ref_form.errors)
                             return Response({"error": "Invalid new disease name.", "errors": ref_form.errors.as_data()}, status=400)
-                    disease.center = tenant
                     try:
                         disease.medical_activity = patient.medical_activity
-                    except MedicalActivity.DoesNotExist:
+                    except AttributeError:
                         disease.medical_activity = MedicalActivity.objects.create(patient=patient, created_at=patient.entry_date)
                     disease.save()
                     logger.info("Transmittable disease (ID: %s) added for patient %s %s by %s in center %s",
-                               disease.id, patient.nom, patient.prenom, request.user.username, tenant.label)
+                                    disease.id, patient.nom, patient.prenom, patient.id, request.user.username, tenant.label)
                     return Response({
                         "success": "Transmittable disease added successfully.",
                         "disease_id": disease.id,
@@ -2274,21 +1832,47 @@ class AddTransmittableDiseaseAPIView(APIView):
             logger.warning("Transmittable disease form invalid: %s", form.errors)
             return Response({"error": "Form validation failed.", "errors": form.errors.as_data()}, status=400)
 
+    def get(self, request, patient_id):
+        logger.debug("Received GET request to AddTransmittableDiseaseAPIView for patient ID: %s. User: %s",
+                    patient_id, request.user.username)
+        tenant = getattr(request, 'tenant', None)
+        if not tenant:
+            logger.error("No tenant found for transmittable disease list request")
+            return Response({"error": "Invalid or missing center subdomain."}, status=400)
+        try:
+            patient = Patient.objects.get(id=patient_id, center=tenant)
+            diseases = TransmittableDisease.objects.filter(medical_activity__patient=patient)
+            data = [
+                {
+                    "id": d.id,
+                    "disease": d.disease.label_disease if d.disease else None,
+                    "date_added": d.date_added
+                } for d in diseases
+            ]
+            logger.info("Transmittable disease list retrieved for patient %s by %s in center %s",
+                       patient.id, request.user.username, tenant.label)
+            return Response(data, status=200)
+        except Patient.DoesNotExist:
+            logger.error("Patient ID %s not found in center %s", patient_id, tenant.label)
+            return Response({"error": "Patient not found or does not belong to this center."}, status=404)
+        except Exception as e:
+            logger.error("Error fetching diseases: %s", str(e))
+            return Response({"error": f"Failed to fetch diseases: {str(e)}"}, status=400)
+
 @method_decorator(csrf_exempt, name='dispatch')
 class AddComplicationsAPIView(APIView):
     authentication_classes = [JWTAuthentication]
-    permission_classes = [IsAuthenticated]
+    permission_classes = [RoleBasedPermission]
+    allowed_roles = ['LOCAL_ADMIN', 'MEDICAL_PARA_STAFF']
+    read_only_roles = ['VIEWER']
 
     def post(self, request, patient_id):
-        logger.debug("Received POST request to AddComplicationsAPIView for patient ID: %s. User: %s, Data: %s",
-                     patient_id, request.user.username, request.data)
+        logger.debug("Received POST request to AddComplicationsAPIView for patient ID: %s. User: %s",
+                     patient_id, request.user.username)
         tenant = getattr(request, 'tenant', None)
         if not tenant:
             logger.error("No tenant found for add complications request")
             return Response({"error": "Invalid or missing center subdomain."}, status=400)
-        if not is_submitter(request.user):
-            logger.warning("Permission denied for user %s in center %s", request.user.username, tenant.label)
-            return Response({"error": "Permission denied. Only submitters can add complications."}, status=403)
         try:
             patient = Patient.objects.get(id=patient_id, center=tenant)
         except Patient.DoesNotExist:
@@ -2309,10 +1893,9 @@ class AddComplicationsAPIView(APIView):
                         else:
                             logger.warning("ComplicationsRef form invalid: %s", ref_form.errors)
                             return Response({"error": "Invalid new complication name.", "errors": ref_form.errors.as_data()}, status=400)
-                    complication.center = tenant
                     try:
                         complication.medical_activity = patient.medical_activity
-                    except MedicalActivity.DoesNotExist:
+                    except AttributeError:
                         complication.medical_activity = MedicalActivity.objects.create(patient=patient, created_at=patient.entry_date)
                     complication.save()
                     logger.info("Complication (ID: %s) added for patient %s %s by %s in center %s",
@@ -2329,21 +1912,47 @@ class AddComplicationsAPIView(APIView):
             logger.warning("Complications form invalid: %s", form.errors)
             return Response({"error": "Form validation failed.", "errors": form.errors.as_data()}, status=400)
 
+    def get(self, request, patient_id):
+        logger.debug("Received GET request to AddComplicationsAPIView for patient ID: %s. User: %s",
+                    patient_id, request.user.username)
+        tenant = getattr(request, 'tenant', None)
+        if not tenant:
+            logger.error("No tenant found for complications list request")
+            return Response({"error": "Invalid or missing center subdomain."}, status=400)
+        try:
+            patient = Patient.objects.get(id=patient_id, center=tenant)
+            complications = Complications.objects.filter(medical_activity__patient=patient)
+            data = [
+                {
+                    "id": c.id,
+                    "complication": c.complication.label_complication if c.complication else None,
+                    "date_added": c.date_added
+                } for c in complications
+            ]
+            logger.info("Complications list retrieved for patient %s by %s in center %s",
+                       patient.id, request.user.username, tenant.label)
+            return Response(data, status=200)
+        except Patient.DoesNotExist:
+            logger.error("Patient ID %s not found in center %s", patient_id, tenant.label)
+            return Response({"error": "Patient not found or does not belong to this center."}, status=404)
+        except Exception as e:
+            logger.error("Error fetching complications: %s", str(e))
+            return Response({"error": f"Failed to fetch complications: {str(e)}"}, status=400)
+
 @method_decorator(csrf_exempt, name='dispatch')
 class AddTransplantationAPIView(APIView):
     authentication_classes = [JWTAuthentication]
-    permission_classes = [IsAuthenticated]
+    permission_classes = [RoleBasedPermission]
+    allowed_roles = ['LOCAL_ADMIN', 'MEDICAL_PARA_STAFF']
+    read_only_roles = ['VIEWER']
 
     def post(self, request, patient_id):
-        logger.debug("Received POST request to AddTransplantationAPIView for patient ID: %s. User: %s, Data: %s",
-                     patient_id, request.user.username, request.data)
+        logger.debug("Received POST request to AddTransplantationAPIView for patient ID: %s. User: %s",
+                     patient_id, request.user.username)
         tenant = getattr(request, 'tenant', None)
         if not tenant:
             logger.error("No tenant found for add transplantation request")
             return Response({"error": "Invalid or missing center subdomain."}, status=400)
-        if not is_submitter(request.user):
-            logger.warning("Permission denied for user %s in center %s", request.user.username, tenant.label)
-            return Response({"error": "Permission denied. Only submitters can add transplantations."}, status=403)
         try:
             patient = Patient.objects.get(id=patient_id, center=tenant)
         except Patient.DoesNotExist:
@@ -2364,10 +1973,9 @@ class AddTransplantationAPIView(APIView):
                         else:
                             logger.warning("TransplantationRef form invalid: %s", ref_form.errors)
                             return Response({"error": "Invalid new transplantation name.", "errors": ref_form.errors.as_data()}, status=400)
-                    transplantation.center = tenant
                     try:
                         transplantation.medical_activity = patient.medical_activity
-                    except MedicalActivity.DoesNotExist:
+                    except AttributeError:
                         transplantation.medical_activity = MedicalActivity.objects.create(patient=patient, created_at=patient.entry_date)
                     transplantation.save()
                     logger.info("Transplantation (ID: %s) added for patient %s %s by %s in center %s",
@@ -2383,9 +1991,37 @@ class AddTransplantationAPIView(APIView):
         else:
             logger.warning("Transplantation form invalid: %s", form.errors)
             return Response({"error": "Form validation failed.", "errors": form.errors.as_data()}, status=400)
+
+    def get(self, request, patient_id):
+        logger.debug("Received GET request to AddTransplantationAPIView for patient ID: %s. User: %s",
+                    patient_id, request.user.username)
+        tenant = getattr(request, 'tenant', None)
+        if not tenant:
+            logger.error("No tenant found for transplantation list request")
+            return Response({"error": "Invalid or missing center subdomain."}, status=400)
+        try:
+            patient = Patient.objects.get(id=patient_id, center=tenant)
+            transplantations = Transplantation.objects.filter(medical_activity__patient=patient)
+            data = [
+                {
+                    "id": t.id,
+                    "transplantation": t.transplantation.label_transplantation if t.transplantation else None,
+                    "date_added": t.date_added
+                } for t in transplantations
+            ]
+            logger.info("Transplantation list retrieved for patient %s by %s in center %s",
+                       patient.id, request.user.username, tenant.label)
+            return Response(data, status=200)
+        except Patient.DoesNotExist:
+            logger.error("Patient ID %s not found in center %s", patient_id, tenant.label)
+            return Response({"error": "Patient not found or does not belong to this center."}, status=404)
+        except Exception as e:
+            logger.error("Error fetching transplantations: %s", str(e))
+            return Response({"error": f"Failed to fetch transplantations: {str(e)}"}, status=400)
+
 class MedicalStaffAPIView(APIView):
-    authentication_classes = [JWTAuthentication]
-    permission_classes = [IsAuthenticated]
+    permission_classes = [RoleBasedPermission]
+    allowed_roles = ['LOCAL_ADMIN']
 
     def get(self, request):
         try:
@@ -2402,7 +2038,8 @@ class MedicalStaffAPIView(APIView):
         
 class TypeHemoAPIView(APIView):
     authentication_classes = [JWTAuthentication]
-    permission_classes = [IsAuthenticated]
+    permission_classes = [RoleBasedPermission]
+    allowed_roles = ['LOCAL_ADMIN', 'MEDICAL_PARA_STAFF']
 
     def get(self, request):
         type_hemos = TypeHemo.objects.all().values('id', 'name')
@@ -2410,7 +2047,8 @@ class TypeHemoAPIView(APIView):
 
 class MethodHemoAPIView(APIView):
     authentication_classes = [JWTAuthentication]
-    permission_classes = [IsAuthenticated]
+    permission_classes = [RoleBasedPermission]
+    allowed_roles = ['LOCAL_ADMIN', 'MEDICAL_PARA_STAFF']
 
     def get(self, request):
         type_hemo_id = request.query_params.get('type_hemo_id')
@@ -2426,7 +2064,8 @@ class MethodHemoAPIView(APIView):
 
 class TransmittableDiseaseRefAPIView(APIView):
     authentication_classes = [JWTAuthentication]
-    permission_classes = [IsAuthenticated]
+    permission_classes = [RoleBasedPermission]
+    allowed_roles = ['LOCAL_ADMIN', 'MEDICAL_PARA_STAFF']
 
     def get(self, request):
         diseases = TransmittableDiseaseRef.objects.all().values('id', 'label_disease', 'type_of_transmission')
@@ -2434,7 +2073,8 @@ class TransmittableDiseaseRefAPIView(APIView):
 
 class ComplicationsRefAPIView(APIView):
     authentication_classes = [JWTAuthentication]
-    permission_classes = [IsAuthenticated]
+    permission_classes = [RoleBasedPermission]
+    allowed_roles = ['LOCAL_ADMIN', 'MEDICAL_PARA_STAFF']
 
     def get(self, request):
         complications = ComplicationsRef.objects.all().values('id', 'label_complication')
@@ -2442,15 +2082,19 @@ class ComplicationsRefAPIView(APIView):
 
 class TransplantationRefAPIView(APIView):
     authentication_classes = [JWTAuthentication]
-    permission_classes = [IsAuthenticated]
+    permission_classes = [RoleBasedPermission]
+    allowed_roles = ['LOCAL_ADMIN', 'MEDICAL_PARA_STAFF']
 
     def get(self, request):
         transplantations = TransplantationRef.objects.all().values('id', 'label_transplantation')
         return Response(list(transplantations))
+    
+
 @method_decorator(csrf_exempt, name='dispatch')
 class CNAMListAPIView(APIView):
     permission_classes = [IsAuthenticated]
-
+    permission_classes = [RoleBasedPermission]
+    allowed_roles = ['LOCAL_ADMIN', 'MEDICAL_PARA_STAFF']
     def get(self, request):
         logger.debug("Received GET request to CNAMListAPIView. User: %s", request.user.username)
         try:
@@ -2463,8 +2107,8 @@ class CNAMListAPIView(APIView):
 
 @method_decorator(csrf_exempt, name='dispatch')
 class AdministrativeStaffListAPIView(APIView):
-    permission_classes = [IsAuthenticated]
-
+    permission_classes = [RoleBasedPermission]
+    allowed_roles = ['LOCAL_ADMIN']
     def get(self, request):
         logger.debug("Received GET request to AdministrativeStaffListAPIView. User: %s", request.user.username)
         tenant = getattr(request, 'tenant', None)
@@ -2473,25 +2117,30 @@ class AdministrativeStaffListAPIView(APIView):
             return Response({"error": "Invalid or missing center subdomain."}, status=status.HTTP_400_BAD_REQUEST)
         try:
             staff = AdministrativeStaff.objects.filter(center=tenant)
-            data = [
+            staff_data = [
                 {
-                    'id': s.id,
+                    'user_id': s.user.id,
+                    'class_id': s.id,
                     'nom': s.nom,
                     'prenom': s.prenom,
                     'cin': s.cin,
                     'role': s.role,
-                    'job_title': s.job_title
+                    'job_title': s.job_title,
+                    'email': s.user.email,
+                    'admin_accord': UserProfile.objects.filter(user=s.user).first().admin_accord
+                        if UserProfile.objects.filter(user=s.user).exists() else False
                 } for s in staff
             ]
-            logger.info("Fetched %d administrative staff for center %s", len(data), tenant.label)
-            return Response(data, status=status.HTTP_200_OK)
+            logger.info("Fetched %d administrative staff for center %s", len(staff_data), tenant.label)
+            return Response(staff_data, status=status.HTTP_200_OK)
         except Exception as e:
             logger.error("Error fetching administrative staff: %s", str(e))
-            return Response({"error": f"Failed to fetch administrative staff: {str(e)}"}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({"error": f"Failed to fetch administrative staff: {str(e)}"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 @method_decorator(csrf_exempt, name='dispatch')
 class MedicalStaffListAPIView(APIView):
-    permission_classes = [IsAuthenticated]
+    permission_classes = [RoleBasedPermission]
+    allowed_roles = ['LOCAL_ADMIN']
 
     def get(self, request):
         logger.debug("Received GET request to MedicalStaffListAPIView. User: %s", request.user.username)
@@ -2501,25 +2150,30 @@ class MedicalStaffListAPIView(APIView):
             return Response({"error": "Invalid or missing center subdomain."}, status=status.HTTP_400_BAD_REQUEST)
         try:
             staff = MedicalStaff.objects.filter(center=tenant)
-            data = [
+            staff_data = [
                 {
-                    'id': s.id,
+                    'user_id': s.user.id,
+                    'class_id': s.id,
                     'nom': s.nom,
                     'prenom': s.prenom,
                     'cin': s.cin,
                     'role': s.role,
-                    'cnom': s.cnom
+                    'cnom': s.cnom,
+                    'email': s.user.email,
+                    'admin_accord': UserProfile.objects.filter(user=s.user).first().admin_accord
+                        if UserProfile.objects.filter(user=s.user).exists() else False
                 } for s in staff
             ]
-            logger.info("Fetched %d medical staff for center %s", len(data), tenant.label)
-            return Response(data, status=status.HTTP_200_OK)
+            logger.info("Fetched %d medical staff for center %s", len(staff_data), tenant.label)
+            return Response(staff_data, status=status.HTTP_200_OK)
         except Exception as e:
             logger.error("Error fetching medical staff: %s", str(e))
-            return Response({"error": f"Failed to fetch medical staff: {str(e)}"}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({"error": f"Failed to fetch medical staff: {str(e)}"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 @method_decorator(csrf_exempt, name='dispatch')
 class ParamedicalStaffListAPIView(APIView):
-    permission_classes = [IsAuthenticated]
+    permission_classes = [RoleBasedPermission]
+    allowed_roles = ['LOCAL_ADMIN']
 
     def get(self, request):
         logger.debug("Received GET request to ParamedicalStaffListAPIView. User: %s", request.user.username)
@@ -2529,25 +2183,30 @@ class ParamedicalStaffListAPIView(APIView):
             return Response({"error": "Invalid or missing center subdomain."}, status=status.HTTP_400_BAD_REQUEST)
         try:
             staff = ParamedicalStaff.objects.filter(center=tenant)
-            data = [
+            staff_data = [
                 {
-                    'id': s.id,
+                    'user_id': s.user.id,
+                    'class_id': s.id,
                     'nom': s.nom,
                     'prenom': s.prenom,
                     'cin': s.cin,
                     'role': s.role,
-                    'qualification': s.qualification
+                    'qualification': s.qualification,
+                    'email': s.user.email,
+                    'admin_accord': UserProfile.objects.filter(user=s.user).first().admin_accord
+                        if UserProfile.objects.filter(user=s.user).exists() else False
                 } for s in staff
             ]
-            logger.info("Fetched %d paramedical staff for center %s", len(data), tenant.label)
-            return Response(data, status=status.HTTP_200_OK)
+            logger.info("Fetched %d paramedical staff for center %s", len(staff_data), tenant.label)
+            return Response(staff_data, status=status.HTTP_200_OK)
         except Exception as e:
             logger.error("Error fetching paramedical staff: %s", str(e))
-            return Response({"error": f"Failed to fetch paramedical staff: {str(e)}"}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({"error": f"Failed to fetch paramedical staff: {str(e)}"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 @method_decorator(csrf_exempt, name='dispatch')
 class TechnicalStaffListAPIView(APIView):
-    permission_classes = [IsAuthenticated]
+    permission_classes = [RoleBasedPermission]
+    allowed_roles = ['LOCAL_ADMIN']
 
     def get(self, request):
         logger.debug("Received GET request to TechnicalStaffListAPIView. User: %s", request.user.username)
@@ -2557,25 +2216,30 @@ class TechnicalStaffListAPIView(APIView):
             return Response({"error": "Invalid or missing center subdomain."}, status=status.HTTP_400_BAD_REQUEST)
         try:
             staff = TechnicalStaff.objects.filter(center=tenant)
-            data = [
+            staff_data = [
                 {
-                    'id': s.id,
+                    'user_id': s.user.id,
+                    'class_id': s.id,
                     'nom': s.nom,
                     'prenom': s.prenom,
                     'cin': s.cin,
                     'role': s.role,
-                    'qualification': s.qualification
+                    'qualification': s.qualification,
+                    'email': s.user.email,
+                    'admin_accord': UserProfile.objects.filter(user=s.user).first().admin_accord
+                        if UserProfile.objects.filter(user=s.user).exists() else False
                 } for s in staff
             ]
-            logger.info("Fetched %d technical staff for center %s", len(data), tenant.label)
-            return Response(data, status=status.HTTP_200_OK)
+            logger.info("Fetched %d technical staff for center %s", len(staff_data), tenant.label)
+            return Response(staff_data, status=status.HTTP_200_OK)
         except Exception as e:
             logger.error("Error fetching technical staff: %s", str(e))
-            return Response({"error": f"Failed to fetch technical staff: {str(e)}"}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({"error": f"Failed to fetch technical staff: {str(e)}"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 @method_decorator(csrf_exempt, name='dispatch')
 class WorkerStaffListAPIView(APIView):
-    permission_classes = [IsAuthenticated]
+    permission_classes = [RoleBasedPermission]
+    allowed_roles = ['LOCAL_ADMIN']
 
     def get(self, request):
         logger.debug("Received GET request to WorkerStaffListAPIView. User: %s", request.user.username)
@@ -2585,24 +2249,30 @@ class WorkerStaffListAPIView(APIView):
             return Response({"error": "Invalid or missing center subdomain."}, status=status.HTTP_400_BAD_REQUEST)
         try:
             staff = WorkerStaff.objects.filter(center=tenant)
-            data = [
+            staff_data = [
                 {
-                    'id': s.id,
+                    'user_id': s.user.id,
+                    'class_id': s.id,
                     'nom': s.nom,
                     'prenom': s.prenom,
                     'cin': s.cin,
                     'role': s.role,
-                    'job_title': s.job_title
+                    'job_title': s.job_title,
+                    'email': s.user.email,
+                    'admin_accord': UserProfile.objects.filter(user=s.user).first().admin_accord
+                        if UserProfile.objects.filter(user=s.user).exists() else False
                 } for s in staff
             ]
-            logger.info("Fetched %d worker staff for center %s", len(data), tenant.label)
-            return Response(data, status=status.HTTP_200_OK)
+            logger.info("Fetched %d worker staff for center %s", len(staff_data), tenant.label)
+            return Response(staff_data, status=status.HTTP_200_OK)
         except Exception as e:
             logger.error("Error fetching worker staff: %s", str(e))
-            return Response({"error": f"Failed to fetch worker staff: {str(e)}"}, status=status.HTTP_400_BAD_REQUEST)
-
-
+            return Response({"error": f"Failed to fetch worker staff: {str(e)}"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+@method_decorator(csrf_exempt, name='dispatch')
 class UpdateMedicalStaffAPIView(APIView):
+    permission_classes = [RoleBasedPermission]
+    allowed_roles = ['LOCAL_ADMIN']
+
     def put(self, request, pk):
         try:
             medical_staff = MedicalStaff.objects.get(pk=pk)
@@ -2611,31 +2281,70 @@ class UpdateMedicalStaffAPIView(APIView):
             logger.error(f"MedicalStaff with ID {pk} not found.")
             return Response({'error': 'Medical staff not found.'}, status=status.HTTP_404_NOT_FOUND)
 
-        data = request.data.copy()
-        user_data = {
-            'username': data.get('username', user.username),
-            'email': data.get('email', user.email),
-        }
-        if 'password' in data and data['password']:
-            user_data['password'] = data['password']
-        user_serializer = UserSerializer(user, data=user_data, partial=True)
-        if user_serializer.is_valid():
-            user = user_serializer.save()
-            if 'password' in user_data:
-                user.set_password(user_data['password'])
-                user.save()
-        else:
-            return Response(user_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        data = request.data
+        # Validate and update user fields
+        username = data.get('username', user.username)
+        email = data.get('email', user.email)
+        password = data.get('password', None)
 
-        serializer = MedicalStaffSerializer(medical_staff, data=data, partial=True)
-        if serializer.is_valid():
-            serializer.save()
-            logger.info(f"Medical staff {medical_staff.nom} {medical_staff.prenom} (ID: {pk}) updated by {request.user.username}.")
-            return Response({'success': True, 'data': serializer.data}, status=status.HTTP_200_OK)
-        logger.error(f"Failed to update MedicalStaff with ID {pk}: {serializer.errors}")
-        return Response({'error': serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
+        if not username or not re.match(r'^[a-zA-Z0-9]+$', username):
+            return Response({'error': 'Username is required and must be alphanumeric.'}, status=status.HTTP_400_BAD_REQUEST)
+        if not email or not re.match(r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$', email):
+            return Response({'error': 'Valid email is required.'}, status=status.HTTP_400_BAD_REQUEST)
+        if password and len(password) < 8:
+            return Response({'error': 'Password must be at least 8 characters long.'}, status=status.HTTP_400_BAD_REQUEST)
+
+        user.username = username
+        user.email = email
+        if password:
+            user.set_password(password)
+        user.save()
+
+        # Validate and update staff fields
+        nom = data.get('nom', medical_staff.nom)
+        prenom = data.get('prenom', medical_staff.prenom)
+        cin = data.get('cin', medical_staff.cin)
+        cnom = data.get('cnom', medical_staff.cnom)
+        role = data.get('role', medical_staff.role)
+
+        if not nom or not prenom or not cin or not cnom or not role:
+            return Response({'error': 'All staff fields are required.'}, status=status.HTTP_400_BAD_REQUEST)
+        if not re.match(r'^\d{8}$', cin):
+            return Response({'error': 'CIN must be exactly 8 digits.'}, status=status.HTTP_400_BAD_REQUEST)
+
+        try:
+            medical_staff.nom = nom
+            medical_staff.prenom = prenom
+            medical_staff.cin = cin
+            medical_staff.cnom = cnom
+            medical_staff.role = role
+            medical_staff.save()
+            logger.info(f"Medical staff {nom} {prenom} (ID: {pk}) updated by {request.user.username}.")
+            user_profile = UserProfile.objects.filter(user=user).first()
+            return Response({
+                'success': True,
+                'data': {
+                    'id': medical_staff.id,
+                    'nom': nom,
+                    'prenom': prenom,
+                    'cin': cin,
+                    'cnom': cnom,
+                    'role': role,
+                    'username': username,
+                    'email': email,
+                    'admin_accord': user_profile.admin_accord if user_profile else False
+                }
+            }, status=status.HTTP_200_OK)
+        except IntegrityError:
+            return Response({'error': 'CIN must be unique.'}, status=status.HTTP_400_BAD_REQUEST)
+        except Exception as e:
+            logger.error(f"Failed to update MedicalStaff with ID {pk}: {str(e)}")
+            return Response({'error': 'An error occurred.'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        
 
 class DeleteMedicalStaffAPIView(APIView):
+    permission_classes = [RoleBasedPermission]
+    allowed_roles = ['LOCAL_ADMIN']
     def delete(self, request, pk):
         try:
             medical_staff = MedicalStaff.objects.get(pk=pk)
@@ -2650,6 +2359,8 @@ class DeleteMedicalStaffAPIView(APIView):
         return Response({'success': True, 'message': 'Medical staff deleted successfully.'}, status=status.HTTP_200_OK)
     
 class UpdateParamedicalStaffAPIView(APIView):
+    permission_classes = [RoleBasedPermission]
+    allowed_roles = ['LOCAL_ADMIN']
     def put(self, request, pk):
         try:
             paramedical_staff = ParamedicalStaff.objects.get(pk=pk)
@@ -2658,31 +2369,62 @@ class UpdateParamedicalStaffAPIView(APIView):
             logger.error(f"ParamedicalStaff with ID {pk} not found.")
             return Response({'error': 'Paramedical staff not found.'}, status=status.HTTP_404_NOT_FOUND)
 
-        data = request.data.copy()
-        user_data = {
-            'username': data.get('username', user.username),
-            'email': data.get('email', user.email),
-        }
-        if 'password' in data and data['password']:
-            user_data['password'] = data['password']
-        user_serializer = UserSerializer(user, data=user_data, partial=True)
-        if user_serializer.is_valid():
-            user = user_serializer.save()
-            if 'password' in user_data:
-                user.set_password(user_data['password'])
-                user.save()
-        else:
-            return Response(user_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        data = request.data
+        username = data.get('username', user.username)
+        email = data.get('email', user.email)
+        password = data.get('password', None)
 
-        serializer = ParamedicalStaffSerializer(paramedical_staff, data=data, partial=True)
-        if serializer.is_valid():
-            serializer.save()
-            logger.info(f"Paramedical staff {paramedical_staff.nom} {paramedical_staff.prenom} (ID: {pk}) updated by {request.user.username}.")
-            return Response({'success': True, 'data': serializer.data}, status=status.HTTP_200_OK)
-        logger.error(f"Failed to update ParamedicalStaff with ID {pk}: {serializer.errors}")
-        return Response({'error': serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
+        if not username or not re.match(r'^[a-zA-Z0-9]+$', username):
+            return Response({'error': 'Username is required and must be alphanumeric.'}, status=status.HTTP_400_BAD_REQUEST)
+        if not email or not re.match(r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$', email):
+            return Response({'error': 'Valid email is required.'}, status=status.HTTP_400_BAD_REQUEST)
+        if password and len(password) < 8:
+            return Response({'error': 'Password must be at least 8 characters long.'}, status=status.HTTP_400_BAD_REQUEST)
+
+        user.username = username
+        user.email = email
+        if password:
+            user.set_password(password)
+        user.save()
+
+        nom = data.get('nom', paramedical_staff.nom)
+        prenom = data.get('prenom', paramedical_staff.prenom)
+        cin = data.get('cin', paramedical_staff.cin)
+        qualification = data.get('qualification', paramedical_staff.qualification)
+        role = data.get('role', paramedical_staff.role)
+
+        if not nom or not prenom or not cin or not qualification or not role:
+            return Response({'error': 'All staff fields are required.'}, status=status.HTTP_400_BAD_REQUEST)
+        if not re.match(r'^\d{8}$', cin):
+            return Response({'error': 'CIN must be exactly 8 digits.'}, status=status.HTTP_400_BAD_REQUEST)
+
+        try:
+            paramedical_staff.nom = nom
+            paramedical_staff.prenom = prenom
+            paramedical_staff.cin = cin
+            paramedical_staff.qualification = qualification
+            paramedical_staff.role = role
+            paramedical_staff.save()
+            logger.info(f"Paramedical staff {nom} {prenom} (ID: {pk}) updated by {request.user.username}.")
+            return Response({'success': True, 'data': {
+                'id': paramedical_staff.id,
+                'nom': nom,
+                'prenom': prenom,
+                'cin': cin,
+                'qualification': qualification,
+                'role': role,
+                'username': username,
+                'email': email,
+            }}, status=status.HTTP_200_OK)
+        except IntegrityError:
+            return Response({'error': 'CIN must be unique.'}, status=status.HTTP_400_BAD_REQUEST)
+        except Exception as e:
+            logger.error(f"Failed to update ParamedicalStaff with ID {pk}: {str(e)}")
+            return Response({'error': 'An error occurred.'}, status=status.HTTP_400_BAD_REQUEST)
 
 class DeleteParamedicalStaffAPIView(APIView):
+    permission_classes = [RoleBasedPermission]
+    allowed_roles = ['LOCAL_ADMIN']
     def delete(self, request, pk):
         try:
             paramedical_staff = ParamedicalStaff.objects.get(pk=pk)
@@ -2696,6 +2438,8 @@ class DeleteParamedicalStaffAPIView(APIView):
         logger.info(f"Paramedical staff {paramedical_staff.nom} {paramedical_staff.prenom} (ID: {pk}) deleted by {request.user.username}.")
         return Response({'success': True, 'message': 'Paramedical staff deleted successfully.'}, status=status.HTTP_200_OK)
 class UpdateAdministrativeStaffAPIView(APIView):
+    permission_classes = [RoleBasedPermission]
+    allowed_roles = ['LOCAL_ADMIN']
     def put(self, request, pk):
         try:
             admin_staff = AdministrativeStaff.objects.get(pk=pk)
@@ -2704,31 +2448,62 @@ class UpdateAdministrativeStaffAPIView(APIView):
             logger.error(f"AdministrativeStaff with ID {pk} not found.")
             return Response({'error': 'Administrative staff not found.'}, status=status.HTTP_404_NOT_FOUND)
 
-        data = request.data.copy()
-        user_data = {
-            'username': data.get('username', user.username),
-            'email': data.get('email', user.email),
-        }
-        if 'password' in data and data['password']:
-            user_data['password'] = data['password']
-        user_serializer = UserSerializer(user, data=user_data, partial=True)
-        if user_serializer.is_valid():
-            user = user_serializer.save()
-            if 'password' in user_data:
-                user.set_password(user_data['password'])
-                user.save()
-        else:
-            return Response(user_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        data = request.data
+        username = data.get('username', user.username)
+        email = data.get('email', user.email)
+        password = data.get('password', None)
 
-        serializer = AdministrativeStaffSerializer(admin_staff, data=data, partial=True)
-        if serializer.is_valid():
-            serializer.save()
-            logger.info(f"Administrative staff {admin_staff.nom} {admin_staff.prenom} (ID: {pk}) updated by {request.user.username}.")
-            return Response({'success': True, 'data': serializer.data}, status=status.HTTP_200_OK)
-        logger.error(f"Failed to update AdministrativeStaff with ID {pk}: {serializer.errors}")
-        return Response({'error': serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
+        if not username or not re.match(r'^[a-zA-Z0-9]+$', username):
+            return Response({'error': 'Username is required and must be alphanumeric.'}, status=status.HTTP_400_BAD_REQUEST)
+        if not email or not re.match(r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$', email):
+            return Response({'error': 'Valid email is required.'}, status=status.HTTP_400_BAD_REQUEST)
+        if password and len(password) < 8:
+            return Response({'error': 'Password must be at least 8 characters long.'}, status=status.HTTP_400_BAD_REQUEST)
+
+        user.username = username
+        user.email = email
+        if password:
+            user.set_password(password)
+        user.save()
+
+        nom = data.get('nom', admin_staff.nom)
+        prenom = data.get('prenom', admin_staff.prenom)
+        cin = data.get('cin', admin_staff.cin)
+        job_title = data.get('job_title', admin_staff.job_title)
+        role = data.get('role', admin_staff.role)
+
+        if not nom or not prenom or not cin or not job_title or not role:
+            return Response({'error': 'All staff fields are required.'}, status=status.HTTP_400_BAD_REQUEST)
+        if not re.match(r'^\d{8}$', cin):
+            return Response({'error': 'CIN must be exactly 8 digits.'}, status=status.HTTP_400_BAD_REQUEST)
+
+        try:
+            admin_staff.nom = nom
+            admin_staff.prenom = prenom
+            admin_staff.cin = cin
+            admin_staff.job_title = job_title
+            admin_staff.role = role
+            admin_staff.save()
+            logger.info(f"Administrative staff {nom} {prenom} (ID: {pk}) updated by {request.user.username}.")
+            return Response({'success': True, 'data': {
+                'id': admin_staff.id,
+                'nom': nom,
+                'prenom': prenom,
+                'cin': cin,
+                'job_title': job_title,
+                'role': role,
+                'username': username,
+                'email': email,
+            }}, status=status.HTTP_200_OK)
+        except IntegrityError:
+            return Response({'error': 'CIN must be unique.'}, status=status.HTTP_400_BAD_REQUEST)
+        except Exception as e:
+            logger.error(f"Failed to update AdministrativeStaff with ID {pk}: {str(e)}")
+            return Response({'error': 'An error occurred.'}, status=status.HTTP_400_BAD_REQUEST)
 
 class DeleteAdministrativeStaffAPIView(APIView):
+    permission_classes = [RoleBasedPermission]
+    allowed_roles = ['LOCAL_ADMIN']
     def delete(self, request, pk):
         try:
             admin_staff = AdministrativeStaff.objects.get(pk=pk)
@@ -2741,8 +2516,11 @@ class DeleteAdministrativeStaffAPIView(APIView):
         user.delete()
         logger.info(f"Administrative staff {admin_staff.nom} {admin_staff.prenom} (ID: {pk}) deleted by {request.user.username}.")
         return Response({'success': True, 'message': 'Administrative staff deleted successfully.'}, status=status.HTTP_200_OK)
+    
 
 class UpdateWorkerStaffAPIView(APIView):
+    permission_classes = [RoleBasedPermission]
+    allowed_roles = ['LOCAL_ADMIN' ]
     def put(self, request, pk):
         try:
             worker_staff = WorkerStaff.objects.get(pk=pk)
@@ -2751,31 +2529,62 @@ class UpdateWorkerStaffAPIView(APIView):
             logger.error(f"WorkerStaff with ID {pk} not found.")
             return Response({'error': 'Worker staff not found.'}, status=status.HTTP_404_NOT_FOUND)
 
-        data = request.data.copy()
-        user_data = {
-            'username': data.get('username', user.username),
-            'email': data.get('email', user.email),
-        }
-        if 'password' in data and data['password']:
-            user_data['password'] = data['password']
-        user_serializer = UserSerializer(user, data=user_data, partial=True)
-        if user_serializer.is_valid():
-            user = user_serializer.save()
-            if 'password' in user_data:
-                user.set_password(user_data['password'])
-                user.save()
-        else:
-            return Response(user_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        data = request.data
+        username = data.get('username', user.username)
+        email = data.get('email', user.email)
+        password = data.get('password', None)
 
-        serializer = WorkerStaffSerializer(worker_staff, data=data, partial=True)
-        if serializer.is_valid():
-            serializer.save()
-            logger.info(f"Worker staff {worker_staff.nom} {worker_staff.prenom} (ID: {pk}) updated by {request.user.username}.")
-            return Response({'success': True, 'data': serializer.data}, status=status.HTTP_200_OK)
-        logger.error(f"Failed to update WorkerStaff with ID {pk}: {serializer.errors}")
-        return Response({'error': serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
+        if not username or not re.match(r'^[a-zA-Z0-9]+$', username):
+            return Response({'error': 'Username is required and must be alphanumeric.'}, status=status.HTTP_400_BAD_REQUEST)
+        if not email or not re.match(r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$', email):
+            return Response({'error': 'Valid email is required.'}, status=status.HTTP_400_BAD_REQUEST)
+        if password and len(password) < 8:
+            return Response({'error': 'Password must be at least 8 characters long.'}, status=status.HTTP_400_BAD_REQUEST)
+
+        user.username = username
+        user.email = email
+        if password:
+            user.set_password(password)
+        user.save()
+
+        nom = data.get('nom', worker_staff.nom)
+        prenom = data.get('prenom', worker_staff.prenom)
+        cin = data.get('cin', worker_staff.cin)
+        job_title = data.get('job_title', worker_staff.job_title)
+        role = data.get('role', worker_staff.role)
+
+        if not nom or not prenom or not cin or not job_title or not role:
+            return Response({'error': 'All staff fields are required.'}, status=status.HTTP_400_BAD_REQUEST)
+        if not re.match(r'^\d{8}$', cin):
+            return Response({'error': 'CIN must be exactly 8 digits.'}, status=status.HTTP_400_BAD_REQUEST)
+
+        try:
+            worker_staff.nom = nom
+            worker_staff.prenom = prenom
+            worker_staff.cin = cin
+            worker_staff.job_title = job_title
+            worker_staff.role = role
+            worker_staff.save()
+            logger.info(f"Worker staff {nom} {prenom} (ID: {pk}) updated by {request.user.username}.")
+            return Response({'success': True, 'data': {
+                'id': worker_staff.id,
+                'nom': nom,
+                'prenom': prenom,
+                'cin': cin,
+                'job_title': job_title,
+                'role': role,
+                'username': username,
+                'email': email,
+            }}, status=status.HTTP_200_OK)
+        except IntegrityError:
+            return Response({'error': 'CIN must be unique.'}, status=status.HTTP_400_BAD_REQUEST)
+        except Exception as e:
+            logger.error(f"Failed to update WorkerStaff with ID {pk}: {str(e)}")
+            return Response({'error': 'An error occurred.'}, status=status.HTTP_400_BAD_REQUEST)
 
 class DeleteWorkerStaffAPIView(APIView):
+    permission_classes = [RoleBasedPermission]
+    allowed_roles = ['LOCAL_ADMIN']
     def delete(self, request, pk):
         try:
             worker_staff = WorkerStaff.objects.get(pk=pk)
@@ -2790,6 +2599,8 @@ class DeleteWorkerStaffAPIView(APIView):
         return Response({'success': True, 'message': 'Worker staff deleted successfully.'}, status=status.HTTP_200_OK)
     
 class UpdateTechnicalStaffAPIView(APIView):
+    permission_classes = [RoleBasedPermission]
+    allowed_roles = ['LOCAL_ADMIN']
     def put(self, request, pk):
         try:
             technical_staff = TechnicalStaff.objects.get(pk=pk)
@@ -2798,31 +2609,62 @@ class UpdateTechnicalStaffAPIView(APIView):
             logger.error(f"TechnicalStaff with ID {pk} not found.")
             return Response({'error': 'Technical staff not found.'}, status=status.HTTP_404_NOT_FOUND)
 
-        data = request.data.copy()
-        user_data = {
-            'username': data.get('username', user.username),
-            'email': data.get('email', user.email),
-        }
-        if 'password' in data and data['password']:
-            user_data['password'] = data['password']
-        user_serializer = UserSerializer(user, data=user_data, partial=True)
-        if user_serializer.is_valid():
-            user = user_serializer.save()
-            if 'password' in user_data:
-                user.set_password(user_data['password'])
-                user.save()
-        else:
-            return Response(user_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        data = request.data
+        username = data.get('username', user.username)
+        email = data.get('email', user.email)
+        password = data.get('password', None)
 
-        serializer = TechnicalStaffSerializer(technical_staff, data=data, partial=True)
-        if serializer.is_valid():
-            serializer.save()
-            logger.info(f"Technical staff {technical_staff.nom} {technical_staff.prenom} (ID: {pk}) updated by {request.user.username}.")
-            return Response({'success': True, 'data': serializer.data}, status=status.HTTP_200_OK)
-        logger.error(f"Failed to update TechnicalStaff with ID {pk}: {serializer.errors}")
-        return Response({'error': serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
+        if not username or not re.match(r'^[a-zA-Z0-9]+$', username):
+            return Response({'error': 'Username is required and must be alphanumeric.'}, status=status.HTTP_400_BAD_REQUEST)
+        if not email or not re.match(r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$', email):
+            return Response({'error': 'Valid email is required.'}, status=status.HTTP_400_BAD_REQUEST)
+        if password and len(password) < 8:
+            return Response({'error': 'Password must be at least 8 characters long.'}, status=status.HTTP_400_BAD_REQUEST)
+
+        user.username = username
+        user.email = email
+        if password:
+            user.set_password(password)
+        user.save()
+
+        nom = data.get('nom', technical_staff.nom)
+        prenom = data.get('prenom', technical_staff.prenom)
+        cin = data.get('cin', technical_staff.cin)
+        job_title = data.get('job_title', technical_staff.job_title)
+        role = data.get('role', technical_staff.role)
+
+        if not nom or not prenom or not cin or not job_title or not role:
+            return Response({'error': 'All staff fields are required.'}, status=status.HTTP_400_BAD_REQUEST)
+        if not re.match(r'^\d{8}$', cin):
+            return Response({'error': 'CIN must be exactly 8 digits.'}, status=status.HTTP_400_BAD_REQUEST)
+
+        try:
+            technical_staff.nom = nom
+            technical_staff.prenom = prenom
+            technical_staff.cin = cin
+            technical_staff.job_title = job_title
+            technical_staff.role = role
+            technical_staff.save()
+            logger.info(f"Technical staff {nom} {prenom} (ID: {pk}) updated by {request.user.username}.")
+            return Response({'success': True, 'data': {
+                'id': technical_staff.id,
+                'nom': nom,
+                'prenom': prenom,
+                'cin': cin,
+                'job_title': job_title,
+                'role': role,
+                'username': username,
+                'email': email,
+            }}, status=status.HTTP_200_OK)
+        except IntegrityError:
+            return Response({'error': 'CIN must be unique.'}, status=status.HTTP_400_BAD_REQUEST)
+        except Exception as e:
+            logger.error(f"Failed to update TechnicalStaff with ID {pk}: {str(e)}")
+            return Response({'error': 'An error occurred.'}, status=status.HTTP_400_BAD_REQUEST)
 
 class DeleteTechnicalStaffAPIView(APIView):
+    permission_classes = [RoleBasedPermission]
+    allowed_roles = ['LOCAL_ADMIN']
     def delete(self, request, pk):
         try:
             technical_staff = TechnicalStaff.objects.get(pk=pk)
@@ -2835,3 +2677,804 @@ class DeleteTechnicalStaffAPIView(APIView):
         user.delete()
         logger.info(f"Technical staff {technical_staff.nom} {technical_staff.prenom} (ID: {pk}) deleted by {request.user.username}.")
         return Response({'success': True, 'message': 'Technical staff deleted successfully.'}, status=status.HTTP_200_OK)
+
+class MachineListAPIView(APIView):
+    permission_classes = [RoleBasedPermission]
+    allowed_roles = ['LOCAL_ADMIN','TECHNICAL']
+
+    def get(self, request):
+        logger.debug("MACHINE: Received GET request to MachineListAPIView. User: %s", request.user.username)
+        tenant = getattr(request, 'tenant', None)
+        if not tenant:
+            logger.error("MACHINE: No tenant found")
+            return Response({"error": "Invalid or missing center subdomain."}, status=status.HTTP_400_BAD_REQUEST)
+
+        try:
+            machines = Machine.objects.filter(center=tenant)
+            data = [
+                {
+                    "id": machine.id,
+                    "brand": machine.brand,
+                    "functional": machine.functional,
+                    "reserve": machine.reserve,
+                    "refurbished": machine.refurbished,
+                    "nbre_hrs": machine.nbre_hrs,
+                    "membrane": {
+                        "id": machine.membrane.id,
+                        "type": machine.membrane.type
+                    } if machine.membrane else None,
+                    "filtre": {
+                        "id": machine.filtre.id,
+                        "type": machine.filtre.type,
+                        "sterilisation": machine.filtre.sterilisation
+                    } if machine.filtre else None,
+                    "center": machine.center_id
+                } for machine in machines
+            ]
+            logger.info("MACHINE: Machine list retrieved by %s in center %s", request.user.username, tenant.label)
+            return Response(data, status=status.HTTP_200_OK)
+        except Machine.DoesNotExist:
+            logger.error("MACHINE: Machines not found for center %s", tenant.label)
+            return Response({"error": "Machines not found for this center."}, status=status.HTTP_404_NOT_FOUND)
+        except Exception as e:
+            logger.error("MACHINE: Unexpected error fetching machines: %s", str(e))
+            return Response({"error": f"Failed to fetch machines: {str(e)}"}, status=status.HTTP_400_BAD_REQUEST)
+
+# Membrane List API
+class MembraneListAPIView(APIView):
+    permission_classes = [RoleBasedPermission]
+    allowed_roles = ['LOCAL_ADMIN', 'TECHNICAL']
+
+    def get(self, request):
+        logger.debug("MEMBRANE: Received GET request to MembraneListAPIView. User: %s", request.user.username)
+        tenant = getattr(request, 'tenant', None)
+        if not tenant:
+            logger.error("MEMBRANE: No tenant found")
+            return Response({"error": "Invalid or missing center subdomain."}, status=status.HTTP_400_BAD_REQUEST)
+
+        try:
+            membranes = Membrane.objects.all()  # Adjust if membranes should be tenant-specific
+            data = [
+                {
+                    "id": membrane.id,
+                    "type": membrane.type
+                } for membrane in membranes
+            ]
+            logger.info("MEMBRANE: Membrane list retrieved by %s in center %s", request.user.username, tenant.label)
+            return Response(data, status=status.HTTP_200_OK)
+        except ObjectDoesNotExist as e:
+            logger.error("MEMBRANE: Error fetching membranes: %s", str(e))
+            return Response({"error": "Membranes not found."}, status=status.HTTP_404_NOT_FOUND)
+        except Exception as e:
+            logger.error("MEMBRANE: Unexpected error fetching membranes: %s", str(e))
+            return Response({"error": f"Failed to fetch membranes: {str(e)}"}, status=status.HTTP_400_BAD_REQUEST)
+
+# Filtre List API
+class FiltreListAPIView(APIView):
+    permission_classes = [RoleBasedPermission]
+    allowed_roles = ['LOCAL_ADMIN', 'TECHNICAL']
+
+    def get(self, request):
+        logger.debug("FILTRE: Received GET request to FiltreListAPIView. User: %s", request.user.username)
+        tenant = getattr(request, 'tenant', None)
+        if not tenant:
+            logger.error("FILTRE: No tenant found")
+            return Response({"error": "Invalid or missing center subdomain."}, status=status.HTTP_400_BAD_REQUEST)
+
+        try:
+            filtres = Filtre.objects.all()  # Adjust if filtres should be tenant-specific
+            data = [
+                {
+                    "id": filtre.id,
+                    "type": filtre.type,
+                    "sterilisation": filtre.sterilisation
+                } for filtre in filtres
+            ]
+            logger.info("FILTRE: Filtre list retrieved by %s in center %s", request.user.username, tenant.label)
+            return Response(data, status=status.HTTP_200_OK)
+        except ObjectDoesNotExist as e:
+            logger.error("FILTRE: Error fetching filtres: %s", str(e))
+            return Response({"error": "Filtres not found."}, status=status.HTTP_404_NOT_FOUND)
+        except Exception as e:
+            logger.error("FILTRE: Unexpected error fetching filtres: %s", str(e))
+            return Response({"error": f"Failed to fetch filtres: {str(e)}"}, status=status.HTTP_400_BAD_REQUEST)
+class AddFiltreAPIView(APIView):
+    permission_classes = [RoleBasedPermission]
+    allowed_roles = ['LOCAL_ADMIN', 'TECHNICAL']
+
+    def post(self, request):
+        logger.debug("FILTRE: Received POST request to AddFiltreAPIView. User: %s", request.user.username)
+        tenant = getattr(request, 'tenant', None)
+        if not tenant:
+            logger.error("FILTRE: No tenant found")
+            return Response({"error": "Invalid or missing center subdomain."}, status=status.HTTP_400_BAD_REQUEST)
+
+        if not is_local_admin(request.user):
+            logger.warning("FILTRE: Permission denied for user %s in center %s", request.user.username, tenant.label)
+            return Response({"error": "Permission denied. Only local admins can add filtres."}, status=status.HTTP_403_FORBIDDEN)
+
+        type = request.data.get('type')
+        sterilisation = request.data.get('sterilisation', None)
+
+        if not type:
+            logger.error("FILTRE: Missing required field 'type'")
+            return Response({"error": "Type is required."}, status=status.HTTP_400_BAD_REQUEST)
+
+        try:
+            filtre = Filtre.objects.create(
+                type=type,
+                sterilisation=sterilisation
+            )
+            logger.info("FILTRE: New filtre created by %s in center %s: %s", request.user.username, tenant.label, type)
+            return Response({
+                "id": filtre.id,
+                "type": filtre.type,
+                "sterilisation": filtre.sterilisation
+            }, status=status.HTTP_201_CREATED)
+        except Exception as e:
+            logger.error("FILTRE: Error creating filtre: %s", str(e))
+            return Response({"error": f"Failed to create filtre: {str(e)}"}, status=status.HTTP_400_BAD_REQUEST)
+
+# Add Membrane API
+class AddMembraneAPIView(APIView):
+    permission_classes = [RoleBasedPermission]
+    allowed_roles = ['LOCAL_ADMIN', 'TECHNICAL']
+
+    def post(self, request):
+        logger.debug("MEMBRANE: Received POST request to AddMembraneAPIView. User: %s", request.user.username)
+        tenant = getattr(request, 'tenant', None)
+        if not tenant:
+            logger.error("MEMBRANE: No tenant found")
+            return Response({"error": "Invalid or missing center subdomain."}, status=status.HTTP_400_BAD_REQUEST)
+
+        if not is_local_admin(request.user):
+            logger.warning("MEMBRANE: Permission denied for user %s in center %s", request.user.username, tenant.label)
+            return Response({"error": "Permission denied. Only local admins can add membranes."}, status=status.HTTP_403_FORBIDDEN)
+
+        type = request.data.get('type')
+        if not type:
+            logger.error("MEMBRANE: Missing required field 'type'")
+            return Response({"error": "Type is required."}, status=status.HTTP_400_BAD_REQUEST)
+
+        try:
+            membrane = Membrane.objects.create(type=type)
+            logger.info("MEMBRANE: New membrane created by %s in center %s: %s", request.user.username, tenant.label, type)
+            return Response({
+                "id": membrane.id,
+                "type": membrane.type
+            }, status=status.HTTP_201_CREATED)
+        except Exception as e:
+            logger.error("MEMBRANE: Error creating membrane: %s", str(e))
+            return Response({"error": f"Failed to create membrane: {str(e)}"}, status=status.HTTP_400_BAD_REQUEST)
+        
+class VerifyUserAPIView(APIView):
+    def post(self, request):
+        user_id = request.data.get('user_id')
+        if not user_id:
+            logger.warning("No user_id provided in verification request")
+            return Response(
+                {"error": "user_id is required."},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        form = VerificationForm(request.data)
+        if not form.is_valid():
+            logger.warning("Invalid form data: %s", form.errors)
+            return Response(form.errors, status=status.HTTP_400_BAD_REQUEST)
+
+        verification_code = form.cleaned_data['verification_code']
+        
+        try:
+            user = User.objects.get(id=user_id)
+            user_profile = user.verification_profile
+        except User.DoesNotExist:
+            logger.error("No user found for user_id %s", user_id)
+            return Response(
+                {"error": "User not found."},
+                status=status.HTTP_404_NOT_FOUND
+            )
+        except UserProfile.DoesNotExist:
+            logger.error("No UserProfile found for user_id %s", user_id)
+            return Response(
+                {"error": "User profile not found."},
+                status=status.HTTP_404_NOT_FOUND
+            )
+
+        if user_profile.verify_code(verification_code):
+            response_data = {
+                "message": "Verification successful.",
+                "is_verified": user_profile.is_verified,
+                "admin_accord": user_profile.admin_accord,
+                "has_role_privileges": user_profile.has_role_privileges()
+            }
+            logger.info("User %s registered via API", user.username)
+            return Response(response_data, status.HTTP_200_OK)
+        else:
+            logger.warning("Failed verification attempt for user %s with code %s",
+                         user.username, verification_code)
+            return Response(
+                {"error": "Invalid verification code."},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+class GrantAdminAccordAPIView(APIView):
+    permission_classes = [RoleBasedPermission]
+    allowed_roles = ['LOCAL_ADMIN']
+
+    def post(self, request):
+        user_id = request.data.get('user_id')
+        if not user_id:
+            logger.warning("No user_id provided in admin accord request")
+            return Response(
+                {"error": "user_id is required."},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        try:
+            user = User.objects.get(id=user_id)
+            user_profile = user.verification_profile
+        except User.DoesNotExist:
+            logger.error("User with ID %s not found", user_id)
+            return Response(
+                {"error": "User not found."},
+                status=status.HTTP_404_NOT_FOUND
+            )
+        except UserProfile.DoesNotExist:
+            logger.error("No UserProfile found for user ID %s", user_id)
+            return Response(
+                {"error": "User profile not found."},
+                status=status.HTTP_404_NOT_FOUND
+            )
+
+        if user_profile.grant_admin_accord():
+            response_data = {
+                "message": "Admin accord granted successfully.",
+                "user_id": user.id,
+                "username": user.username,
+                "is_verified": user_profile.is_verified,
+                "admin_accord": user_profile.admin_accord,
+                "has_role_privileges": user_profile.has_role_privileges()
+            }
+            logger.info("Admin accord granted for user %s by admin %s", user.username, request.user.username)
+            return Response(response_data, status=status.HTTP_200_OK)
+        else:
+            logger.warning("Failed to grant admin accord for user %s: not verified", user.username)
+            return Response(
+                {"error": "User must be verified before granting admin accord."},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+        
+class UpdateUserProfileAPIView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request):
+        logger.debug("Received POST request to UpdateUserProfileAPIView: data=%s, user=%s",
+                     request.data, request.user.username)
+
+        # Validate tenant
+        tenant = getattr(request, 'tenant', None)
+        if not tenant:
+            logger.error("No tenant found for API request: user=%s", request.user.username)
+            return Response(
+                {"error": "Invalid center subdomain."},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+        logger.debug("Tenant validated: label=%s", tenant.label)
+
+        # Check if user is LOCAL_ADMIN
+        try:
+            staff = AdministrativeStaff.objects.get(user=request.user, center=tenant)
+            logger.debug("Found AdministrativeStaff: user=%s, role=%s, center=%s",
+                         request.user.username, staff.role, tenant.label)
+            if staff.role != 'LOCAL_ADMIN':
+                logger.warning("User %s attempted to update profile without LOCAL_ADMIN role: role=%s",
+                               request.user.username, staff.role)
+                return Response(
+                    {"error": "Only LOCAL_ADMIN users can update profiles."},
+                    status=status.HTTP_403_FORBIDDEN
+                )
+        except AdministrativeStaff.DoesNotExist:
+            logger.warning("User %s is not an AdministrativeStaff in center %s",
+                           request.user.username, tenant.label)
+            return Response(
+                {"error": "You are not authorized for this center."},
+                status=status.HTTP_403_FORBIDDEN
+            )
+
+        # Validate user_id
+        user_id = request.data.get('user_id')
+        if not user_id:
+            logger.warning("No user_id provided in update profile request: user=%s", request.user.username)
+            return Response(
+                {"error": "user_id is required."},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+        logger.debug("Target user_id: %s", user_id)
+
+        # Fetch target user and profile
+        try:
+            target_user = User.objects.get(id=user_id)
+            logger.debug("Found target user: username=%s, id=%s", target_user.username, target_user.id)
+            try:
+                user_profile = target_user.verification_profile
+                logger.debug("Found UserProfile for user_id=%s: is_verified=%s, admin_accord=%s",
+                             user_id, user_profile.is_verified, user_profile.admin_accord)
+            except UserProfile.DoesNotExist:
+                logger.error("No UserProfile found for user_id=%s", user_id)
+                return Response(
+                    {"error": "User profile not found."},
+                    status=status.HTTP_404_NOT_FOUND
+                )
+        except User.DoesNotExist:
+            logger.error("No user found for user_id=%s", user_id)
+            return Response(
+                {"error": "User not found."},
+                status=status.HTTP_404_NOT_FOUND
+            )
+
+        # Verify target user is associated with the tenant
+        staff_types = [AdministrativeStaff, ParamedicalStaff, TechnicalStaff, MedicalStaff, WorkerStaff]
+        is_tenant_staff = False
+        for staff_type in staff_types:
+            if staff_type.objects.filter(user=target_user, center=tenant).exists():
+                is_tenant_staff = True
+                logger.debug("Target user %s is %s in center %s",
+                             target_user.username, staff_type.__name__, tenant.label)
+                break
+        if not is_tenant_staff:
+            logger.warning("User %s is not associated with center %s",
+                           target_user.username, tenant.label)
+            return Response(
+                {"error": "User is not associated with this center."},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        # Validate admin_accord
+        admin_accord = request.data.get('admin_accord', True)
+        logger.debug("Received admin_accord: %s (type=%s)", admin_accord, type(admin_accord))
+        if not isinstance(admin_accord, bool):
+            logger.warning("Invalid admin_accord value for user_id=%s: value=%s", user_id, admin_accord)
+            return Response(
+                {"error": "admin_accord must be a boolean."},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        # Update profile
+        logger.debug("Before update: user_id=%s, admin_accord=%s", user_id, user_profile.admin_accord)
+        user_profile.admin_accord = admin_accord
+        user_profile.save()
+        user_profile.refresh_from_db()  # Ensure we get the latest state
+        logger.debug("After update: user_id=%s, admin_accord=%s, has_role_privileges=%s",
+                     user_id, user_profile.admin_accord, user_profile.has_role_privileges())
+
+        logger.info("User %s updated profile for user %s in center %s: admin_accord=%s",
+                    request.user.username, target_user.username, tenant.label, admin_accord)
+
+        return Response({
+            "message": "Profile updated successfully.",
+            "is_verified": user_profile.is_verified,
+            "admin_accord": user_profile.admin_accord,
+            "has_role_privileges": user_profile.has_role_privileges()
+        }, status=status.HTTP_200_OK)
+    
+
+class ExportPDFAPIView(APIView):
+    permission_classes = [RoleBasedPermission]
+    allowed_roles = ['LOCAL_ADMIN', 'SUBMITTER']
+
+    def get(self, request):
+        center = request.tenant
+        if not center:
+            logger.error("No tenant provided for ExportPDFAPIView")
+            return Response({"error": "No center found for this subdomain."}, status=404)
+
+        patients = Patient.objects.filter(center=center)
+        sessions = HemodialysisSession.objects.filter(medical_activity__patient__center=center)
+        diseases = TransmittableDisease.objects.filter(medical_activity__patient__center=center)
+        complications = Complications.objects.filter(medical_activity__patient__center=center)
+        transplantations = Transplantation.objects.filter(medical_activity__patient__center=center)
+        deceased_patients = patients.filter(status='DECEASED')
+        medical_staff = MedicalStaff.objects.filter(center=center)
+        paramedical_staff = ParamedicalStaff.objects.filter(center=center)
+        administrative_staff = AdministrativeStaff.objects.filter(center=center)
+        technical_staff = TechnicalStaff.objects.filter(center=center)
+        worker_staff = WorkerStaff.objects.filter(center=center)
+        machines = Machine.objects.filter(center=center)
+
+        context = {
+            'center': center,
+            'patients': patients,
+            'sessions': sessions,
+            'diseases': diseases,
+            'complications': complications,
+            'transplantations': transplantations,
+            'deceased_patients': deceased_patients,
+            'total_deaths': deceased_patients.count(),
+            'medical_staff': medical_staff,
+            'paramedical_staff': paramedical_staff,
+            'administrative_staff': administrative_staff,
+            'technical_staff': technical_staff,
+            'worker_staff': worker_staff,
+            'machines': machines,
+            'total_diseases': diseases.count(),
+            'total_complications': complications.count(),
+            'report_date': datetime.now().strftime('%Y-%m-%d'),
+        }
+
+        buffer = BytesIO()
+        doc = SimpleDocTemplate(buffer, pagesize=A4, rightMargin=2*cm, leftMargin=2*cm, topMargin=2*cm, bottomMargin=2*cm)
+        elements = []
+
+        styles = getSampleStyleSheet()
+        title_style = ParagraphStyle(
+            name='Title',
+            fontSize=16,
+            fontName='Helvetica-Bold',
+            alignment=1,
+            spaceAfter=12,
+        )
+        subtitle_style = ParagraphStyle(
+            name='Subtitle',
+            fontSize=12,
+            fontName='Helvetica-Bold',
+            textColor=colors.black,
+            leading=14,
+            spaceBefore=10,
+            spaceAfter=8,
+        )
+        normal_style = styles['Normal']
+        normal_style.fontSize = 10
+
+        # Center Information
+        elements.append(Paragraph("Center Information", title_style))
+        center_data = [
+            ['Name', center.label],
+            ['Address', center.adresse or 'N/A'],
+            ['Delegation', center.delegation.name if center.delegation else 'N/A'],
+            ['Telephone', center.tel or 'N/A'],
+            ['Email', center.mail or 'N/A'],
+        ]
+        center_table = Table(center_data, colWidths=[5*cm, 12*cm])
+        center_table.setStyle(TableStyle([
+            ('GRID', (0,0), (-1,-1), 1, colors.black),
+            ('FONT', (0,0), (-1,-1), 'Helvetica', 10),
+            ('BACKGROUND', (0,0), (0,-1), colors.lightgrey),
+            ('ALIGN', (1,0), (1,-1), 'LEFT'),
+            ('VALIGN', (0,0), (-1,-1), 'MIDDLE'),
+            ('LEFTPADDING', (0,0), (-1,-1), 6),
+            ('RIGHTPADDING', (0,0), (-1,-1), 6),
+            ('BACKGROUND', (0,0), (-1,-1), colors.white),
+            ('BACKGROUND', (0,0), (0,-1), colors.lightgrey),
+            ('BACKGROUND', (0,0), (-1,0), colors.lightgrey),
+            ('BACKGROUND', (0,2), (-1,2), colors.lightgrey),
+            ('BACKGROUND', (0,4), (-1,4), colors.lightgrey),
+        ]))
+        elements.append(center_table)
+        elements.append(Spacer(1, 0.5*cm))
+
+        # Staff Members
+        elements.append(Paragraph("Staff Members", title_style))
+
+        # Administrative and Technical Staff
+        elements.append(Paragraph("Administrative Staff", subtitle_style))
+        admin_data = [['Name', 'CIN', 'Details']]
+        for staff in administrative_staff:
+            admin_data.append([
+                f"{staff.nom} {staff.prenom}",
+                staff.cin,
+                f"Job Title: {staff.job_title}",
+            ])
+        for staff in technical_staff:
+            admin_data.append([
+                f"{staff.nom} {staff.prenom}",
+                staff.cin,
+                f"Qualification: {staff.qualification}",
+            ])
+        if len(admin_data) > 1:
+            admin_table = Table(admin_data, colWidths=[6*cm, 4*cm, 7*cm])
+            admin_table.setStyle(TableStyle([
+                ('GRID', (0,0), (-1,-1), 1, colors.black),
+                ('FONT', (0,0), (-1,-1), 'Helvetica', 10),
+                ('BACKGROUND', (0,0), (-1,0), colors.lightblue),
+                ('ALIGN', (0,0), (-1,-1), 'LEFT'),
+                ('VALIGN', (0,0), (-1,-1), 'MIDDLE'),
+                ('LEFTPADDING', (0,0), (-1,-1), 6),
+                ('RIGHTPADDING', (0,0), (-1,-1), 6),
+                ('BACKGROUND', (0,1), (-1,-1), colors.whitesmoke),
+            ]))
+            elements.append(admin_table)
+        else:
+            elements.append(Paragraph("No Administrative Staff recorded.", normal_style))
+        elements.append(Spacer(1, 0.3*cm))
+
+        # Para & Medical Staff
+        elements.append(Paragraph("Para & Medical Staff", subtitle_style))
+        para_medical_data = [['Name', 'CIN', 'Details']]
+        for staff in medical_staff:
+            para_medical_data.append([
+                f"{staff.nom} {staff.prenom}",
+                staff.cin,
+                f"CNOM: {staff.cnom}",
+            ])
+        for staff in paramedical_staff:
+            para_medical_data.append([
+                f"{staff.nom} {staff.prenom}",
+                staff.cin,
+                f"Qualification: {staff.qualification}",
+            ])
+        if len(para_medical_data) > 1:
+            para_medical_table = Table(para_medical_data, colWidths=[6*cm, 4*cm, 7*cm])
+            para_medical_table.setStyle(TableStyle([
+                ('GRID', (0,0), (-1,-1), 1, colors.black),
+                ('FONT', (0,0), (-1,-1), 'Helvetica', 10),
+                ('BACKGROUND', (0,0), (-1,0), colors.lightblue),
+                ('ALIGN', (0,0), (-1,-1), 'LEFT'),
+                ('VALIGN', (0,0), (-1,-1), 'MIDDLE'),
+                ('LEFTPADDING', (0,0), (-1,-1), 6),
+                ('RIGHTPADDING', (0,0), (-1,-1), 6),
+                ('BACKGROUND', (0,1), (-1,-1), colors.whitesmoke),
+            ]))
+            elements.append(para_medical_table)
+        else:
+            elements.append(Paragraph("No Para & Medical Staff recorded.", normal_style))
+        elements.append(Spacer(1, 0.3*cm))
+
+        # Workers Staff
+        elements.append(Paragraph("Workers Staff", subtitle_style))
+        worker_data = [['Name', 'CIN', 'Details']]
+        for staff in worker_staff:
+            worker_data.append([
+                f"{staff.nom} {staff.prenom}",
+                staff.cin,
+                f"Job Title: {staff.job_title}",
+            ])
+        if len(worker_data) > 1:
+            worker_table = Table(worker_data, colWidths=[6*cm, 4*cm, 7*cm])
+            worker_table.setStyle(TableStyle([
+                ('GRID', (0,0), (-1,-1), 1, colors.black),
+                ('FONT', (0,0), (-1,-1), 'Helvetica', 10),
+                ('BACKGROUND', (0,0), (-1,0), colors.lightblue),
+                ('ALIGN', (0,0), (-1,-1), 'LEFT'),
+                ('VALIGN', (0,0), (-1,-1), 'MIDDLE'),
+                ('LEFTPADDING', (0,0), (-1,-1), 6),
+                ('RIGHTPADDING', (0,0), (-1,-1), 6),
+                ('BACKGROUND', (0,1), (-1,-1), colors.whitesmoke),
+            ]))
+            elements.append(worker_table)
+        else:
+            elements.append(Paragraph("No Workers Staff recorded.", normal_style))
+        elements.append(Spacer(1, 0.5*cm))
+
+        # Equipment
+        elements.append(Paragraph("Equipment", title_style))
+        machine_data = [['Brand', 'Functional', 'Reserve', 'Refurbished', 'Hours', 'Membrane', 'Filtre']]
+        for machine in machines:
+            machine_data.append([
+                machine.brand,
+                'Yes' if machine.functional else 'No',
+                'Yes' if machine.reserve else 'No',
+                'Yes' if machine.refurbished else 'No',
+                str(machine.nbre_hrs),
+                machine.membrane.type,
+                f"{machine.filtre.type} ({machine.filtre.sterilisation})" if machine.filtre.sterilisation else machine.filtre.type,
+            ])
+        if len(machine_data) > 1:
+            machine_table = Table(machine_data, colWidths=[3*cm, 2.5*cm, 2.5*cm, 2.5*cm, 2*cm, 2.5*cm, 3*cm])
+            machine_table.setStyle(TableStyle([
+                ('GRID', (0,0), (-1,-1), 1, colors.black),
+                ('FONT', (0,0), (-1,-1), 'Helvetica', 10),
+                ('BACKGROUND', (0,0), (-1,0), colors.lightblue),
+                ('ALIGN', (0,0), (-1,-1), 'LEFT'),
+                ('VALIGN', (0,0), (-1,-1), 'MIDDLE'),
+                ('LEFTPADDING', (0,0), (-1,-1), 6),
+                ('RIGHTPADDING', (0,0), (-1,-1), 6),
+                ('BACKGROUND', (0,1), (-1,-1), colors.whitesmoke),
+            ]))
+            elements.append(machine_table)
+        else:
+            elements.append(Paragraph("No machines recorded.", normal_style))
+        elements.append(Spacer(1, 0.5*cm))
+
+        # Activity
+        elements.append(Paragraph("Activity", title_style))
+
+        # Hemodialysis Sessions
+        elements.append(Paragraph("Hemodialysis Sessions", subtitle_style))
+        session_data = [['Type', 'Method', 'Date', 'Doctor', 'Pre-BP', 'Post-BP', 'Duration', 'Access', 'Severity']]
+        for session in sessions:
+            session_data.append([
+                session.type.name,
+                session.method.name,
+                session.date_of_session.strftime('%Y-%m-%d'),
+                f"{session.responsible_doc.nom} {session.responsible_doc.prenom}",
+                f"{session.pre_dialysis_bp:.1f}" if session.pre_dialysis_bp is not None else 'N/A',
+                f"{session.post_dialysis_bp:.1f}" if session.post_dialysis_bp is not None else 'N/A',
+                f"{session.dialysis_duration:.1f}" if session.dialysis_duration is not None else 'N/A',
+                session.vascular_access_type or 'N/A',
+                session.severity_of_case or 'N/A',
+            ])
+        if len(session_data) > 1:
+            session_table = Table(session_data, colWidths=[2.5*cm, 2.5*cm, 2.5*cm, 3.5*cm, 1.8*cm, 1.8*cm, 1.8*cm, 2*cm, 2*cm])
+            session_table.setStyle(TableStyle([
+                ('GRID', (0,0), (-1,-1), 1, colors.black),
+                ('FONT', (0,0), (-1,-1), 'Helvetica', 10),
+                ('BACKGROUND', (0,0), (-1,0), colors.lightblue),
+                ('ALIGN', (0,0), (-1,-1), 'LEFT'),
+                ('VALIGN', (0,0), (-1,-1), 'MIDDLE'),
+                ('LEFTPADDING', (0,0), (-1,-1), 6),
+                ('RIGHTPADDING', (0,0), (-1,-1), 6),
+                ('BACKGROUND', (0,1), (-1,-1), colors.whitesmoke),
+            ]))
+            elements.append(session_table)
+        else:
+            elements.append(Paragraph("No hemodialysis sessions recorded.", normal_style))
+        elements.append(Spacer(1, 0.3*cm))
+
+        # Transplantations
+        elements.append(Paragraph("Transplantations", subtitle_style))
+        transplantation_data = [['Type', 'Date of Operation', 'Notes']]
+        for transplantation in transplantations:
+            transplantation_data.append([
+                transplantation.transplantation.label_transplantation,
+                transplantation.date_operation.strftime('%Y-%m-%d'),
+                transplantation.notes or 'No notes',
+            ])
+        if len(transplantation_data) > 1:
+            transplantation_table = Table(transplantation_data, colWidths=[6*cm, 5*cm, 6*cm])
+            transplantation_table.setStyle(TableStyle([
+                ('GRID', (0,0), (-1,-1), 1, colors.black),
+                ('FONT', (0,0), (-1,-1), 'Helvetica', 10),
+                ('BACKGROUND', (0,0), (-1,0), colors.lightblue),
+                ('ALIGN', (0,0), (-1,-1), 'LEFT'),
+                ('VALIGN', (0,0), (-1,-1), 'MIDDLE'),
+                ('LEFTPADDING', (0,0), (-1,-1), 6),
+                ('RIGHTPADDING', (0,0), (-1,-1), 6),
+                ('BACKGROUND', (0,1), (-1,-1), colors.whitesmoke),
+            ]))
+            elements.append(transplantation_table)
+        else:
+            elements.append(Paragraph("No transplantations recorded.", normal_style))
+        elements.append(Spacer(1, 0.5*cm))
+
+        # Morbidity
+        elements.append(Paragraph("Morbidity", title_style))
+
+        # Transmittable Diseases
+        elements.append(Paragraph("Transmittable Diseases", subtitle_style))
+        disease_data = [['Disease', 'Transmission Type', 'Date of Contraction']]
+        for disease in diseases:
+            disease_data.append([
+                disease.disease.label_disease,
+                disease.disease.type_of_transmission,
+                disease.date_of_contraction.strftime('%Y-%m-%d'),
+            ])
+        if len(disease_data) > 1:
+            disease_table = Table(disease_data, colWidths=[6*cm, 6*cm, 5*cm])
+            disease_table.setStyle(TableStyle([
+                ('GRID', (0,0), (-1,-1), 1, colors.black),
+                ('FONT', (0,0), (-1,-1), 'Helvetica', 10),
+                ('BACKGROUND', (0,0), (-1,0), colors.lightblue),
+                ('ALIGN', (0,0), (-1,-1), 'LEFT'),
+                ('VALIGN', (0,0), (-1,-1), 'MIDDLE'),
+                ('LEFTPADDING', (0,0), (-1,-1), 6),
+                ('RIGHTPADDING', (0,0), (-1,-1), 6),
+                ('BACKGROUND', (0,1), (-1,-1), colors.whitesmoke),
+            ]))
+            elements.append(disease_table)
+            elements.append(Paragraph(f"Total Incidents: {context['total_diseases']}", normal_style))
+        else:
+            elements.append(Paragraph("No transmittable diseases recorded.", normal_style))
+        elements.append(Spacer(1, 0.3*cm))
+
+        # Complications
+        elements.append(Paragraph("Complications", subtitle_style))
+        complication_data = [['Complication', 'Notes', 'Date of Contraction']]
+        for complication in complications:
+            complication_data.append([
+                complication.complication.label_complication,
+                complication.notes or 'No notes',
+                complication.date_of_contraction.strftime('%Y-%m-%d'),
+            ])
+        if len(complication_data) > 1:
+            complication_table = Table(complication_data, colWidths=[6*cm, 6*cm, 5*cm])
+            complication_table.setStyle(TableStyle([
+                ('GRID', (0,0), (-1,-1), 1, colors.black),
+                ('FONT', (0,0), (-1,-1), 'Helvetica', 10),
+                ('BACKGROUND', (0,0), (-1,0), colors.lightblue),
+                ('ALIGN', (0,0), (-1,-1), 'LEFT'),
+                ('VALIGN', (0,0), (-1,-1), 'MIDDLE'),
+                ('LEFTPADDING', (0,0), (-1,-1), 6),
+                ('RIGHTPADDING', (0,0), (-1,-1), 6),
+                ('BACKGROUND', (0,1), (-1,-1), colors.whitesmoke),
+            ]))
+            elements.append(complication_table)
+            elements.append(Paragraph(f"Total Incidents: {context['total_complications']}", normal_style))
+        else:
+            elements.append(Paragraph("No complications recorded.", normal_style))
+        elements.append(Spacer(1, 0.5*cm))
+
+        # Mortality
+        elements.append(Paragraph("Mortality", title_style))
+
+        # Deceased Patients
+        elements.append(Paragraph("Deceased Patients", subtitle_style))
+        deceased_data = [['Name', 'CIN', 'Decease Note']]
+        for patient in deceased_patients:
+            deceased_data.append([
+                f"{patient.nom} {patient.prenom}",
+                patient.cin,
+                patient.decease_note or 'No note provided',
+            ])
+        if len(deceased_data) > 1:
+            deceased_table = Table(deceased_data, colWidths=[6*cm, 4*cm, 7*cm])
+            deceased_table.setStyle(TableStyle([
+                ('GRID', (0,0), (-1,-1), 1, colors.black),
+                ('FONT', (0,0), (-1,-1), 'Helvetica', 10),
+                ('BACKGROUND', (0,0), (-1,0), colors.lightblue),
+                ('ALIGN', (0,0), (-1,-1), 'LEFT'),
+                ('VALIGN', (0,0), (-1,-1), 'MIDDLE'),
+                ('LEFTPADDING', (0,0), (-1,-1), 6),
+                ('RIGHTPADDING', (0,0), (-1,-1), 6),
+                ('BACKGROUND', (0,1), (-1,-1), colors.whitesmoke),
+            ]))
+            elements.append(deceased_table)
+        else:
+            elements.append(Paragraph("No deaths recorded.", normal_style))
+        elements.append(Spacer(1, 0.3*cm))
+
+        # Mortality Totals
+        elements.append(Paragraph("Mortality Totals", subtitle_style))
+        elements.append(Paragraph(f"Total Deaths: {context['total_deaths']}", normal_style))
+        elements.append(Spacer(1, 0.5*cm))
+
+        doc.build(elements)
+        pdf = buffer.getvalue()
+        buffer.close()
+
+        response = HttpResponse(content_type='application/pdf')
+        response['Content-Disposition'] = f'attachment; filename="center_report_{center.label}_{context["report_date"]}.pdf"'
+        response.write(pdf)
+        return response
+    
+class CenterDetailView(APIView):
+    permission_classes = [IsAuthenticated, RoleBasedPermission]
+    allowed_roles = ['LOCAL_ADMIN', 'DOCTOR', 'NURSE', 'TECHNICIAN', 'WORKER', 'VIEWER']  # All roles
+
+    def get(self, request):
+        try:
+            tenant = getattr(request, 'tenant', None)
+            if not tenant:
+                logger.error("No tenant found for request by user %s", request.user.username)
+                return Response({"error": "No center associated with this request"}, status=400)
+
+            center = Center.objects.get(id=tenant.id)
+            center_data = {
+                "id": center.id,
+                "sub_domain": center.sub_domain,
+                "label": center.label,
+                "tel": center.tel,
+                "mail": center.mail,
+                "adresse": center.adresse,
+                "governorate": {
+                    "id": center.governorate.id,
+                    "name": center.governorate.name,
+                    "code": center.governorate.code
+                } if center.governorate else None,
+                "delegation": {
+                    "id": center.delegation.id,
+                    "name": center.delegation.name,
+                    "code": center.delegation.code,
+                    "governorate_id": center.delegation.governorate.id
+                } if center.delegation else None,
+                "type_center": center.type_center,
+                "code_type_hemo": center.code_type_hemo,
+                "name_type_hemo": center.name_type_hemo,
+                "center_code": center.center_code
+            }
+            return Response(center_data)
+        except Center.DoesNotExist:
+            logger.error("Center not found for tenant ID %s by user %s", tenant.id, request.user.username)
+            return Response({"error": "Center not found"}, status=404)
+        except Exception as e:
+            logger.error("Error fetching center details for user %s: %s", request.user.username, str(e))
+            return Response({"error": "Internal server error"}, status=500)

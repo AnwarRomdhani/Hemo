@@ -18,11 +18,12 @@ from django.contrib import admin
 from django.urls import path,include
 from django.contrib.auth.views import LoginView, LogoutView
 from Hemo.views import (add_center , list_centers , superadmin_center_detail , add_center_staff,AddCenterAPIView , SuperAdminLoginAPIView ,
-     CheckSubdomainAPIView
+     CheckSubdomainAPIView,CenterListAPIView,GovernorateListAPIView,DelegationListAPIView
 ) 
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+
     path('login/', LoginView.as_view(template_name='centers/login.html'), name='login'),
     path('logout/', LogoutView.as_view(next_page='login'), name='logout'),
 
@@ -36,4 +37,7 @@ urlpatterns = [
     path('api/add-center/', AddCenterAPIView.as_view(), name='add-center'),
     path('api/superadmin-login/', SuperAdminLoginAPIView.as_view(), name='superadmin-login'),
     path('api/check-subdomain/', CheckSubdomainAPIView.as_view(), name='check-subdomain'),
+    path('api/centers/', CenterListAPIView.as_view(), name='center-list'),
+    path('api/governorates/', GovernorateListAPIView.as_view(), name='governorate-list'),
+    path('api/delegations/', DelegationListAPIView.as_view(), name='delegation-list'),
 ]

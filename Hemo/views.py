@@ -3,11 +3,12 @@ from django.contrib.auth import authenticate, login
 from django.contrib.auth.decorators import user_passes_test
 from django.http import HttpResponseRedirect
 from django import forms
-from centers.models import Center, AdministrativeStaff
+from centers.models import Center, AdministrativeStaff,Delegation,Governorate
 from centers.forms import AdministrativeStaffForm  # Use centers.forms
 from .forms import CenterForm
 import logging
 import traceback
+import base64
 from django.db import transaction
 from rest_framework.views import APIView
 from rest_framework.response import Response
@@ -16,6 +17,9 @@ from rest_framework.authentication import BasicAuthentication
 from rest_framework.permissions import IsAuthenticated
 from django.views.decorators.csrf import csrf_exempt
 from django.utils.decorators import method_decorator
+from django.contrib.auth import authenticate
+from rest_framework_simplejwt.tokens import RefreshToken
+
 
 logger = logging.getLogger(__name__)
 
@@ -196,43 +200,54 @@ class AddCenterAPIView(APIView):
             logger.warning("CENTER: Center form invalid: %s", form.errors)
             return Response({"error": "Form validation failed.", "errors": form.errors.as_data()}, status=status.HTTP_400_BAD_REQUEST)
         
-@method_decorator(csrf_exempt, name='dispatch')
+
 class SuperAdminLoginAPIView(APIView):
-    authentication_classes = [BasicAuthentication]
-    permission_classes = [IsAuthenticated]
-
     def post(self, request):
-        logger.debug("HEMO: Received POST request to SuperAdminLoginAPIView. User: %s, Data: %s",
-                    request.user.username, request.data)
+        try:
+            username = request.data.get('username')
+            password = request.data.get('password')
 
-        # Since Basic Auth is used, user is already authenticated
-        user = request.user
+            if not username or not password:
+                logger.warning("Missing username or password in SuperAdminLoginAPIView.")
+                return Response(
+                    {'error': 'Username and password are required.'},
+                    status=status.HTTP_400_BAD_REQUEST
+                )
 
-        # Check if user is superuser
-        if not user.is_superuser:
-            logger.warning("HEMO: Failed superadmin login attempt: %s (not a superuser)", user.username)
+            user = authenticate(username=username, password=password)
+            if not user or not user.is_superuser:
+                logger.warning(f"Invalid superadmin login attempt for username: {username}")
+                return Response(
+                    {'error': 'Invalid credentials or not a superadmin.'},
+                    status=status.HTTP_401_UNAUTHORIZED
+                )
+
+            # Generate JWT tokens
+            refresh = RefreshToken.for_user(user)
+            access_token = str(refresh.access_token)
+            refresh_token = str(refresh)
+
+            logger.info(f"Superadmin {username} logged in successfully.")
+            return Response({
+                'success': True,
+                'data': {
+                    'access_token': access_token,
+                    'refresh_token': refresh_token,
+                    'user': {
+                        'id': user.id,
+                        'username': user.username,
+                        'email': user.email,
+                        'is_superadmin': user.is_superuser
+                    }
+                }
+            }, status=status.HTTP_200_OK)
+
+        except Exception as e:
+            logger.error(f"Error in SuperAdminLoginAPIView: {str(e)}")
             return Response(
-                {"error": "Invalid username or password, or not a superuser."},
-                status=status.HTTP_401_UNAUTHORIZED
+                {'error': 'An error occurred.'},
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR
             )
-
-        # Check if user is not center staff
-        if AdministrativeStaff.objects.filter(user=user).exists():
-            logger.warning("HEMO: Center staff attempted superadmin login: %s", user.username)
-            return Response(
-                {"error": "This account is for center staff, not superadmin."},
-                status=status.HTTP_400_BAD_REQUEST
-            )
-
-        # Successful login
-        logger.info("HEMO: Superadmin logged in: %s", user.username)
-        return Response(
-            {
-                "success": "Superadmin login successful.",
-                "username": user.username
-            },
-            status=status.HTTP_201_CREATED
-        )
     
     
 @method_decorator(csrf_exempt, name='dispatch')
@@ -251,3 +266,143 @@ class CheckSubdomainAPIView(APIView):
             logger.warning("HEMO: Subdomain %s does not exist", subdomain)
             return Response({"error": f"Subdomain {subdomain} does not exist."}, status=status.HTTP_404_NOT_FOUND)
 
+class CenterListAPIView(APIView):
+    def get(self, request):
+        try:
+            label_filter = request.query_params.get('label', None)
+            governorate_id = request.query_params.get('governorate_id', None)
+            delegation_id = request.query_params.get('delegation_id', None)
+
+            centers = Center.objects.all()
+
+            if label_filter:
+                centers = centers.filter(label__icontains=label_filter)
+            if governorate_id:
+                centers = centers.filter(governorate__id=governorate_id)
+            if delegation_id:
+                centers = centers.filter(delegation__id=delegation_id)
+
+            # Manually construct response data
+            centers_data = []
+            for center in centers:
+                center_data = {
+                    'id': center.id,
+                    'sub_domain': center.sub_domain,
+                    'label': center.label,
+                    'tel': center.tel,
+                    'mail': center.mail,
+                    'adresse': center.adresse,
+                    'type_center': center.type_center,
+                    'code_type_hemo': center.code_type_hemo,
+                    'name_type_hemo': center.name_type_hemo,
+                    'center_code': center.center_code,
+                    'governorate': {
+                        'id': center.governorate.id,
+                        'label': center.governorate.name,  # Use name instead of label
+                        'code': center.governorate.code
+                    } if center.governorate else None,
+                    'delegation': {
+                        'id': center.delegation.id,
+                        'label': center.delegation.name,  # Use name instead of label
+                        'code': center.delegation.code,
+                        'governorate': center.delegation.governorate.id
+                    } if center.delegation else None
+                }
+                centers_data.append(center_data)
+
+            logger.info(f"Retrieved {len(centers)} centers with filters: label={label_filter}, governorate_id={governorate_id}, delegation_id={delegation_id}")
+            return Response({'success': True, 'data': centers_data}, status=status.HTTP_200_OK)
+
+        except Exception as e:
+            logger.error(f"Error in CenterListAPIView: {str(e)}")
+            return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+class GovernorateListAPIView(APIView):
+    def get(self, request):
+        try:
+            governorates = Governorate.objects.all()
+            # Manually construct response data
+            governorates_data = [
+                {
+                    'id': gov.id,
+                    'label': gov.name,  # Use name as label
+                    'code': gov.code
+                }
+                for gov in governorates
+            ]
+            logger.info(f"Retrieved {len(governorates)} governorates")
+            return Response({'success': True, 'data': governorates_data}, status=status.HTTP_200_OK)
+
+        except Exception as e:
+            logger.error(f"Error in GovernorateListAPIView: {str(e)}")
+            return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+class DelegationListAPIView(APIView):
+    def get(self, request):
+        try:
+            delegations = Delegation.objects.all()
+            # Manually construct response data
+            delegations_data = [
+                {
+                    'id': delg.id,
+                    'label': delg.name,  # Use name as label
+                    'code': delg.code,
+                    'governorate': delg.governorate.id
+                }
+                for delg in delegations
+            ]
+            logger.info(f"Retrieved {len(delegations)} delegations")
+            return Response({'success': True, 'data': delegations_data}, status=status.HTTP_200_OK)
+
+        except Exception as e:
+            logger.error(f"Error in DelegationListAPIView: {str(e)}")
+            return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        
+
+class SuperAdminLoginAPIView(APIView):
+    def post(self, request):
+        try:
+            # Extract username and password from request body
+            username = request.data.get('username')
+            password = request.data.get('password')
+
+            if not username or not password:
+                logger.warning("Missing username or password in SuperAdminLoginAPIView.")
+                return Response(
+                    {'error': 'Username and password are required.'},
+                    status=status.HTTP_400_BAD_REQUEST
+                )
+
+            # Authenticate user
+            user = authenticate(request, username=username, password=password)
+            if not user or not user.is_superuser:
+                logger.warning(f"Invalid superadmin login attempt for username: {username}")
+                return Response(
+                    {'error': 'Invalid credentials or not a superadmin.'},
+                    status=status.HTTP_401_UNAUTHORIZED
+                )
+
+            # Generate JWT tokens
+            refresh = RefreshToken.for_user(user)
+            logger.info(f"Superadmin {username} logged in successfully with JWT.")
+
+            return Response({
+                'success': True,
+                'data': {
+                    'user': {
+                        'id': user.id,
+                        'username': user.username,
+                        'email': user.email,
+                        'is_superadmin': user.is_superuser
+                    },
+                    'access_token': str(refresh.access_token),
+                    'refresh_token': str(refresh)
+                }
+            }, status=status.HTTP_200_OK)
+
+        except Exception as e:
+            logger.error(f"Error in SuperAdminLoginAPIView: {str(e)}")
+            return Response(
+                {'error': 'An error occurred.'},
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR
+            )

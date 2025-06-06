@@ -66,21 +66,21 @@ class CenterForm(forms.ModelForm):
                 self.add_error('name_type_hemo', "Hemodialysis type name is required for non-private centers.")
         return cleaned_data
 
-class TechnicalStaffForm(forms.ModelForm):
+class AdministrativeStaffForm(forms.ModelForm):
     username = forms.CharField(max_length=150, label='Username', required=True)
     email = forms.EmailField(label='Email', required=True)
     password = forms.CharField(widget=forms.PasswordInput, label='Password', required=True)
-    qualification = forms.CharField(max_length=100, label='Qualification', required=True)
-    role = forms.ChoiceField(choices=TechnicalStaff.ROLE_CHOICES, label='Role', initial='VIEWER', required=True)
+    job_title = forms.CharField(max_length=100, label='Job Title', required=True)
+    role = forms.ChoiceField(choices=AdministrativeStaff.ROLE_CHOICES, label='Role', initial='VIEWER', required=True)
 
     class Meta:
-        model = TechnicalStaff
-        fields = ['nom', 'prenom', 'cin', 'qualification', 'role', 'username', 'email', 'password']
+        model = AdministrativeStaff
+        fields = ['nom', 'prenom', 'cin', 'job_title', 'role', 'username', 'email', 'password']
         widgets = {
             'nom': forms.TextInput(attrs={'placeholder': 'Last Name'}),
             'prenom': forms.TextInput(attrs={'placeholder': 'First Name'}),
             'cin': forms.TextInput(attrs={'placeholder': 'CIN'}),
-            'qualification': forms.TextInput(attrs={'placeholder': 'Qualification'}),
+            'job_title': forms.TextInput(attrs={'placeholder': 'Job Title'}),
             'role': forms.Select(),
             'username': forms.TextInput(attrs={'placeholder': 'Username'}),
             'email': forms.EmailInput(attrs={'placeholder': 'Email'}),
@@ -89,11 +89,11 @@ class TechnicalStaffForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         self.center = kwargs.pop('center', None)
         super().__init__(*args, **kwargs)
-        logger.debug("HEMO: Initializing TechnicalStaffForm with raw data: %s", dict(self.data))
+        logger.debug("HEMO: Initializing AdministrativeStaffForm with raw data: %s", dict(self.data))
         if self.data and not any(k for k in self.data if k != 'csrfmiddlewaretoken'):
             logger.error("HEMO: Form initialized with empty data (excluding csrfmiddlewaretoken)")
             raise forms.ValidationError("Form data is empty. Please submit all required fields.")
-        required_fields = ['nom', 'prenom', 'cin', 'qualification', 'role', 'username', 'email', 'password']
+        required_fields = ['nom', 'prenom', 'cin', 'job_title', 'role', 'username', 'email', 'password']
         if self.data:
             for field in required_fields:
                 if field not in self.data or not self.data[field]:
@@ -106,20 +106,11 @@ class TechnicalStaffForm(forms.ModelForm):
         if not cin:
             logger.error("HEMO: CIN is missing")
             raise forms.ValidationError("CIN is required.")
-        if TechnicalStaff.objects.filter(cin=cin).exists():
-            logger.error("HEMO: Technical staff with CIN %s already exists", cin)
+        if AdministrativeStaff.objects.filter(cin=cin).exists():
+            logger.error("HEMO: Administrative staff with CIN %s already exists", cin)
             raise forms.ValidationError("A staff member with this CIN already exists.")
         logger.debug("HEMO: CIN %s is unique", cin)
         return cin
-
-    def clean_qualification(self):
-        qualification = self.cleaned_data.get('qualification')
-        logger.debug("HEMO: Cleaning qualification: %s", qualification)
-        if not qualification:
-            logger.error("HEMO: Qualification is missing")
-            raise forms.ValidationError("Qualification is required.")
-        logger.debug("HEMO: Qualification %s is valid", qualification)
-        return qualification
 
     def clean_username(self):
         username = self.cleaned_data.get('username')
@@ -163,7 +154,7 @@ class TechnicalStaffForm(forms.ModelForm):
     def clean(self):
         cleaned_data = super().clean()
         logger.debug("HEMO: Running clean with cleaned_data: %s", cleaned_data)
-        required_fields = ['nom', 'prenom', 'cin', 'qualification', 'role', 'username', 'email', 'password']
+        required_fields = ['nom', 'prenom', 'cin', 'job_title', 'role', 'username', 'email', 'password']
         for field in required_fields:
             if field not in cleaned_data or cleaned_data[field] is None:
                 logger.error("HEMO: Missing required field in cleaned_data: %s", field)
@@ -171,14 +162,14 @@ class TechnicalStaffForm(forms.ModelForm):
         return cleaned_data
 
     def save(self, commit=True):
-        logger.debug("HEMO: Starting save for TechnicalStaffForm with cleaned data: %s", self.cleaned_data)
+        logger.debug("HEMO: Starting save for AdministrativeStaffForm with cleaned data: %s", self.cleaned_data)
         staff = super().save(commit=False)
         username = self.cleaned_data.get('username')
         email = self.cleaned_data.get('email')
         password = self.cleaned_data.get('password')
         if not all([username, email, password]):
             logger.error("HEMO: Missing required fields for user creation: username=%s, email=%s, password=%s",
-                        username, email, password)
+                         username, email, password)
             raise forms.ValidationError("Username, email, and password are required for user creation.")
         logger.debug("HEMO: Attempting to create user: %s", username)
         try:
@@ -205,10 +196,10 @@ class TechnicalStaffForm(forms.ModelForm):
             try:
                 logger.debug("HEMO: Saving staff with user: %s (ID: %s)", staff.user, staff.user.id)
                 staff.save()
-                logger.info("HEMO: Saved TechnicalStaff: %s %s (ID: %s, User ID: %s)",
-                           staff.nom, staff.prenom, staff.id, staff.user.id)
+                logger.info("HEMO: Saved AdministrativeStaff: %s %s (ID: %s, User ID: %s)",
+                            staff.nom, staff.prenom, staff.id, staff.user.id)
             except Exception as e:
-                logger.error("HEMO: Failed to save TechnicalStaff: %s", str(e))
+                logger.error("HEMO: Failed to save AdministrativeStaff: %s", str(e))
                 if staff.user:
                     staff.user.delete()
                     logger.info("HEMO: Deleted orphaned user: %s", username)
@@ -332,7 +323,7 @@ class MedicalStaffForm(forms.ModelForm):
         password = self.cleaned_data.get('password')
         if not all([username, email, password]):
             logger.error("HEMO: Missing required fields for user creation: username=%s, email=%s, password=%s",
-                        username, email, password)
+                         username, email, password)
             raise forms.ValidationError("Username, email, and password are required for user creation.")
         logger.debug("HEMO: Attempting to create user: %s", username)
         try:
@@ -360,7 +351,7 @@ class MedicalStaffForm(forms.ModelForm):
                 logger.debug("HEMO: Saving staff with user: %s (ID: %s)", staff.user, staff.user.id)
                 staff.save()
                 logger.info("HEMO: Saved MedicalStaff: %s %s (ID: %s, User ID: %s)",
-                           staff.nom, staff.prenom, staff.id, staff.user.id)
+                            staff.nom, staff.prenom, staff.id, staff.user.id)
             except Exception as e:
                 logger.error("HEMO: Failed to save MedicalStaff: %s", str(e))
                 if staff.user:
@@ -483,7 +474,7 @@ class ParamedicalStaffForm(forms.ModelForm):
         password = self.cleaned_data.get('password')
         if not all([username, email, password]):
             logger.error("HEMO: Missing required fields for user creation: username=%s, email=%s, password=%s",
-                        username, email, password)
+                         username, email, password)
             raise forms.ValidationError("Username, email, and password are required for user creation.")
         logger.debug("HEMO: Attempting to create user: %s", username)
         try:
@@ -511,7 +502,7 @@ class ParamedicalStaffForm(forms.ModelForm):
                 logger.debug("HEMO: Saving staff with user: %s (ID: %s)", staff.user, staff.user.id)
                 staff.save()
                 logger.info("HEMO: Saved ParamedicalStaff: %s %s (ID: %s, User ID: %s)",
-                           staff.nom, staff.prenom, staff.id, staff.user.id)
+                            staff.nom, staff.prenom, staff.id, staff.user.id)
             except Exception as e:
                 logger.error("HEMO: Failed to save ParamedicalStaff: %s", str(e))
                 if staff.user:
@@ -522,21 +513,21 @@ class ParamedicalStaffForm(forms.ModelForm):
             logger.debug("HEMO: Save deferred (commit=False)")
         return staff
 
-class AdministrativeStaffForm(forms.ModelForm):
+class TechnicalStaffForm(forms.ModelForm):
     username = forms.CharField(max_length=150, label='Username', required=True)
     email = forms.EmailField(label='Email', required=True)
     password = forms.CharField(widget=forms.PasswordInput, label='Password', required=True)
-    job_title = forms.CharField(max_length=100, label='Job Title', required=True)
-    role = forms.ChoiceField(choices=AdministrativeStaff.ROLE_CHOICES, label='Role', initial='VIEWER', required=True)
+    qualification = forms.CharField(max_length=100, label='Qualification', required=True)
+    role = forms.ChoiceField(choices=TechnicalStaff.ROLE_CHOICES, label='Role', initial='TECHNICAL', required=True)
 
     class Meta:
-        model = AdministrativeStaff
-        fields = ['nom', 'prenom', 'cin', 'job_title', 'role', 'username', 'email', 'password']
+        model = TechnicalStaff
+        fields = ['nom', 'prenom', 'cin', 'qualification', 'role', 'username', 'email', 'password']
         widgets = {
             'nom': forms.TextInput(attrs={'placeholder': 'Last Name'}),
             'prenom': forms.TextInput(attrs={'placeholder': 'First Name'}),
             'cin': forms.TextInput(attrs={'placeholder': 'CIN'}),
-            'job_title': forms.TextInput(attrs={'placeholder': 'Job Title'}),
+            'qualification': forms.TextInput(attrs={'placeholder': 'Qualification'}),
             'role': forms.Select(),
             'username': forms.TextInput(attrs={'placeholder': 'Username'}),
             'email': forms.EmailInput(attrs={'placeholder': 'Email'}),
@@ -545,11 +536,11 @@ class AdministrativeStaffForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         self.center = kwargs.pop('center', None)
         super().__init__(*args, **kwargs)
-        logger.debug("HEMO: Initializing Hemo AdministrativeStaffForm with raw data: %s", dict(self.data))
+        logger.debug("HEMO: Initializing TechnicalStaffForm with raw data: %s", dict(self.data))
         if self.data and not any(k for k in self.data if k != 'csrfmiddlewaretoken'):
             logger.error("HEMO: Form initialized with empty data (excluding csrfmiddlewaretoken)")
             raise forms.ValidationError("Form data is empty. Please submit all required fields.")
-        required_fields = ['nom', 'prenom', 'cin', 'job_title', 'role', 'username', 'email', 'password']
+        required_fields = ['nom', 'prenom', 'cin', 'qualification', 'role', 'username', 'email', 'password']
         if self.data:
             for field in required_fields:
                 if field not in self.data or not self.data[field]:
@@ -562,11 +553,20 @@ class AdministrativeStaffForm(forms.ModelForm):
         if not cin:
             logger.error("HEMO: CIN is missing")
             raise forms.ValidationError("CIN is required.")
-        if AdministrativeStaff.objects.filter(cin=cin).exists():
-            logger.error("HEMO: Administrative staff with CIN %s already exists", cin)
+        if TechnicalStaff.objects.filter(cin=cin).exists():
+            logger.error("HEMO: Technical staff with CIN %s already exists", cin)
             raise forms.ValidationError("A staff member with this CIN already exists.")
         logger.debug("HEMO: CIN %s is unique", cin)
         return cin
+
+    def clean_qualification(self):
+        qualification = self.cleaned_data.get('qualification')
+        logger.debug("HEMO: Cleaning qualification: %s", qualification)
+        if not qualification:
+            logger.error("HEMO: Qualification is missing")
+            raise forms.ValidationError("Qualification is required.")
+        logger.debug("HEMO: Qualification %s is valid", qualification)
+        return qualification
 
     def clean_username(self):
         username = self.cleaned_data.get('username')
@@ -610,7 +610,7 @@ class AdministrativeStaffForm(forms.ModelForm):
     def clean(self):
         cleaned_data = super().clean()
         logger.debug("HEMO: Running clean with cleaned_data: %s", cleaned_data)
-        required_fields = ['nom', 'prenom', 'cin', 'job_title', 'role', 'username', 'email', 'password']
+        required_fields = ['nom', 'prenom', 'cin', 'qualification', 'role', 'username', 'email', 'password']
         for field in required_fields:
             if field not in cleaned_data or cleaned_data[field] is None:
                 logger.error("HEMO: Missing required field in cleaned_data: %s", field)
@@ -618,14 +618,14 @@ class AdministrativeStaffForm(forms.ModelForm):
         return cleaned_data
 
     def save(self, commit=True):
-        logger.debug("HEMO: Starting save for Hemo AdministrativeStaffForm with cleaned data: %s", self.cleaned_data)
+        logger.debug("HEMO: Starting save for TechnicalStaffForm with cleaned data: %s", self.cleaned_data)
         staff = super().save(commit=False)
         username = self.cleaned_data.get('username')
         email = self.cleaned_data.get('email')
         password = self.cleaned_data.get('password')
         if not all([username, email, password]):
             logger.error("HEMO: Missing required fields for user creation: username=%s, email=%s, password=%s",
-                        username, email, password)
+                         username, email, password)
             raise forms.ValidationError("Username, email, and password are required for user creation.")
         logger.debug("HEMO: Attempting to create user: %s", username)
         try:
@@ -636,10 +636,13 @@ class AdministrativeStaffForm(forms.ModelForm):
             )
             logger.info("HEMO: Created new user: %s (ID: %s)", username, user.id)
             staff.user = user
-            # Create UserProfile and send verification email
             profile = UserProfile.objects.create(user=user)
             verification_code = profile.generate_verification_code()
-            send_verification_email(user, verification_code)
+            try:
+                send_verification_email(user, verification_code)
+            except Exception as e:
+                logger.error("HEMO: Failed to send verification email to %s: %s", email, str(e))
+                raise forms.ValidationError(f"Failed to send verification email: {str(e)}")
         except Exception as e:
             logger.error("HEMO: Failed to create user %s: %s", username, str(e))
             raise forms.ValidationError(f"Failed to create user: {str(e)}")
@@ -649,10 +652,10 @@ class AdministrativeStaffForm(forms.ModelForm):
             try:
                 logger.debug("HEMO: Saving staff with user: %s (ID: %s)", staff.user, staff.user.id)
                 staff.save()
-                logger.info("HEMO: Saved AdministrativeStaff: %s %s (ID: %s, User ID: %s)",
-                           staff.nom, staff.prenom, staff.id, staff.user.id)
+                logger.info("HEMO: Saved TechnicalStaff: %s %s (ID: %s, User ID: %s)",
+                            staff.nom, staff.prenom, staff.id, staff.user.id)
             except Exception as e:
-                logger.error("HEMO: Failed to save AdministrativeStaff: %s", str(e))
+                logger.error("HEMO: Failed to save TechnicalStaff: %s", str(e))
                 if staff.user:
                     staff.user.delete()
                     logger.info("HEMO: Deleted orphaned user: %s", username)
@@ -660,16 +663,6 @@ class AdministrativeStaffForm(forms.ModelForm):
         else:
             logger.debug("HEMO: Save deferred (commit=False)")
         return staff
-
-class VerificationForm(forms.Form):
-    verification_code = forms.CharField(max_length=6, label='Verification Code', required=True)
-
-    def clean_verification_code(self):
-        code = self.cleaned_data.get('verification_code')
-        if not code or not code.isdigit() or len(code) != 6:
-            logger.error("Invalid verification code format: %s", code)
-            raise forms.ValidationError("Verification code must be a 6-digit number.")
-        return code
 
 class WorkerStaffForm(forms.ModelForm):
     username = forms.CharField(max_length=150, label='Username', required=True)
@@ -774,7 +767,7 @@ class WorkerStaffForm(forms.ModelForm):
         password = self.cleaned_data.get('password')
         if not all([username, email, password]):
             logger.error("HEMO: Missing required fields for user creation: username=%s, email=%s, password=%s",
-                        username, email, password)
+                         username, email, password)
             raise forms.ValidationError("Username, email, and password are required for user creation.")
         logger.debug("HEMO: Attempting to create user: %s", username)
         try:
@@ -802,7 +795,7 @@ class WorkerStaffForm(forms.ModelForm):
                 logger.debug("HEMO: Saving staff with user: %s (ID: %s)", staff.user, staff.user.id)
                 staff.save()
                 logger.info("HEMO: Saved WorkerStaff: %s %s (ID: %s, User ID: %s)",
-                           staff.nom, staff.prenom, staff.id, staff.user.id)
+                            staff.nom, staff.prenom, staff.id, staff.user.id)
             except Exception as e:
                 logger.error("HEMO: Failed to save WorkerStaff: %s", str(e))
                 if staff.user:
@@ -812,6 +805,17 @@ class WorkerStaffForm(forms.ModelForm):
         else:
             logger.debug("HEMO: Save deferred (commit=False)")
         return staff
+
+class VerificationForm(forms.Form):
+    verification_code = forms.CharField(max_length=6, label='Verification Code', required=True)
+
+    def clean_verification_code(self):
+        code = self.cleaned_data.get('verification_code')
+        if not code or not code.isdigit() or len(code) != 6:
+            logger.error("Invalid verification code format: %s", code)
+            raise forms.ValidationError("Verification code must be a 6-digit number.")
+        return code
+
 
 class MachineForm(forms.ModelForm):
     new_membrane_type = forms.CharField(max_length=100, required=False, label="New Membrane Type")
@@ -892,7 +896,10 @@ class PatientForm(forms.ModelForm):
 
     class Meta:
         model = Patient
-        fields = ['nom', 'prenom', 'cin', 'cnam', 'new_cnam_number', 'entry_date', 'previously_dialysed', 'date_first_dia', 'blood_type', 'gender', 'weight', 'age']
+        fields = [
+            'nom', 'prenom', 'cin', 'cnam', 'new_cnam_number', 'entry_date', 'previously_dialysed',
+            'date_first_dia', 'blood_type', 'gender', 'weight', 'age', 'hypertension', 'diabetes'  # New fields
+        ]
         widgets = {
             'nom': forms.TextInput(attrs={'placeholder': 'Last Name', 'class': 'form-control'}),
             'prenom': forms.TextInput(attrs={'placeholder': 'First Name', 'class': 'form-control'}),
@@ -900,9 +907,11 @@ class PatientForm(forms.ModelForm):
             'cnam': forms.Select(attrs={'class': 'form-control'}),
             'entry_date': forms.DateInput(attrs={'type': 'date', 'class': 'form-control'}),
             'previously_dialysed': forms.CheckboxInput(attrs={'class': 'form-control'}),
-            'date_first_dia': forms.DateInput(attrs={'type': 'date', 'class': 'form-control'}),
+            'date_first_dia': forms.DateInput(attrs={'type': 'date','class' : 'form-control'}),
             'blood_type': forms.Select(attrs={'class': 'form-control'}),
             'gender': forms.Select(attrs={'class': 'form-control'}),
+            'hypertension': forms.CheckboxInput(attrs={'class': 'form-check-input'}),  # New field
+            'diabetes': forms.CheckboxInput(attrs={'class': 'form-check-input'}),  # New field
         }
 
     def __init__(self, *args, **kwargs):
@@ -913,6 +922,8 @@ class PatientForm(forms.ModelForm):
         self.fields['blood_type'].choices = Patient.BLOOD_TYPE_CHOICES
         self.fields['gender'].choices = Patient.GENDER_CHOICES
         self.fields['gender'].required = False
+        self.fields['hypertension'].required = False  # New field
+        self.fields['diabetes'].required = False  # New field
 
     def clean(self):
         cleaned_data = super().clean()
@@ -974,12 +985,36 @@ class DeceasePatientForm(forms.ModelForm):
 class HemodialysisSessionForm(forms.ModelForm):
     class Meta:
         model = HemodialysisSession
-        fields = ['type', 'method', 'date_of_session', 'responsible_doc']
+        fields = [
+            'type', 'method', 'date_of_session', 'responsible_doc',
+            'pre_dialysis_bp', 'during_dialysis_bp', 'post_dialysis_bp', 'heart_rate',
+            'creatinine', 'urea', 'potassium', 'hemoglobin', 'hematocrit', 'albumin',
+            'kt_v', 'urine_output', 'dry_weight', 'fluid_removal_rate', 'dialysis_duration',
+            'vascular_access_type', 'dialyzer_type', 'severity_of_case',
+        ]
         widgets = {
             'type': forms.Select(attrs={'class': 'form-control'}),
             'method': forms.Select(attrs={'class': 'form-control'}),
             'date_of_session': forms.DateInput(attrs={'type': 'date', 'class': 'form-control'}),
             'responsible_doc': forms.Select(attrs={'class': 'form-control'}),
+            'pre_dialysis_bp': forms.NumberInput(attrs={'class': 'form-control', 'step': '0.1'}),
+            'during_dialysis_bp': forms.NumberInput(attrs={'class': 'form-control', 'step': '0.1'}),
+            'post_dialysis_bp': forms.NumberInput(attrs={'class': 'form-control', 'step': '0.1'}),
+            'heart_rate': forms.NumberInput(attrs={'class': 'form-control', 'step': '0.1'}),
+            'creatinine': forms.NumberInput(attrs={'class': 'form-control', 'step': '0.1'}),
+            'urea': forms.NumberInput(attrs={'class': 'form-control', 'step': '0.1'}),
+            'potassium': forms.NumberInput(attrs={'class': 'form-control', 'step': '0.1'}),
+            'hemoglobin': forms.NumberInput(attrs={'class': 'form-control', 'step': '0.1'}),
+            'hematocrit': forms.NumberInput(attrs={'class': 'form-control', 'step': '0.1'}),
+            'albumin': forms.NumberInput(attrs={'class': 'form-control', 'step': '0.1'}),
+            'kt_v': forms.NumberInput(attrs={'class': 'form-control', 'step': '0.1'}),
+            'urine_output': forms.NumberInput(attrs={'class': 'form-control', 'step': '1'}),
+            'dry_weight': forms.NumberInput(attrs={'class': 'form-control', 'step': '0.1'}),
+            'fluid_removal_rate': forms.NumberInput(attrs={'class': 'form-control', 'step': '1'}),
+            'dialysis_duration': forms.NumberInput(attrs={'class': 'form-control', 'step': '0.1'}),
+            'vascular_access_type': forms.Select(attrs={'class': 'form-control'}),
+            'dialyzer_type': forms.Select(attrs={'class': 'form-control'}),
+            'severity_of_case': forms.Select(attrs={'class': 'form-control'}),
         }
 
     def __init__(self, *args, **kwargs):
@@ -990,9 +1025,17 @@ class HemodialysisSessionForm(forms.ModelForm):
             self.fields['responsible_doc'].queryset = MedicalStaff.objects.filter(center=self.center)
         self.fields['type'].queryset = TypeHemo.objects.all()
         self.fields['method'].queryset = MethodHemo.objects.all()
-        # Ensure all fields are required
+        # Core fields are required
         for field in ['type', 'method', 'date_of_session', 'responsible_doc']:
             self.fields[field].required = True
+        # All other fields are optional
+        for field in [
+            'pre_dialysis_bp', 'during_dialysis_bp', 'post_dialysis_bp', 'heart_rate',
+            'creatinine', 'urea', 'potassium', 'hemoglobin', 'hematocrit', 'albumin',
+            'kt_v', 'urine_output', 'dry_weight', 'fluid_removal_rate', 'dialysis_duration',
+            'vascular_access_type', 'dialyzer_type', 'severity_of_case',
+        ]:
+            self.fields[field].required = False
 
     def clean(self):
         cleaned_data = super().clean()
@@ -1000,6 +1043,24 @@ class HemodialysisSessionForm(forms.ModelForm):
         type_hemo = cleaned_data.get('type')
         method = cleaned_data.get('method')
         responsible_doc = cleaned_data.get('responsible_doc')
+        pre_dialysis_bp = cleaned_data.get('pre_dialysis_bp')
+        during_dialysis_bp = cleaned_data.get('during_dialysis_bp')
+        post_dialysis_bp = cleaned_data.get('post_dialysis_bp')
+        heart_rate = cleaned_data.get('heart_rate')
+        creatinine = cleaned_data.get('creatinine')
+        urea = cleaned_data.get('urea')
+        potassium = cleaned_data.get('potassium')
+        hemoglobin = cleaned_data.get('hemoglobin')
+        hematocrit = cleaned_data.get('hematocrit')
+        albumin = cleaned_data.get('albumin')
+        kt_v = cleaned_data.get('kt_v')
+        urine_output = cleaned_data.get('urine_output')
+        dry_weight = cleaned_data.get('dry_weight')
+        fluid_removal_rate = cleaned_data.get('fluid_removal_rate')
+        dialysis_duration = cleaned_data.get('dialysis_duration')
+        vascular_access_type = cleaned_data.get('vascular_access_type')
+        dialyzer_type = cleaned_data.get('dialyzer_type')
+        severity_of_case = cleaned_data.get('severity_of_case')
 
         # Validate type and method compatibility
         if type_hemo and method and method.type_hemo != type_hemo:
@@ -1009,11 +1070,44 @@ class HemodialysisSessionForm(forms.ModelForm):
         if responsible_doc and self.center and responsible_doc.center != self.center:
             self.add_error('responsible_doc', 'Selected doctor does not belong to this center.')
 
-        # Ensure all required fields
+        # Ensure required fields
         required_fields = ['type', 'method', 'date_of_session', 'responsible_doc']
         for field in required_fields:
             if not cleaned_data.get(field):
                 self.add_error(field, f'{field.replace("_", " ").title()} is required.')
+
+        # Validate float fields
+        for field, value, min_val, max_val, unit in [
+            ('pre_dialysis_bp', pre_dialysis_bp, 50, 300, 'mmHg'),
+            ('during_dialysis_bp', during_dialysis_bp, 50, 300, 'mmHg'),
+            ('post_dialysis_bp', post_dialysis_bp, 50, 300, 'mmHg'),
+            ('heart_rate', heart_rate, 30, 200, 'beats per minute'),
+            ('creatinine', creatinine, 0.5, 20, 'mg/dL'),
+            ('urea', urea, 10, 200, 'mg/dL'),
+            ('potassium', potassium, 2, 8, 'mEq/L'),
+            ('hemoglobin', hemoglobin, 5, 18, 'g/dL'),
+            ('hematocrit', hematocrit, 15, 55, '%'),
+            ('albumin', albumin, 2, 5.5, 'g/dL'),
+            ('kt_v', kt_v, 0.5, 2.5, ''),
+            ('urine_output', urine_output, 0, 2000, 'mL/day'),
+            ('dry_weight', dry_weight, 30, 150, 'kg'),
+            ('fluid_removal_rate', fluid_removal_rate, 0, 2000, 'mL/hour'),
+            ('dialysis_duration', dialysis_duration, 1, 8, 'hours'),
+        ]:
+            if value is not None:
+                if not isinstance(value, (int, float)):
+                    self.add_error(field, f'{field.replace("_", " ").title()} must be a number.')
+                elif value < min_val or value > max_val:
+                    unit_str = f' {unit}' if unit else ''
+                    self.add_error(field, f'{field.replace("_", " ").title()} must be between {min_val} and {max_val}{unit_str}.')
+
+        # Validate choice fields
+        if vascular_access_type and vascular_access_type not in ['Catheter', 'Graft', 'Fistula']:
+            self.add_error('vascular_access_type', 'Invalid vascular access type.')
+        if dialyzer_type and dialyzer_type not in ['High', 'Low']:
+            self.add_error('dialyzer_type', 'Invalid dialyzer type.')
+        if severity_of_case and severity_of_case not in ['Mild', 'Moderate', 'Severe']:
+            self.add_error('severity_of_case', 'Invalid severity level.')
 
         return cleaned_data
 
@@ -1028,7 +1122,6 @@ class HemodialysisSessionForm(forms.ModelForm):
                 logger.error("HEMO: Failed to save HemodialysisSession: %s", str(e))
                 raise
         return session
-    
 
 class TransmittableDiseaseForm(forms.ModelForm):
     new_disease_name = forms.CharField(max_length=255, required=False, label="New Disease Name")

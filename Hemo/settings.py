@@ -29,10 +29,13 @@ ALLOWED_HOSTS = ['localhost','.localhost']
 
 
 # Application definition
-CORS_ORIGIN_REGEX_WHITELIST = [
-    r'^http://[a-zA-Z0-9-]+\.localhost:3000$',  # Matches center1.localhost:3000, center2.localhost:3000, etc.
-    r'^http://localhost:3000$',  # Matches localhost:3000
+CORS_ALLOWED_ORIGIN_REGEXES = [
+    r"^http://[a-zA-Z0-9-]+\.localhost:3000$",  # center1.localhost:3000 etc.
+    r"^http://localhost:3000$",                 # plain localhost
 ]
+
+CORS_ALLOW_CREDENTIALS = True
+
 INSTALLED_APPS = [
     'rest_framework',
     'corsheaders',
@@ -130,10 +133,23 @@ REST_FRAMEWORK = {
 
 from datetime import timedelta
 
+
+def custom_jwt_payload_handler(user):
+    from rest_framework_simplejwt.utils import jwt_payload_handler
+    payload = jwt_payload_handler(user)
+    payload['is_superuser'] = user.is_superuser
+    payload['username'] = user.username
+    return payload
+
 SIMPLE_JWT = {
     'ACCESS_TOKEN_LIFETIME': timedelta(minutes=60),
     'REFRESH_TOKEN_LIFETIME': timedelta(days=1),
     'AUTH_HEADER_TYPES': ('Bearer',),
+    'USER_ID_CLAIM': 'user_id',
+    'USER_ID_FIELD': 'id',
+    'TOKEN_USER_CLASS': 'django.contrib.auth.models.User',
+    'JWT_PAYLOAD_HANDLER': custom_jwt_payload_handler,
+    'AUTH_TOKEN_CLASSES': ('rest_framework_simplejwt.tokens.AccessToken',),
 }
 # Internationalization
 # https://docs.djangoproject.com/en/5.1/topics/i18n/
@@ -159,20 +175,33 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,
+    'formatters': {
+        'verbose': {
+            'format': '[{asctime}] {levelname} {name} {message}',
+            'style': '{',
+        },
+    },
     'handlers': {
         'console': {
             'class': 'logging.StreamHandler',
+            'formatter': 'verbose',
         },
         'file': {
             'class': 'logging.FileHandler',
             'filename': 'debug.log',
+            'formatter': 'verbose',
         },
     },
     'loggers': {
+        'centers.permissions': {
+            'handlers': ['console', 'file'],
+            'level': 'DEBUG',
+            'propagate': False,
+        },
         'centers.views': {
             'handlers': ['console', 'file'],
             'level': 'DEBUG',
-            'propagate': True,
+            'propagate': False,
         },
     },
 }

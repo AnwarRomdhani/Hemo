@@ -4,6 +4,7 @@
     <title>{{ center.label }} - Activity Report</title>
 </head>
 <body>
+    <img src="logo.png" style="width: 4cm; height: 2cm; display: block; margin: 0 auto;">
     <h1 style="text-align: center; font-size: 16pt; font-weight: bold;">{{ center.label }} - Activity Report</h1>
     <p style="font-size: 10pt;">Date: {{ report_date }}</p>
 
@@ -32,7 +33,7 @@
     </table>
 
     <h2 style="text-align: center; font-size: 16pt; font-weight: bold;">Staff Members</h2>
-    <h3 style="font-size: 12pt; color: blue; text-decoration: underline;">Administrative Staff</h3>
+    <h3 style="font-size: 12pt; color: black; text-decoration: none;">Administrative Staff</h3>
     {% if administrative_staff or technical_staff %}
     <table border="1" style="width: 100%; font-size: 10pt;">
         <tr style="background-color: #b3d9ff;">
@@ -59,7 +60,7 @@
     <p style="font-size: 10pt;">No Administrative Staff recorded.</p>
     {% endif %}
 
-    <h3 style="font-size: 12pt; color: blue; text-decoration: underline;">Para & Medical Staff</h3>
+    <h3 style="font-size: 12pt; color: black; text-decoration: none;">Para & Medical Staff</h3>
     {% if medical_staff or paramedical_staff %}
     <table border="1" style="width: 100%; font-size: 10pt;">
         <tr style="background-color: #b3d9ff;">
@@ -86,7 +87,7 @@
     <p style="font-size: 10pt;">No Para & Medical Staff recorded.</p>
     {% endif %}
 
-    <h3 style="font-size: 12pt; color: blue; text-decoration: underline;">Workers Staff</h3>
+    <h3 style="font-size: 12pt; color: black; text-decoration: none;">Workers Staff</h3>
     {% if worker_staff %}
     <table border="1" style="width: 100%; font-size: 10pt;">
         <tr style="background-color: #b3d9ff;">
@@ -140,14 +141,19 @@
     {% endif %}
 
     <h2 style="text-align: center; font-size: 16pt; font-weight: bold;">Activity</h2>
-    <h3 style="font-size: 12pt; color: blue; text-decoration: underline;">Hemodialysis Sessions</h3>
+    <h3 style="font-size: 12pt; color: black; text-decoration: none;">Hemodialysis Sessions</h3>
     {% if sessions %}
     <table border="1" style="width: 100%; font-size: 10pt;">
         <tr style="background-color: #b3d9ff;">
             <th style="padding: 6px;">Type</th>
             <th style="padding: 6px;">Method</th>
             <th style="padding: 6px;">Date</th>
-            <th style="padding: 6px;">Responsible Doctor</th>
+            <th style="padding: 6px;">Doctor</th>
+            <th style="padding: 6px;">Pre-BP</th>
+            <th style="padding: 6px;">Post-BP</th>
+            <th style="padding: 6px;">Duration</th>
+            <th style="padding: 6px;">Access</th>
+            <th style="padding: 6px;">Severity</th>
         </tr>
         {% for session in sessions %}
         <tr style="background-color: {% cycle '#f5f5f5' '#ffffff' %}">
@@ -155,6 +161,11 @@
             <td style="padding: 6px;">{{ session.method.name }}</td>
             <td style="padding: 6px;">{{ session.date_of_session|date:"Y-m-d" }}</td>
             <td style="padding: 6px;">{{ session.responsible_doc.nom }} {{ session.responsible_doc.prenom }}</td>
+            <td style="padding: 6px;">{% if session.pre_dialysis_bp %}{{ session.pre_dialysis_bp|floatformat:1 }}{% else %}N/A{% endif %}</td>
+            <td style="padding: 6px;">{% if session.post_dialysis_bp %}{{ session.post_dialysis_bp|floatformat:1 }}{% else %}N/A{% endif %}</td>
+            <td style="padding: 6px;">{% if session.dialysis_duration %}{{ session.dialysis_duration|floatformat:1 }}{% else %}N/A{% endif %}</td>
+            <td style="padding: 6px;">{{ session.vascular_access_type|default:"N/A" }}</td>
+            <td style="padding: 6px;">{{ session.severity_of_case|default:"N/A" }}</td>
         </tr>
         {% endfor %}
     </table>
@@ -162,7 +173,7 @@
     <p style="font-size: 10pt;">No hemodialysis sessions recorded.</p>
     {% endif %}
 
-    <h3 style="font-size: 12pt; color: blue; text-decoration: underline;">Transplantations</h3>
+    <h3 style="font-size: 12pt; color: black; text-decoration: none;">Transplantations</h3>
     {% if transplantations %}
     <table border="1" style="width: 100%; font-size: 10pt;">
         <tr style="background-color: #b3d9ff;">
@@ -183,7 +194,7 @@
     {% endif %}
 
     <h2 style="text-align: center; font-size: 16pt; font-weight: bold;">Morbidity</h2>
-    <h3 style="font-size: 12pt; color: blue; text-decoration: underline;">Transmittable Diseases</h3>
+    <h3 style="font-size: 12pt; color: black; text-decoration: none;">Transmittable Diseases</h3>
     {% if diseases %}
     <table border="1" style="width: 100%; font-size: 10pt;">
         <tr style="background-color: #b3d9ff;">
@@ -204,7 +215,7 @@
     <p style="font-size: 10pt;">No transmittable diseases recorded.</p>
     {% endif %}
 
-    <h3 style="font-size: 12pt; color: blue; text-decoration: underline;">Complications</h3>
+    <h3 style="font-size: 12pt; color: black; text-decoration: none;">Complications</h3>
     {% if complications %}
     <table border="1" style="width: 100%; font-size: 10pt;">
         <tr style="background-color: #b3d9ff;">
@@ -226,7 +237,7 @@
     {% endif %}
 
     <h2 style="text-align: center; font-size: 16pt; font-weight: bold;">Mortality</h2>
-    <h3 style="font-size: 12pt; color: blue; text-decoration: underline;">Deceased Patients</h3>
+    <h3 style="font-size: 12pt; color: black; text-decoration: none;">Deceased Patients</h3>
     {% if deceased_patients %}
     <table border="1" style="width: 100%; font-size: 10pt;">
         <tr style="background-color: #b3d9ff;">
@@ -246,7 +257,7 @@
     <p style="font-size: 10pt;">No deaths recorded.</p>
     {% endif %}
 
-    <h3 style="font-size: 12pt; color: blue; text-decoration: underline;">Mortality Totals</h3>
+    <h3 style="font-size: 12pt; color: black; text-decoration: none;">Mortality Totals</h3>
     <p style="font-size: 10pt;">Total Deaths: {{ total_deaths }}</p>
 </body>
-</html>
+</html> 

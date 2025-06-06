@@ -1,11 +1,6 @@
 # urls.py (updated)
 from django.urls import path
-from .views import (center_detail, 
-                   add_technical_staff, add_medical_staff, add_paramedical_staff,
-                   export_pdf,load_delegations,add_machine,add_patient,add_cnam,
-                   list_patients,patient_detail,load_methods,add_disease_ref,add_complication_ref,CenterLoginView,verify_email,add_administrative_staff,add_worker_staff
-                   ,center_users_list,delete_staff,add_transplantation_ref,declare_deceased,
-
+from .views import (
                    CenterLoginAPIView,AddAdministrativeStaffAPIView,AddMedicalStaffAPIView,AddParamedicalStaffAPIView,
                    AddTechnicalStaffAPIView,AddWorkerStaffAPIView,AddPatientAPIView,
                    DeclareDeceasedAPIView,AddComplicationsAPIView,AddHemodialysisSessionAPIView,
@@ -16,34 +11,13 @@ from .views import (center_detail,
                    CNAMListAPIView,AdministrativeStaffListAPIView,ParamedicalStaffListAPIView,MedicalStaffListAPIView,WorkerStaffListAPIView
                    ,TechnicalStaffListAPIView,UpdateAdministrativeStaffAPIView,UpdateMedicalStaffAPIView,UpdateParamedicalStaffAPIView
                    ,UpdateAdministrativeStaffAPIView,UpdateTechnicalStaffAPIView,UpdateWorkerStaffAPIView,DeleteAdministrativeStaffAPIView,DeleteMedicalStaffAPIView
-                   ,DeleteParamedicalStaffAPIView,DeleteTechnicalStaffAPIView,DeleteWorkerStaffAPIView
+                   ,DeleteParamedicalStaffAPIView,DeleteTechnicalStaffAPIView,DeleteWorkerStaffAPIView,MachineListAPIView,
+                     MembraneListAPIView,ExportPDFAPIView, FiltreListAPIView,AddFiltreAPIView,AddMembraneAPIView,
+                     VerifyUserAPIView,UpdateUserProfileAPIView,CenterDetailView,HemodialysisPredictionView,GrantAdminAccordAPIView
                    )
 from django.contrib.auth.views import LoginView, LogoutView
 
 urlpatterns = [
-    path('add_patient/', add_patient, name='add_patient'),
-    path('', center_detail, name='center_detail'),
-    path('add_cnam/',add_cnam, name='add_cnam'),
-    path('add-technical-staff/', add_technical_staff, name='add_technical_staff'),
-    path('add-medical-staff/', add_medical_staff, name='add_medical_staff'),
-    path('add-paramedical-staff/', add_paramedical_staff, name='add_paramedical_staff'),
-    path('add-adminstrative-staff/', add_administrative_staff, name='add_administrative_staff'),
-    path('add-worker-staff/', add_worker_staff, name='add_worker_staff'),
-    path('export-pdf/', export_pdf, name='export_pdf'),
-    path('ajax/load-delegations/', load_delegations, name='load_delegations'),
-    path('add_machine/', add_machine, name='add_machine'),
-    path('list_patients/',list_patients,name='list_patients'),
-    path('patient/<int:pk>/', patient_detail, name='patient_detail'),
-    path('load-methods/', load_methods, name='load_methods'),
-    path('add-disease-ref/', add_disease_ref, name='add_disease_ref'),
-    path('add-complication-ref/', add_complication_ref, name='add_complication_ref'),
-    path('login/', CenterLoginView, name='login'),
-    path('verify-email/', verify_email, name='verify_email'),
-    path('logout/', LogoutView.as_view(next_page='login'), name='logout'),
-    path('users/', center_users_list, name='center_users_list'),
-    path('users/<int:staff_id>/delete/', delete_staff, name='delete_staff'),
-    path('transplantation-ref/add/', add_transplantation_ref, name='add_transplantation_ref'),
-    path('patients/<int:pk>/declare-deceased/', declare_deceased, name='declare_deceased'),
 
     path('api/login/', CenterLoginAPIView.as_view(), name='center_login_api'),
     path('api/add-administrative-staff/', AddAdministrativeStaffAPIView.as_view(), name='add_administrative_staff_api'),
@@ -65,8 +39,7 @@ urlpatterns = [
     path('api/patients/', PatientsView.as_view(), name='patients'),
     path('api/patients/<int:patient_id>/medical-activity/', PatientMedicalActivityView.as_view(), name='patient-medical-activity'),
     path('api/patients/<int:patient_id>/', PatientDetailAPIView.as_view(), name='patient-detail'),
-    path('api/medical-staff/', MedicalStaffAPIView.as_view(), name='medical_staff_list'),
-     path('api/type-hemo/', TypeHemoAPIView.as_view(), name='type_hemo_list'),
+    path('api/type-hemo/', TypeHemoAPIView.as_view(), name='type_hemo_list'),
     path('api/method-hemo/', MethodHemoAPIView.as_view(), name='method_hemo_list'),
     path('api/transmittable-disease-ref/', TransmittableDiseaseRefAPIView.as_view(), name='transmittable_disease_ref'),
     path('api/complications-ref/', ComplicationsRefAPIView.as_view(), name='complications_ref'),
@@ -77,7 +50,7 @@ urlpatterns = [
     path('api/paramedical-staff/', ParamedicalStaffListAPIView.as_view(), name='paramedical_staff_list_api'),
     path('api/technical-staff/', TechnicalStaffListAPIView.as_view(), name='technical_staff_list_api'),
     path('api/worker-staff/', WorkerStaffListAPIView.as_view(), name='worker_staff_list_api'),
-      path('api/update-medical-staff/<int:pk>/', UpdateMedicalStaffAPIView.as_view(), name='update-medical-staff'),
+    path('api/update-medical-staff/<int:pk>/', UpdateMedicalStaffAPIView.as_view(), name='update-medical-staff'),
     path('api/delete-medical-staff/<int:pk>/', DeleteMedicalStaffAPIView.as_view(), name='delete-medical-staff'),
     path('api/update-paramedical-staff/<int:pk>/', UpdateParamedicalStaffAPIView.as_view(), name='update-paramedical-staff'),
     path('api/delete-paramedical-staff/<int:pk>/', DeleteParamedicalStaffAPIView.as_view(), name='delete-paramedical-staff'),
@@ -87,5 +60,15 @@ urlpatterns = [
     path('api/delete-worker-staff/<int:pk>/', DeleteWorkerStaffAPIView.as_view(), name='delete-worker-staff'),
     path('api/update-technical-staff/<int:pk>/', UpdateTechnicalStaffAPIView.as_view(), name='update-technical-staff'),
     path('api/delete-technical-staff/<int:pk>/', DeleteTechnicalStaffAPIView.as_view(), name='delete-technical-staff'),
-
+    path('api/machines/', MachineListAPIView.as_view(), name='machine-list'),
+    path('api/membranes/', MembraneListAPIView.as_view(), name='membrane-list'),
+    path('api/filtres/', FiltreListAPIView.as_view(), name='filtre-list'),
+    path('api/add-filtre/', AddFiltreAPIView.as_view(), name='add-filtre'),
+    path('api/add-membrane/', AddMembraneAPIView.as_view(), name='add-membrane'),
+    path('api/verify-user/', VerifyUserAPIView.as_view(), name='verify_user'),
+    path('api/update-profile/', UpdateUserProfileAPIView.as_view(), name='update_user_profile'),
+    path('api/export-pdf/', ExportPDFAPIView.as_view(), name='export-pdf'),
+    path('api/center-details/', CenterDetailView.as_view(), name='center-details'),
+    path('api/predict-hemodialysis/', HemodialysisPredictionView.as_view(), name='predict-hemodialysis'),
+    path('api/grant-accord/',GrantAdminAccordAPIView.as_view(),name='grant-accord')
 ]
