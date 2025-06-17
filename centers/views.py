@@ -37,8 +37,8 @@ import traceback
 logger = logging.getLogger(__name__)
 
 class HemodialysisPredictionView(APIView):
-    authentication_classes = [JWTAuthentication]
-    permission_classes = [IsAuthenticated]
+    permission_classes = [RoleBasedPermission]
+    allowed_roles = ['LOCAL_ADMIN','MEDICAL_PARA_STAFF']
 
     def post(self, request):
         data = request.data
@@ -1237,6 +1237,121 @@ class AddTransmittableDiseaseRefAPIView(APIView):
             logger.warning("TRANS_REF: Transmittable disease ref form invalid: %s", form.errors)
             return Response({"error": "Form validation failed.", "errors": form.errors.as_data()}, status=status.HTTP_400_BAD_REQUEST)
 
+class UpdateMachineAPIView(APIView):
+    permission_classes = [RoleBasedPermission]
+    required_roles = ['ADMINISTRATIVE', 'MEDICAL']
+
+    def get(self, request, machine_id):
+        tenant = request.tenant
+        if not tenant:
+            logger.error("No tenant provided for UpdateMachineAPIView GET")
+            return Response({"error": "No center found for this subdomain."}, status=status.HTTP_404_NOT_FOUND)
+
+        try:
+            machine = Machine.objects.get(id=machine_id, center=tenant)
+            return Response({
+                "machine": {
+                    "id": machine.id,
+                    "brand": machine.brand,
+                    "functional": machine.functional,
+                    "reserve": machine.reserve,
+                    "refurbished": machine.refurbished,
+                    "nbre_hrs": machine.nbre_hrs,
+                    "membrane": {"id": machine.membrane.id, "type": machine.membrane.type} if machine.membrane else None,
+                    "filtre": {"id": machine.filtre.id, "type": machine.filtre.type, "sterilisation": machine.filtre.sterilisation} if machine.filtre else None,
+                    "center": machine.center.label
+                }
+            }, status=status.HTTP_200_OK)
+        except ObjectDoesNotExist:
+            logger.error("Machine %s not found for center %s", machine_id, tenant.label)
+            return Response({"error": "Machine not found."}, status=status.HTTP_404_NOT_FOUND)
+        except Exception as e:
+            logger.error("Failed to fetch machine %s for center %s: %s", machine_id, tenant.label, str(e))
+            return Response({"error": "Failed to fetch machine."}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+    def put(self, request, machine_id):
+        tenant = request.tenant
+        if not tenant:
+            logger.error("No tenant provided for UpdateMachineAPIView PUT")
+            return Response({"error": "No center found for this subdomain."}, status=status.HTTP_404_NOT_FOUND)
+
+        try:
+            machine = Machine.objects.get(id=machine_id, center=tenant)
+        except ObjectDoesNotExist:
+            logger.error("Machine %s not found for center %s", machine_id, tenant.label)
+            return Response({"error": "Machine not found."}, status=status.HTTP_404_NOT_FOUND)
+
+        data = request.data
+
+        # Update simple fields
+        machine.brand = data.get('brand', machine.brand)
+        machine.functional = data.get('functional', machine.functional)
+        machine.reserve = data.get('reserve', machine.reserve)
+        machine.refurbished = data.get('refurbished', machine.refurbished)
+        machine.nbre_hrs = data.get('nbre_hrs', machine.nbre_hrs)
+
+        # Update foreign keys if provided
+        if 'membrane_id' in data:
+            try:
+                membrane = Membrane.objects.get(id=data['membrane_id'])
+                machine.membrane = membrane
+            except ObjectDoesNotExist:
+                logger.error("Membrane %s not found", data['membrane_id'])
+                return Response({"error": "Membrane not found."}, status=status.HTTP_400_BAD_REQUEST)
+
+        if 'filtre_id' in data:
+            try:
+                filtre = Filtre.objects.get(id=data['filtre_id'])
+                machine.filtre = filtre
+            except ObjectDoesNotExist:
+                logger.error("Filtre %s not found", data['filtre_id'])
+                return Response({"error": "Filtre not found."}, status=status.HTTP_400_BAD_REQUEST)
+
+        try:
+            machine.save()
+            logger.info("Machine %s updated successfully for center %s", machine_id, tenant.label)
+            return Response({
+                "message": "Machine updated successfully.",
+                "machine": {
+                    "id": machine.id,
+                    "brand": machine.brand,
+                    "functional": machine.functional,
+                    "reserve": machine.reserve,
+                    "refurbished": machine.refurbished,
+                    "nbre_hrs": machine.nbre_hrs,
+                    "membrane": str(machine.membrane),
+                    "filtre": str(machine.filtre),
+                    "center": machine.center.label
+                }
+            }, status=status.HTTP_200_OK)
+        except Exception as e:
+            logger.error("Failed to update machine %s for center %s: %s", machine_id, tenant.label, str(e))
+            return Response({"error": "Failed to update machine."}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+            
+class DeleteMachineAPIView(APIView):
+    permission_classes = [RoleBasedPermission]
+    required_roles = ['LOCAL_ADMIN','TECHNICAL']
+
+    def delete(self, request, machine_id):
+        tenant = request.tenant
+        if not tenant:
+            logger.error("No tenant provided for DeleteMachineAPIView")
+            return Response({"error": "No center found for this subdomain."}, status=status.HTTP_404_NOT_FOUND)
+
+        try:
+            machine = Machine.objects.get(id=machine_id, center=tenant)
+        except ObjectDoesNotExist:
+            logger.error("Machine %s not found for center %s", machine_id, tenant.label)
+            return Response({"error": "Machine not found."}, status=status.HTTP_404_NOT_FOUND)
+
+        try:
+            machine.delete()
+            logger.info("Machine %s deleted successfully for center %s", machine_id, tenant.label)
+            return Response({"message": "Machine deleted successfully."}, status=status.HTTP_200_OK)
+        except Exception as e:
+            logger.error("Failed to delete machine %s for center %s: %s", machine_id, tenant.label, str(e))
+            return Response({"error": "Failed to delete machine."}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
 @method_decorator(csrf_exempt, name='dispatch')
 class AddComplicationsRefAPIView(APIView):
     permission_classes = [RoleBasedPermission]
@@ -1456,7 +1571,7 @@ class PatientsView(APIView):
             center = Center.objects.get(sub_domain=request.tenant.sub_domain)
             patients = Patient.objects.filter(center=center).select_related('cnam').values(
                 'id', 'nom', 'prenom', 'cin', 'weight', 'age', 'cnam__number', 'status',
-                'entry_date', 'previously_dialysed', 'date_first_dia', 'blood_type', 'gender'
+                'entry_date', 'previously_dialysed', 'date_first_dia', 'blood_type', 'gender','hypertension', 'diabetes', 'decease_note'
             )
             return Response(list(patients))
         except ObjectDoesNotExist:
@@ -1618,6 +1733,8 @@ class PatientDetailAPIView(APIView):
                 'date_first_dialysis': patient.date_first_dia,
                 'blood_type': patient.blood_type,
                 'gender': patient.gender,
+                'diabetes':patient.diabetes,
+                'hypertension':patient.hypertension,
                 'hemodialysis_sessions': list(hemodialysis_sessions),
                 'transmittable_diseases': list(diseases),
                 'complications': list(complications),
@@ -1944,7 +2061,6 @@ class AddTransplantationAPIView(APIView):
     authentication_classes = [JWTAuthentication]
     permission_classes = [RoleBasedPermission]
     allowed_roles = ['LOCAL_ADMIN', 'MEDICAL_PARA_STAFF']
-    read_only_roles = ['VIEWER']
 
     def post(self, request, patient_id):
         logger.debug("Received POST request to AddTransplantationAPIView for patient ID: %s. User: %s",
@@ -2021,7 +2137,7 @@ class AddTransplantationAPIView(APIView):
 
 class MedicalStaffAPIView(APIView):
     permission_classes = [RoleBasedPermission]
-    allowed_roles = ['LOCAL_ADMIN']
+    allowed_roles = ['LOCAL_ADMIN', 'MEDICAL_PARA_STAFF']
 
     def get(self, request):
         try:
@@ -2140,7 +2256,7 @@ class AdministrativeStaffListAPIView(APIView):
 @method_decorator(csrf_exempt, name='dispatch')
 class MedicalStaffListAPIView(APIView):
     permission_classes = [RoleBasedPermission]
-    allowed_roles = ['LOCAL_ADMIN']
+    allowed_roles = ['LOCAL_ADMIN','MEDICAL_PARA_STAFF']
 
     def get(self, request):
         logger.debug("Received GET request to MedicalStaffListAPIView. User: %s", request.user.username)
@@ -3438,7 +3554,7 @@ class ExportPDFAPIView(APIView):
     
 class CenterDetailView(APIView):
     permission_classes = [IsAuthenticated, RoleBasedPermission]
-    allowed_roles = ['LOCAL_ADMIN', 'DOCTOR', 'NURSE', 'TECHNICIAN', 'WORKER', 'VIEWER']  # All roles
+    allowed_roles = ['LOCAL_ADMIN', 'MEDICAL_PARA_STAFF','WORKER', 'TECHNICAl', 'VIEWER']  # All roles
 
     def get(self, request):
         try:
@@ -3478,3 +3594,238 @@ class CenterDetailView(APIView):
         except Exception as e:
             logger.error("Error fetching center details for user %s: %s", request.user.username, str(e))
             return Response({"error": "Internal server error"}, status=500)
+        
+
+class MedicalStaffDetailAPIView(APIView):
+    permission_classes = [RoleBasedPermission]
+    allowed_roles = ['LOCAL_ADMIN']
+
+    def get(self, request, staff_id):
+        try:
+            center = Center.objects.get(sub_domain=request.tenant.sub_domain)
+            medical_staff = MedicalStaff.objects.get(id=staff_id, center=center)
+            data = {
+                'id': medical_staff.id,
+                'nom': medical_staff.nom,
+                'prenom': medical_staff.prenom,
+                'cin': medical_staff.cin,
+                'cnom': medical_staff.cnom,
+                'role': medical_staff.role,
+                'username': medical_staff.user.username,
+                'email': medical_staff.user.email,
+            }
+            return Response(data)
+        except Center.DoesNotExist:
+            logger.error("Center not found for tenant %s", request.tenant.sub_domain)
+            return Response({'error': 'Center not found for this tenant.'}, status=status.HTTP_404_NOT_FOUND)
+        except MedicalStaff.DoesNotExist:
+            logger.error("Medical staff not found with ID %s for center %s", staff_id, center.id)
+            return Response({'error': 'Medical staff not found.'}, status=status.HTTP_404_NOT_FOUND)
+        except AttributeError:
+            logger.error("Medical staff ID %s has no associated user", staff_id)
+            return Response({'error': 'User profile not found for this staff.'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+class WorkerStaffDetailAPIView(APIView):
+    permission_classes = [RoleBasedPermission]
+    allowed_roles = ['LOCAL_ADMIN']
+
+    def get(self, request, staff_id):
+        try:
+            center = Center.objects.get(sub_domain=request.tenant.sub_domain)
+            worker_staff = WorkerStaff.objects.get(id=staff_id, center=center)
+            data = {
+                'id': worker_staff.id,
+                'nom': worker_staff.nom,
+                'prenom': worker_staff.prenom,
+                'cin': worker_staff.cin,
+                'job_title': worker_staff.job_title,
+                'role': worker_staff.role,
+                'username': worker_staff.user.username,
+                'email': worker_staff.user.email,
+            }
+            return Response(data)
+        except Center.DoesNotExist:
+            logger.error("Center not found for tenant %s", request.tenant.sub_domain)
+            return Response({'error': 'Center not found for this tenant.'}, status=status.HTTP_404_NOT_FOUND)
+        except WorkerStaff.DoesNotExist:
+            logger.error("Worker staff not found with ID %s for center %s", staff_id, center.id)
+            return Response({'error': 'Worker staff not found.'}, status=status.HTTP_404_NOT_FOUND)
+        except AttributeError:
+            logger.error("Worker staff ID %s has no associated user", staff_id)
+            return Response({'error': 'User profile not found for this staff.'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+class ParamedicalStaffDetailAPIView(APIView):
+    permission_classes = [RoleBasedPermission]
+    allowed_roles = ['LOCAL_ADMIN']
+
+    def get(self, request, staff_id):
+        try:
+            center = Center.objects.get(sub_domain=request.tenant.sub_domain)
+            paramedical_staff = ParamedicalStaff.objects.get(id=staff_id, center=center)
+            data = {
+                'id': paramedical_staff.id,
+                'nom': paramedical_staff.nom,
+                'prenom': paramedical_staff.prenom,
+                'cin': paramedical_staff.cin,
+                'qualification': paramedical_staff.qualification,
+                'role': paramedical_staff.role,
+                'username': paramedical_staff.user.username,
+                'email': paramedical_staff.user.email,
+            }
+            return Response(data)
+        except Center.DoesNotExist:
+            logger.error("Center not found for tenant %s", request.tenant.sub_domain)
+            return Response({'error': 'Center not found for this tenant.'}, status=status.HTTP_404_NOT_FOUND)
+        except ParamedicalStaff.DoesNotExist:
+            logger.error("Paramedical staff not found with ID %s for center %s", staff_id, center.id)
+            return Response({'error': 'Paramedical staff not found.'}, status=status.HTTP_404_NOT_FOUND)
+        except AttributeError:
+            logger.error("Paramedical staff ID %s has no associated user", staff_id)
+            return Response({'error': 'User profile not found for this staff.'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+class AdministrativeStaffDetailAPIView(APIView):
+    permission_classes = [RoleBasedPermission]
+    allowed_roles = ['LOCAL_ADMIN']
+
+    def get(self, request, staff_id):
+        try:
+            center = Center.objects.get(sub_domain=request.tenant.sub_domain)
+            administrative_staff = AdministrativeStaff.objects.get(id=staff_id, center=center)
+            data = {
+                'id': administrative_staff.id,
+                'nom': administrative_staff.nom,
+                'prenom': administrative_staff.prenom,
+                'cin': administrative_staff.cin,
+                'job_title': administrative_staff.job_title,
+                'role': administrative_staff.role,
+                'username': administrative_staff.user.username,
+                'email': administrative_staff.user.email,
+            }
+            return Response(data)
+        except Center.DoesNotExist:
+            logger.error("Center not found for tenant %s", request.tenant.sub_domain)
+            return Response({'error': 'Center not found for this tenant.'}, status=status.HTTP_404_NOT_FOUND)
+        except AdministrativeStaff.DoesNotExist:
+            logger.error("Administrative staff not found with ID %s for center %s", staff_id, center.id)
+            return Response({'error': 'Administrative staff not found.'}, status=status.HTTP_404_NOT_FOUND)
+        except AttributeError:
+            logger.error("Administrative staff ID %s has no associated user", staff_id)
+            return Response({'error': 'User profile not found for this staff.'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+class TechnicalStaffDetailAPIView(APIView):
+    permission_classes = [RoleBasedPermission]
+    allowed_roles = ['LOCAL_ADMIN']
+
+    def get(self, request, staff_id):
+        try:
+            center = Center.objects.get(sub_domain=request.tenant.sub_domain)
+            technical_staff = TechnicalStaff.objects.get(id=staff_id, center=center)
+            data = {
+                'id': technical_staff.id,
+                'nom': technical_staff.nom,
+                'prenom': technical_staff.prenom,
+                'cin': technical_staff.cin,
+                'job_title': technical_staff.job_title,
+                'role': technical_staff.role,
+                'username': technical_staff.user.username,
+                'email': technical_staff.user.email,
+            }
+            return Response(data)
+        except Center.DoesNotExist:
+            logger.error("Center not found for tenant %s", request.tenant.sub_domain)
+            return Response({'error': 'Center not found for this tenant.'}, status=status.HTTP_404_NOT_FOUND)
+        except TechnicalStaff.DoesNotExist:
+            logger.error("Technical staff not found with ID %s for center %s", staff_id, center.id)
+            return Response({'error': 'Technical staff not found.'}, status=status.HTTP_404_NOT_FOUND)
+        except AttributeError:
+            logger.error("Technical staff ID %s has no associated user", staff_id)
+            return Response({'error': 'User profile not found for this staff.'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        
+class UserDetailsAPIView(APIView):
+    permission_classes = [RoleBasedPermission]
+    allowed_roles = ['LOCAL_ADMIN', 'SUBMITTER', 'MEDICAL_PARA_STAFF', 'TECHNICAL', 'VIEWER', 'WORKER']
+
+    def get(self, request):
+        logger.debug("Received GET request to UserDetailsAPIView. User: %s", request.user.username)
+        if not request.user.is_authenticated:
+            logger.error("Unauthenticated user attempted to access user details")
+            return Response({"error": "User must be authenticated."}, status=status.HTTP_401_UNAUTHORIZED)
+
+        tenant = getattr(request, 'tenant', None)
+        user_data = {
+            "username": request.user.username,
+            "email": request.user.email,
+            "is_superuser": request.user.is_superuser,
+            "center": None,
+            "role": None,
+            "profile": {},
+            "staff_details": None,
+            "staff_type": None,
+        }
+
+        # Handle superuser case
+        if request.user.is_superuser:
+            user_data["role"] = "SUPER_ADMIN"
+            logger.info("Superuser %s accessed user details", request.user.username)
+            return Response(user_data, status=status.HTTP_200_OK)
+
+        # Handle tenant-specific users
+        if not tenant:
+            logger.error("No tenant found for user %s", request.user.username)
+            return Response({"error": "Invalid or missing center subdomain."}, status=status.HTTP_400_BAD_REQUEST)
+
+        user_data["center"] = {
+            "id": tenant.id,
+            "label": tenant.label,
+            "sub_domain": tenant.sub_domain,
+        }
+
+        # Fetch UserProfile
+        try:
+            profile = UserProfile.objects.get(user=request.user)
+            user_data["profile"] = {
+                "is_verified": profile.is_verified,
+                "has_role_privileges": profile.has_role_privileges(),
+                "admin_accord": profile.admin_accord,
+            }
+        except UserProfile.DoesNotExist:
+            logger.warning("No UserProfile found for user %s", request.user.username)
+            user_data["profile"] = {"is_verified": False, "has_role_privileges": False, "admin_accord": False}
+
+        # Check staff profiles using related names
+        staff_mappings = [
+            ('administrative_profile', AdministrativeStaff, 'Administrative'),
+            ('medical_profile', MedicalStaff, 'Medical'),
+            ('paramedical_profile', ParamedicalStaff, 'Paramedical'),
+            ('technical_profile', TechnicalStaff, 'Technical'),
+            ('worker_profile', WorkerStaff, 'Worker'),
+        ]
+
+        for related_name, model, staff_type in staff_mappings:
+            try:
+                staff = getattr(request.user, related_name)
+                user_data["role"] = staff.role
+                user_data["staff_type"] = staff_type
+                user_data["staff_details"] = {
+                    "nom": staff.nom,
+                    "prenom": staff.prenom,
+                    "cin": staff.cin,
+                }
+                # Add model-specific fields
+                if staff_type == 'Administrative' or staff_type == 'Worker':
+                    user_data["staff_details"]["job_title"] = staff.job_title
+                elif staff_type == 'Medical':
+                    user_data["staff_details"]["cnom"] = staff.cnom
+                elif staff_type in ['Paramedical', 'Technical']:
+                    user_data["staff_details"]["qualification"] = staff.qualification
+                logger.info("Found %s profile for user %s in center %s", staff_type, request.user.username, tenant.label)
+                break
+            except model.DoesNotExist:
+                continue
+
+        if not user_data["role"]:
+            logger.warning("No staff profile found for user %s in center %s", request.user.username, tenant.label)
+            user_data["role"] = "NO_ROLE"
+
+        logger.info("User details retrieved for %s in center %s", request.user.username, tenant.label)
+        return Response(user_data, status=status.HTTP_200_OK)

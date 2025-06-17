@@ -406,3 +406,4 @@ class SuperAdminLoginAPIView(APIView):
                 {'error': 'An error occurred.'},
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR
             )
+        

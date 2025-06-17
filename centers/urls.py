@@ -13,7 +13,9 @@ from .views import (
                    ,UpdateAdministrativeStaffAPIView,UpdateTechnicalStaffAPIView,UpdateWorkerStaffAPIView,DeleteAdministrativeStaffAPIView,DeleteMedicalStaffAPIView
                    ,DeleteParamedicalStaffAPIView,DeleteTechnicalStaffAPIView,DeleteWorkerStaffAPIView,MachineListAPIView,
                      MembraneListAPIView,ExportPDFAPIView, FiltreListAPIView,AddFiltreAPIView,AddMembraneAPIView,
-                     VerifyUserAPIView,UpdateUserProfileAPIView,CenterDetailView,HemodialysisPredictionView,GrantAdminAccordAPIView
+                     VerifyUserAPIView,UpdateMachineAPIView,DeleteMachineAPIView,
+                     UpdateUserProfileAPIView,CenterDetailView,HemodialysisPredictionView,GrantAdminAccordAPIView, MedicalStaffDetailAPIView, WorkerStaffDetailAPIView, ParamedicalStaffDetailAPIView,
+    AdministrativeStaffDetailAPIView, TechnicalStaffDetailAPIView,UserDetailsAPIView
                    )
 from django.contrib.auth.views import LoginView, LogoutView
 
@@ -70,5 +72,13 @@ urlpatterns = [
     path('api/export-pdf/', ExportPDFAPIView.as_view(), name='export-pdf'),
     path('api/center-details/', CenterDetailView.as_view(), name='center-details'),
     path('api/predict-hemodialysis/', HemodialysisPredictionView.as_view(), name='predict-hemodialysis'),
-    path('api/grant-accord/',GrantAdminAccordAPIView.as_view(),name='grant-accord')
+    path('api/grant-accord/',GrantAdminAccordAPIView.as_view(),name='grant-accord'),
+    path('api/machines/<int:machine_id>/update/', UpdateMachineAPIView.as_view(), name='update-machine'),
+    path('api/machines/<int:machine_id>/delete/', DeleteMachineAPIView.as_view(), name='delete-machine'),
+    path('api/medical-staff/<int:staff_id>/', MedicalStaffDetailAPIView.as_view(), name='medical-staff-detail'),
+    path('api/worker-staff/<int:staff_id>/', WorkerStaffDetailAPIView.as_view(), name='worker-staff-detail'),
+    path('api/paramedical-staff/<int:staff_id>/', ParamedicalStaffDetailAPIView.as_view(), name='paramedical-staff-detail'),
+    path('api/administrative-staff/<int:staff_id>/', AdministrativeStaffDetailAPIView.as_view(), name='administrative-staff-detail'),
+    path('api/technical-staff/<int:staff_id>/', TechnicalStaffDetailAPIView.as_view(), name='technical-staff-detail'),
+    path('api/user/details/', UserDetailsAPIView.as_view(), name='user-details'),
 ]
